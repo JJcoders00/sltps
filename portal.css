@@ -220,3 +220,52 @@
     padding: 2rem;
     border-radius: 10px;
 }
+
+/* Unified Portal Additions */
+.role-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.role-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255,255,255,0.1);
+    border-color: var(--primary-accent);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.role-card .icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.role-card h4 {
+    margin-bottom: 1rem;
+}
+
+.widget {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 2rem;
+    border-radius: 15px;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-accent);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+}
+
+.w-100 {
+    width: 100%;
+}
