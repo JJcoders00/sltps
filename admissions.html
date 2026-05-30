@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admissions | SLT Public School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.jpeg" alt="SLT Public School Logo">
+                <div class="logo-text">
+                    <span class="brand-name">SLT Public School</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Back to Home</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admission Scene -->
+    <section class="scene scene-admissions" style="align-items: flex-start; padding-top: 120px;">
+        <div class="bg-layer" style="background-image: url('bg_enhanced_campus_1780156878279.png'); filter: blur(5px) brightness(0.3);"></div>
+        <div class="overlay dark"></div>
+        <div class="content-layer">
+            <div class="center-align mb-4 fade-up">
+                <h2>Student Admissions</h2>
+                <p class="large-text max-w">Begin your journey to supreme wisdom. Apply online for the upcoming academic session.</p>
+            </div>
+            
+            <div class="form-wrapper fade-up delay-1" style="max-width: 800px;">
+                <form class="glass-form" onsubmit="event.preventDefault(); alert('Application submitted successfully! Our admissions team will contact you shortly.'); window.location.href='index.html';">
+                    <div class="grid-3" style="grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="form-group">
+                            <label for="student-name">Student Full Name</label>
+                            <input type="text" id="student-name" required placeholder="Enter student name">
+                        </div>
+                        <div class="form-group">
+                            <label for="grade">Applying For Grade</label>
+                            <input type="text" id="grade" required placeholder="e.g., Grade 6">
+                        </div>
+                        <div class="form-group">
+                            <label for="parent-name">Parent/Guardian Name</label>
+                            <input type="text" id="parent-name" required placeholder="Enter parent name">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" required placeholder="+91 00000 00000">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" required placeholder="parent@example.com">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="address">Residential Address</label>
+                            <textarea id="address" rows="3" required placeholder="Enter full address..."></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="previous-school">Previous School (if any)</label>
+                            <input type="text" id="previous-school" placeholder="School name">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-solid submit-btn">Submit Application</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
