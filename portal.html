@@ -128,7 +128,6 @@
                         <div class="step">2</div>
                         <div class="step">3</div>
                         <div class="step">4</div>
-                        <div class="step">5</div>
                     </div>
                 </div>
 
@@ -164,9 +163,13 @@
                                     <option>Class X</option><option>Class XII</option>
                                 </select>
                             </div>
-                            <div class="form-group full-width">
+                            <div class="form-group">
                                 <label>Aadhaar / ID Number *</label>
                                 <input type="text" id="stu-aadhaar" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Student WhatsApp (If applicable)</label>
+                                <input type="tel" id="stu-whatsapp" placeholder="+91 00000 00000">
                             </div>
                         </div>
                     </div>
@@ -183,12 +186,12 @@
                                 <input type="text" id="par-mother" required>
                             </div>
                             <div class="form-group">
-                                <label>Primary Mobile *</label>
-                                <input type="tel" id="par-mobile" required>
-                            </div>
-                            <div class="form-group">
                                 <label>Email Address *</label>
                                 <input type="email" id="par-email" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Parent WhatsApp Number *</label>
+                                <input type="tel" id="par-whatsapp" required placeholder="+91 00000 00000">
                             </div>
                             <div class="form-group full-width">
                                 <label>Residential Address *</label>
@@ -215,32 +218,11 @@
                         </div>
                     </div>
 
-                    <!-- Step 4: Documents Upload -->
+                    <!-- Step 4: Review & Submit -->
                     <div class="form-step" id="step-4">
-                        <p class="mb-2 text-secondary">Please upload required documents (JPG, PNG, PDF). Max size: 2MB per file.</p>
-                        <div class="grid-2">
-                            <label for="doc-birth" class="form-group drag-drop-zone">
-                                <p>📄 Birth Certificate</p>
-                                <span id="label-birth" class="text-secondary small">Click to upload</span>
-                                <input type="file" id="doc-birth" hidden accept=".jpg,.png,.pdf" onchange="updateFileName(this, 'label-birth')">
-                            </label>
-                            <label for="doc-id" class="form-group drag-drop-zone">
-                                <p>📄 Parent ID Proof</p>
-                                <span id="label-id" class="text-secondary small">Click to upload</span>
-                                <input type="file" id="doc-id" hidden accept=".jpg,.png,.pdf" onchange="updateFileName(this, 'label-id')">
-                            </label>
-                            <label for="doc-photo" class="form-group drag-drop-zone">
-                                <p>🖼️ Student Passport Photo</p>
-                                <span id="label-photo" class="text-secondary small">Click to upload</span>
-                                <input type="file" id="doc-photo" hidden accept=".jpg,.png" onchange="updateFileName(this, 'label-photo')">
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Step 5: Review & Submit -->
-                    <div class="form-step" id="step-5">
                         <div class="review-box">
                             <h4>Review Application</h4>
+                            <p class="text-secondary small mb-2">Note: Certificates and ID proofs will be requested via WhatsApp upon initial approval.</p>
                             <div id="review-content"></div>
                         </div>
                         <div class="mt-2">
@@ -395,6 +377,6 @@
             </div>
         </div>
 
-    <script type="module" src="portal.js"></script>
+    <script type="module" src="portal-v2.js?v=3"></script>
 </body>
 </html>
