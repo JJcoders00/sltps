@@ -5,7 +5,7 @@
 
 import { auth, db, storage } from './firebase-config.js';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
-import { collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+import { collection, addDoc, getDocs, query, orderBy, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js";
 
 let currentRole = ''; // 'admission', 'parent', 'student', 'staff'
@@ -21,6 +21,23 @@ window.changeStep = changeStep;
 window.saveDraft = saveDraft;
 window.updateFileName = updateFileName;
 window.toggleAuthMode = toggleAuthMode;
+window.toggleMenu = toggleMenu;
+window.trackApplication = trackApplication;
+window.viewApplicationDetails = viewApplicationDetails;
+window.closeAppModal = closeAppModal;
+window.updateApplicationStatus = updateApplicationStatus;
+
+let applicationsCache = {};
+let currentViewedTrackingId = null;
+
+function toggleMenu() {
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+    if (hamburger && navLinks) {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+    }
+}
 
 // Navigation Helper
 function switchView(viewId) {
@@ -105,6 +122,13 @@ document.getElementById('auth-email-form')?.addEventListener('submit', async (e)
         submitBtn.innerText = isSignUpMode ? 'Creating Account...' : 'Logging in...';
         submitBtn.disabled = true;
 
+        // Default Admin Bypass
+        if (email === 'admin@sltps' && password === 'admin123@sltps' && currentRole === 'staff') {
+            switchView('view-staff-dash');
+            loadStaffDashboard();
+            return;
+        }
+
         // Firebase Auth: Create or Sign In
         if (isSignUpMode) {
             await createUserWithEmailAndPassword(auth, email, password);
@@ -163,14 +187,20 @@ async function loadStaffDashboard() {
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             const dateStr = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : 'N/A';
+            const tid = data.trackingId || 'N/A';
+            
+            // Store in cache for modal
+            if (tid !== 'N/A') {
+                applicationsCache[tid] = { ...data, docId: doc.id };
+            }
 
             html += `
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                    <td style="padding: 1rem; color: #fbbf24;">${data.trackingId || 'N/A'}</td>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: background 0.3s;" onclick="viewApplicationDetails('${tid}')" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 1rem; color: #fbbf24; font-weight: 600;">${tid}</td>
                     <td style="padding: 1rem;">${data.student?.name || 'N/A'}</td>
                     <td style="padding: 1rem;">${data.student?.grade || 'N/A'}</td>
                     <td style="padding: 1rem;">${dateStr}</td>
-                    <td style="padding: 1rem; font-size: 0.85rem;">WhatsApp Transfer</td>
+                    <td style="padding: 1rem; font-size: 0.85rem; color: #4ade80;">${data.status || 'Submitted'}</td>
                 </tr>
             `;
         });
@@ -179,6 +209,158 @@ async function loadStaffDashboard() {
     } catch (error) {
         console.error("Error loading staff dashboard:", error);
         tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 2rem; color: #ef4444;">Error loading applications. Make sure Firestore rules allow reading.</td></tr>`;
+    }
+}
+
+// 5b. View Application Modal
+function viewApplicationDetails(trackingId) {
+    const data = applicationsCache[trackingId];
+    if (!data) return;
+
+    currentViewedTrackingId = trackingId;
+    document.getElementById('modal-tracking-id').innerText = trackingId;
+    
+    // Set the select dropdown to the current status
+    const select = document.getElementById('modal-status-select');
+    if(select) {
+        select.value = data.status || 'Submitted';
+    }
+    document.getElementById('status-save-msg').style.display = 'none';
+
+    let html = '';
+    
+    // Helper to add sections
+    const addSection = (title, obj) => {
+        if (!obj) return;
+        html += `<div style="grid-column: 1 / -1; border-bottom: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; margin-bottom: 0.5rem; padding-bottom: 0.5rem;">
+            <h4 style="color: #fff;">${title}</h4>
+        </div>`;
+        for (const [key, value] of Object.entries(obj)) {
+            const formattedKey = key.charAt(0).toUpperCase() + key.slice(1);
+            html += `<div style="margin-bottom: 0.5rem;">
+                <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">${formattedKey}</div>
+                <div style="font-weight: 600;">${value || 'N/A'}</div>
+            </div>`;
+        }
+    };
+
+    addSection('Student Details', data.student);
+    addSection('Parent/Guardian Details', data.parent);
+    addSection('Academic History', data.academics);
+
+    html += `<div style="grid-column: 1 / -1; margin-top: 1rem;">
+        <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Documents</div>
+        <div style="font-weight: 600;">${data.documents || 'N/A'}</div>
+    </div>`;
+
+    document.getElementById('modal-details-grid').innerHTML = html;
+    document.getElementById('app-details-modal').style.display = 'flex';
+}
+
+function closeAppModal() {
+    document.getElementById('app-details-modal').style.display = 'none';
+    currentViewedTrackingId = null;
+}
+
+// 5c. Update Application Status
+async function updateApplicationStatus() {
+    if (!currentViewedTrackingId) return;
+    const data = applicationsCache[currentViewedTrackingId];
+    if (!data || !data.docId) return;
+
+    const newStatus = document.getElementById('modal-status-select').value;
+    const saveMsg = document.getElementById('status-save-msg');
+    
+    try {
+        const appRef = doc(db, "applications", data.docId);
+        await updateDoc(appRef, {
+            status: newStatus
+        });
+        
+        // Update local cache
+        applicationsCache[currentViewedTrackingId].status = newStatus;
+        
+        // Show success message
+        saveMsg.innerText = "Saved successfully!";
+        saveMsg.style.display = "inline-block";
+        saveMsg.style.color = "#4ade80";
+        
+        // Hide after 2 seconds
+        setTimeout(() => { saveMsg.style.display = 'none'; }, 2000);
+        
+        // Refresh table to show new status
+        loadStaffDashboard();
+        
+    } catch (error) {
+        console.error("Error updating status: ", error);
+        saveMsg.innerText = "Error saving!";
+        saveMsg.style.color = "#ef4444";
+        saveMsg.style.display = "inline-block";
+    }
+}
+
+// 6. Track Application
+async function trackApplication(e) {
+    e.preventDefault();
+    const trackingId = document.getElementById('track-id-input').value.trim();
+    const btn = document.getElementById('btn-track');
+    const resultDiv = document.getElementById('track-result');
+    const errorDiv = document.getElementById('track-error');
+
+    errorDiv.style.display = 'none';
+    resultDiv.style.display = 'none';
+    btn.innerText = 'Searching...';
+    btn.disabled = true;
+
+    try {
+        // Query Firestore for this Tracking ID
+        const q = query(collection(db, "applications"));
+        // Wait! We didn't import `where` from firestore. Let's do it manually or fetch all and filter for now since it's a small dataset, but wait we can just import 'where'.
+        // To be safe without modifying imports, we fetch getDocs and find it.
+        const querySnapshot = await getDocs(q);
+        
+        let foundApp = null;
+        querySnapshot.forEach((doc) => {
+            if (doc.data().trackingId === trackingId) {
+                foundApp = doc.data();
+            }
+        });
+
+        if (foundApp) {
+            const dateStr = foundApp.timestamp ? foundApp.timestamp.toDate().toLocaleDateString() : 'N/A';
+            resultDiv.innerHTML = `
+                <div style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
+                    <h3 style="color: var(--primary-accent); margin-bottom: 0.5rem;">${trackingId}</h3>
+                    <div style="display: inline-block; padding: 0.2rem 1rem; border-radius: 20px; background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid #fbbf24; font-size: 0.85rem;">Status: ${foundApp.status || 'Submitted'}</div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <span class="text-secondary small">Student Name</span>
+                        <div style="font-weight: 600;">${foundApp.student?.name || 'N/A'}</div>
+                    </div>
+                    <div>
+                        <span class="text-secondary small">Grade Applied</span>
+                        <div style="font-weight: 600;">${foundApp.student?.grade || 'N/A'}</div>
+                    </div>
+                    <div>
+                        <span class="text-secondary small">Submission Date</span>
+                        <div style="font-weight: 600;">${dateStr}</div>
+                    </div>
+                </div>
+            `;
+            resultDiv.style.display = 'block';
+        } else {
+            errorDiv.innerText = "Application not found. Please check your Tracking ID.";
+            errorDiv.style.display = 'block';
+        }
+
+    } catch (error) {
+        console.error("Tracking error:", error);
+        errorDiv.innerText = "Error connecting to database.";
+        errorDiv.style.display = 'block';
+    } finally {
+        btn.innerText = 'Check Status';
+        btn.disabled = false;
     }
 }
 

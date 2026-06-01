@@ -150,6 +150,10 @@
 @media (max-width: 600px) {
     .grid-2 { grid-template-columns: 1fr; }
     .form-container { padding: 1.5rem; }
+    .portal-wrapper { padding: 1rem; margin-top: 80px; }
+    .form-controls { flex-direction: column; gap: 1rem; }
+    .form-controls button { width: 100%; }
+    #app-details-modal .glass-container { padding: 1.2rem !important; }
 }
 
 .full-width { grid-column: 1 / -1; }
@@ -223,20 +227,22 @@
 
 /* Unified Portal Additions */
 .role-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 15px;
-    padding: 2.5rem 1.5rem;
+    padding: 2.5rem 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
 }
 
 .role-card:hover {
-    transform: translateY(-10px);
-    background: rgba(255,255,255,0.1);
-    border-color: var(--primary-accent);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transform: translateY(-10px) scale(1.02) perspective(1000px) rotateX(2deg) rotateY(-2deg);
+    box-shadow: -10px 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(59, 130, 246, 0.3);
+    border-color: rgba(59, 130, 246, 0.5);
+    z-index: 10;
 }
 
 .role-card .icon {

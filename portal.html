@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unified Portal | SLT Public School</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="portal.css">
+    <link rel="stylesheet" href="styles.css?v=4">
+    <link rel="stylesheet" href="portal.css?v=4">
 </head>
 <body class="portal-body">
 
@@ -22,6 +22,11 @@
             <div class="nav-links">
                 <a href="index.html">Back to Home</a>
             </div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </nav>
 
@@ -33,23 +38,23 @@
         <!-- View 0: The Gateway (Role Selection) -->
         <div id="view-gateway" class="portal-view active">
             <div class="center-align mb-4 fade-up">
-                <h2>Welcome to the Portal</h2>
-                <p class="large-text max-w">Select your portal to continue.</p>
+                <h1 class="fade-up gradient-text">SLT Public School Gateway</h1>
+                <p class="fade-up delay-1 large-text" style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 3rem auto;">Select your role below to access the unified portal services.</p>
             </div>
             
             <div class="grid-4 fade-up delay-1" style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;">
                 <div class="role-card" onclick="selectRole('admission')">
-                    <div class="icon">📝</div>
+                    <div class="icon float-anim">📝</div>
                     <h4>New Admission</h4>
                     <p>Apply for the 2026-27 academic session (LKG - Class XII).</p>
                 </div>
                 <div class="role-card" onclick="selectRole('parent')">
-                    <div class="icon">👨‍👩‍👧</div>
+                    <div class="icon float-anim">👨‍👩‍👧</div>
                     <h4>Parent Portal</h4>
                     <p>Check attendance, pay fees, and view notices.</p>
                 </div>
                 <div class="role-card" onclick="selectRole('student')">
-                    <div class="icon">🎓</div>
+                    <div class="icon float-anim">🎓</div>
                     <h4>Student Portal</h4>
                     <p>Access homework, timetable, and exam grades.</p>
                 </div>
@@ -58,6 +63,28 @@
                     <h4>Staff Portal</h4>
                     <p>Manage applications and student records.</p>
                 </div>
+                <div class="role-card" onclick="switchView('view-track')">
+                    <div class="icon">🔍</div>
+                    <h4>Track Application</h4>
+                    <p>Check the status of your submitted application.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Track Application -->
+        <div id="view-track" class="portal-view">
+            <div class="glass-container center-align" style="max-width: 500px; margin: 0 auto;">
+                <h2>Track Application</h2>
+                <p class="text-secondary mb-2">Enter your Tracking ID to see your status.</p>
+                <form id="track-form" onsubmit="trackApplication(event)">
+                    <div class="form-group mb-2" style="text-align: left;">
+                        <input type="text" id="track-id-input" placeholder="e.g. ADM-2026-1234" required style="width: 100%;">
+                    </div>
+                    <button type="submit" class="btn-solid w-100" id="btn-track">Check Status</button>
+                    <div id="track-result" class="mt-4" style="display: none; padding: 1.5rem; border-radius: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); text-align: left;"></div>
+                    <div id="track-error" class="alert-text mt-2" style="display: none;"></div>
+                </form>
+                <button class="btn-outline mt-4" onclick="switchView('view-gateway')">Back</button>
             </div>
         </div>
 
@@ -351,7 +378,7 @@
              STAFF DASHBOARD
              ========================================== -->
         <div id="view-staff-dash" class="portal-view">
-            <div class="glass-container" style="max-width: 1200px;">
+            <div class="glass-container" style="max-width: 1200px; position: relative;">
                 <div class="dashboard-header">
                     <h2>Staff / Admin Portal</h2>
                     <button class="btn-outline" onclick="logout()">Logout</button>
@@ -374,9 +401,48 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Staff Application Details Modal (Hidden by default) -->
+                <div id="app-details-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; padding: 1rem;">
+                    <div class="glass-container" style="max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; padding: 2rem;">
+                        <button onclick="closeAppModal()" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                        <h3 id="modal-tracking-id" style="color: var(--primary-accent); margin-bottom: 0.5rem;">Tracking ID</h3>
+                        <div style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                            <span style="color: var(--text-secondary); font-size: 0.9rem;">Status:</span>
+                            <select id="modal-status-select" style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 0.5rem; border-radius: 5px;">
+                                <option value="Submitted">Submitted</option>
+                                <option value="Viewed">Viewed</option>
+                                <option value="Processing">Processing</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Whatsapped">Whatsapped</option>
+                            </select>
+                            <button class="btn-outline" style="padding: 0.5rem 1rem;" onclick="updateApplicationStatus()">Save Status</button>
+                            <span id="status-save-msg" style="color: #4ade80; font-size: 0.85rem; display: none;">Saved!</span>
+                        </div>
+                        
+                        <div class="grid-2" id="modal-details-grid">
+                            <!-- Details injected by JS -->
+                        </div>
+                        
+                        <div class="mt-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.1); text-align: right;">
+                            <button class="btn-solid" onclick="closeAppModal()">Close</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-    <script type="module" src="portal-v2.js?v=3"></script>
+    <script type="module" src="portal-v2.js?v=6"></script>
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>

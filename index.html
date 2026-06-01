@@ -6,12 +6,9 @@
     <title>SLT Public School | Gurumitkal</title>
     
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <!-- CSS -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
 
@@ -20,180 +17,223 @@
         <div class="nav-container">
             <a href="index.html" class="logo">
                 <img src="logo.jpeg" alt="SLT Public School Logo">
-                <div class="logo-text">
-                    <span class="brand-name">SLT Public School</span>
-                </div>
+                <span class="brand-name">SLT Public School</span>
             </a>
+            
+            <div class="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+
             <div class="nav-links">
                 <a href="#history">Heritage</a>
                 <a href="#motto">Motto</a>
                 <a href="#mission">Philosophy</a>
                 <a href="#facilities">Facilities</a>
                 <a href="#disclosure">CBSE</a>
+                <a href="#gallery">Gallery</a>
                 <a href="portal.html" class="nav-highlight">Portal Login</a>
-            </div>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
             </div>
         </div>
     </nav>
 
-    <!-- Scene 1: Hero -->
+    <!-- Scene 1: Hero (Restored Exact Original) -->
     <section class="scene scene-hero" id="home">
+        <!-- High-res Sunrise Image as fixed background -->
         <div class="bg-layer" style="background-image: url('bg_campus_sunrise_1780156081202.png');"></div>
-        <div class="overlay"></div>
+        <div class="overlay gradient"></div>
         <div class="content-layer">
-            <h1 class="fade-up">SLT Public School</h1>
-            <p class="fade-up delay-1">Bodhivruksha Campus • Gurumitkal</p>
-            <div class="fade-up delay-2 btn-group">
-                <a href="#history" class="btn-outline">Begin Journey</a>
-                <a href="portal.html" class="btn-solid">Portal Login</a>
+            <h1 class="fade-up gradient-text">SLT Public School</h1>
+            <p class="fade-up delay-1 large-text">Bodhivruksha Campus, Gurumitkal</p>
+            <p class="fade-up delay-2">An Unaided Co-Educational Institution managed by<br>Sri Laxmi Thimmappa Educational and Charitable Trust.</p>
+            
+            <div class="fade-up delay-3 mt" style="margin-top: 2rem; display: flex; gap: 1.5rem; justify-content: center;">
+                <a href="portal.html" class="btn-highlight">Admissions Open 26-27</a>
+                <a href="#history" class="btn-outline">Discover Our Heritage</a>
             </div>
-        </div>
-        <div class="scroll-indicator fade-up delay-3">
-            <span>Scroll</span>
-            <div class="mouse"></div>
+
+            <div class="scroll-indicator fade-up delay-3 float-anim">
+                <span>Scroll to Explore</span>
+                <div class="mouse"></div>
+            </div>
         </div>
     </section>
 
-    <!-- Scene 2: History -->
-    <section class="scene scene-history" id="history">
+    <!-- Scene 2: History & Heritage -->
+    <section class="scene" id="history">
+        <!-- AVIF optimized image -->
         <div class="bg-layer" style="background-image: url('slt-public-school-gurumitkal-yadgir-schools-5l56aag2yc.avif');"></div>
-        <div class="overlay dark"></div>
-        <div class="content-layer left-align">
-            <h2 class="fade-up">Our Heritage</h2>
-            <p class="fade-up delay-1">Founded in 2015 by Mr. Narendra Rathod, SLT Public School was established with a singular vision: to create a haven of learning.</p>
-            <p class="fade-up delay-2">We are an unaided co-educational institution proudly managed by the Sri Laxmi Thimmappa Educational and Charitable Trust.</p>
-            <div class="stats-row fade-up delay-3">
-                <div class="stat"><h3>2015</h3><span>Established</span></div>
-                <div class="stat"><h3>CBSE</h3><span>Affiliation</span></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Scene 3: Environment -->
-    <section class="scene scene-campus" id="campus">
-        <div class="bg-layer" style="background-image: url('bg_serene_nature_1780156116031.png');"></div>
         <div class="overlay gradient"></div>
         <div class="content-layer right-align">
-            <h2 class="fade-up">10 Acres of Serenity</h2>
-            <p class="fade-up delay-1">Nestled within the Bodhivruksha Campus on Chandriki Road, our school is surrounded by peaceful, beautiful scenery.</p>
-            <p class="fade-up delay-2">Located just 1.5 kilometers from the Gurumitkal bus stand, the safe environment and moderate climate provide a highly conducive atmosphere for rigorous learning.</p>
+            <h2 class="fade-up">Our Heritage</h2>
+            <p class="fade-up delay-1 large-text">Founded in 2015 by Mr. Narendra Rathod.</p>
+            <p class="fade-up delay-2">We started with a vision to create an environment where children are empowered to unlock their ultimate potential. Today, we stand as a beacon of academic and moral excellence in Gurumitkal.</p>
         </div>
     </section>
 
-    <!-- Scene 4: The Motto / Emblem -->
-    <section class="scene scene-motto" id="motto">
-        <div class="bg-layer" style="background-image: url('bg_banyan_book_1780156098746.png');"></div>
+    <!-- Scene 3: The Environment -->
+    <section class="scene" id="campus">
+        <div class="bg-layer" style="background-image: url('bg_campus_blur_1780156108157.png');"></div>
         <div class="overlay dark"></div>
         <div class="content-layer center-align">
+            <h2 class="fade-up">A Haven of Learning</h2>
+            <p class="fade-up delay-1 large-text max-w">Nestled in the serene 10-acre Bodhivruksha Campus.</p>
+            <p class="fade-up delay-2 max-w">Our location on Chandriki Road is deliberately chosen to keep students away from the hustle and pollution of city life, providing a peaceful environment ideal for profound learning.</p>
+            
+            <div class="stats-row fade-up delay-3">
+                <div class="stat">
+                    <h3>10</h3>
+                    <span>Acre Campus</span>
+                </div>
+                <div class="stat">
+                    <h3>300+</h3>
+                    <span>Students</span>
+                </div>
+                <div class="stat">
+                    <h3>2015</h3>
+                    <span>Established</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scene 4: Motto -->
+    <section class="scene" id="motto">
+        <div class="bg-layer" style="background-image: url('bg_banyan_book_1780156098746.png');"></div>
+        <div class="overlay dark"></div>
+        <div class="content-layer left-align">
             <h2 class="fade-up">Our Motto</h2>
-            <h3 class="motto-text fade-up delay-1">Sraddhavan Labhate Jnanam</h3>
-            <p class="large-text fade-up delay-2">"The Earnest Aspirant Gains Supreme Wisdom"</p>
-            <p class="desc fade-up delay-3 max-w">Our emblem—a banyan tree emerging from an open book—symbolizes our dedication to quality education and all-round development. We explore the endless abilities of each child to make them confident, creative, and responsible champions of truth and equality.</p>
+            <p class="fade-up delay-1 large-text motto-text">"Sraddhavan Labhate Jnanam"</p>
+            <p class="fade-up delay-2">Meaning: The earnest aspirant gains supreme wisdom. We believe that true knowledge comes to those who seek it with dedication and purity of heart.</p>
         </div>
     </section>
 
     <!-- Scene 5: Mission -->
-    <section class="scene scene-mission" id="mission">
+    <section class="scene" id="mission">
         <div class="bg-layer" style="background-image: url('bg_enhanced_campus_1780156878279.png');"></div>
         <div class="overlay gradient-blue"></div>
         <div class="content-layer left-align">
             <h2 class="fade-up">Our Mission</h2>
-            <p class="large-text fade-up delay-1">To provide quality education that nurtures every child’s potential, character, and lifelong learning.</p>
-            <p class="fade-up delay-2">We emphasize a supportive environment where students grow academically, emotionally, socially, physically, and spiritually into truly responsible individuals.</p>
+            <p class="fade-up delay-1 large-text">Empowering the youth.</p>
+            <p class="fade-up delay-2">To develop intellectual capability and moral excellence in students. We aim to nurture youth who are not just academically proficient, but who also emerge as enlightened, responsible citizens ready to serve the nation.</p>
         </div>
     </section>
 
     <!-- Scene 6: Vision -->
-    <section class="scene scene-vision" id="vision">
+    <section class="scene" id="vision">
         <div class="bg-layer" style="background-image: url('WhatsApp Image 2026-05-30 at 6.34.53 PM.jpeg');"></div>
-        <div class="overlay dark"></div>
-        <div class="content-layer right-align">
+        <div class="overlay gradient"></div>
+        <div class="content-layer left-align">
             <h2 class="fade-up">Our Vision</h2>
-            <p class="large-text fade-up delay-1">To nurture enlightened, confident, and responsible individuals through holistic education.</p>
-            <p class="fade-up delay-2">Our vision focuses relentlessly on shaping students into intellectually capable, morally strong, spiritually aware, and socially responsible citizens of the future.</p>
+            <p class="fade-up delay-1 large-text">Unlocking ultimate potential.</p>
+            <p class="fade-up delay-2">To provide a dynamic, student-centric environment that fosters deep thinking, leadership, and a lifelong passion for learning.</p>
         </div>
     </section>
 
-    <!-- Scene 7: Facilities & Stats -->
-    <section class="scene scene-facilities" id="facilities">
+    <!-- Scene 7: Facilities -->
+    <section class="scene" id="facilities">
         <div class="bg-layer" style="background-image: url('bg_facilities_1780156899103.png');"></div>
-        <div class="overlay gradient-dark"></div>
-        <div class="content-layer center-align">
-            <h2 class="fade-up">Empowering 300+ Students</h2>
-            <p class="large-text fade-up delay-1">State-of-the-Art Infrastructure for Holistic Development</p>
-            <div class="glass-container grid-3 fade-up delay-2 mt-2">
+        <div class="overlay dark"></div>
+        <div class="content-layer">
+            <h2 class="fade-up center-align">World-Class Facilities</h2>
+            <p class="fade-up delay-1 center-align large-text" style="margin-bottom: 3rem;">State-of-the-Art Infrastructure</p>
+            
+            <div class="grid-3 fade-up delay-2">
                 <div class="facility-item">
                     <div class="icon">💻</div>
-                    <h4>Modern Labs</h4>
-                    <p>Fully equipped science and computer laboratories.</p>
+                    <h4>Computer Lab</h4>
+                    <p>Modern systems fostering technological literacy.</p>
                 </div>
                 <div class="facility-item">
-                    <div class="icon">🏃‍♂️</div>
-                    <h4>Sprawling Playground</h4>
-                    <p>Extensive sports facilities for physical excellence.</p>
+                    <div class="icon">🔬</div>
+                    <h4>Science Labs</h4>
+                    <p>Physics, Chemistry, and Biology labs for practicals.</p>
                 </div>
                 <div class="facility-item">
                     <div class="icon">📚</div>
-                    <h4>Rich Library</h4>
-                    <p>A vast collection of resources feeding supreme wisdom.</p>
+                    <h4>Library</h4>
+                    <p>A vast collection of knowledge resources.</p>
+                </div>
+                <div class="facility-item">
+                    <div class="icon">🏃‍♂️</div>
+                    <h4>Sports Complex</h4>
+                    <p>Extensive playground for physical development.</p>
+                </div>
+                <div class="facility-item">
+                    <div class="icon">🚌</div>
+                    <h4>Transport</h4>
+                    <p>Safe and reliable bus fleet across Gurumitkal.</p>
+                </div>
+                <div class="facility-item">
+                    <div class="icon">🛡️</div>
+                    <h4>Smart Campus</h4>
+                    <p>CCTV surveillance and smart classrooms.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Scene 8: CBSE Disclosure -->
+    <!-- Scene 8: CBSE Disclosure (Kept with Pointing Layout) -->
     <section class="scene scene-cbse" id="disclosure">
-        <div class="bg-layer" style="background-image: url('slt-public-school-gurumitkal-yadgir-schools-7kasz320oi.avif'); filter: blur(5px);"></div>
-        <div class="overlay dark"></div>
-        <div class="content-layer">
-            <h2 class="fade-up center-align">CBSE Disclosure</h2>
-            <div class="glass-container fade-up delay-1 mt-2">
-                <div class="cbse-grid">
-                    <div class="cbse-item">
-                        <h4>General Information</h4>
-                        <p><strong>Name:</strong> Sri Laxmi Timmappa Public School</p>
-                        <p><strong>Affiliation No:</strong> 830809</p>
-                        <p><strong>School Code:</strong> 45765</p>
-                        <p><strong>Principal:</strong> Leena Jose (MA, B.Ed)</p>
-                    </div>
-                    <div class="cbse-item">
-                        <h4>Contact Details</h4>
-                        <p><strong>Email:</strong> sltpsgkl23@gmail.com</p>
-                        <p><strong>Phones:</strong> +91 88850 11111, +91 96633 46100, +91 80951 50999</p>
-                        <p><strong>Address:</strong> Bodhivruksha Campus, Chandriki Road, Gurumitkal - 585214, Yadgir</p>
-                    </div>
-                    <div class="cbse-item full-width">
-                        <h4>Documents (To be uploaded)</h4>
-                        <p>Affiliation Letter, Trust Registration, NOC, RTE Recognition, Building Safety, Fire Safety, DEO Certificate, Water/Health/Sanitation Certificate.</p>
-                    </div>
-                </div>
+        <div class="bg-layer" style="background-image: url('slt-public-school-gurumitkal-yadgir-schools-7kasz320oi.avif');"></div>
+        <div class="overlay gradient"></div>
+        <div class="content-layer cbse-flex">
+            <!-- Left Side: CBSE Documents Box -->
+            <div class="cbse-text-wrapper fade-up delay-1 left-align">
+                <h2>CBSE Disclosure</h2>
+                <p class="large-text">Transparency is Key</p>
+                <p>Access all mandatory public disclosures, affiliation letters, and safety certificates.</p>
+                
+                <h4 style="margin-top: 1rem;">Important Documents</h4>
+                <p><strong>Affiliation No:</strong> 830809 <br> <strong>School Code:</strong> 45765</p>
+                
+                <a href="#" class="btn-solid" style="margin-top: 1.5rem;">Download All Docs</a>
+            </div>
+
+            <!-- Right Side: Student pointing exactly at the CBSE box -->
+            <div class="cbse-student-wrapper fade-up delay-2">
+                <img src="student_pointing_left.png" alt="Student Pointing Left" class="pointing-student-cbse">
             </div>
         </div>
     </section>
 
-    <!-- Scene 9: Contact Form -->
-    <section class="scene scene-contact" id="contact">
-        <div class="bg-layer" style="background-image: url('WhatsApp Image 2026-05-30 at 6.34.52 PM (1).jpeg'); filter: blur(8px) brightness(0.4);"></div>
+    <!-- Scene 9: Campus Gallery -->
+    <section class="scene" id="gallery">
+        <div class="bg-layer" style="background-image: url('bg_campus_blur_1780156108157.png');"></div>
         <div class="overlay dark"></div>
         <div class="content-layer">
-            <h2 class="fade-up center-align">Get in Touch</h2>
-            <div class="form-wrapper fade-up delay-1 mt-2">
-                <form class="glass-form" onsubmit="event.preventDefault(); alert('Message sent successfully!');">
+            <h2 class="fade-up center-align">Campus Gallery</h2>
+            <div class="gallery-grid fade-up delay-1">
+                <div class="gallery-item"><img src="DSC_0320.JPG.jpeg" alt="Gallery 1"></div>
+                <div class="gallery-item"><img src="DSC_0615.JPG.jpeg" alt="Gallery 2"></div>
+                <div class="gallery-item"><img src="WhatsApp Image 2026-05-30 at 6.34.52 PM (1).jpeg" alt="Gallery 3"></div>
+                <div class="gallery-item"><img src="WhatsApp Image 2026-05-30 at 6.34.53 PM.jpeg" alt="Gallery 4"></div>
+                <div class="gallery-item"><img src="WhatsApp Image 2026-06-01 at 9.06.20 PM (1).jpeg" alt="Gallery 5"></div>
+                <div class="gallery-item"><img src="student_looking-front.jpeg" alt="Gallery 6"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scene 10: Contact Form -->
+    <section class="scene" id="contact">
+        <div class="bg-layer" style="background-image: url('WhatsApp Image 2026-05-30 at 6.34.52 PM (1).jpeg');"></div>
+        <div class="overlay dark"></div>
+        <div class="content-layer center-align">
+            <h2 class="fade-up">Get in Touch</h2>
+            <p class="fade-up delay-1">We'd love to hear from you. Secure a spot for the 2026-27 academic year.</p>
+            
+            <div class="form-wrapper fade-up delay-2 mt">
+                <form class="glass-form">
                     <div class="form-group">
-                        <label for="name">Your Name</label>
-                        <input type="text" id="name" required placeholder="John Doe">
+                        <label>Name</label>
+                        <input type="text" placeholder="Enter your full name" required>
                     </div>
                     <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" required placeholder="john@example.com">
+                        <label>Email</label>
+                        <input type="email" placeholder="Enter your email" required>
                     </div>
                     <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" rows="4" required placeholder="How can we help you?"></textarea>
+                        <label>Message</label>
+                        <textarea rows="4" placeholder="How can we help?" required></textarea>
                     </div>
                     <button type="submit" class="btn-solid submit-btn">Send Message</button>
                 </form>
@@ -203,26 +243,81 @@
 
     <!-- Footer -->
     <footer class="scene-footer">
-        <div class="footer-content">
-            <div class="footer-top">
-                <img src="logo.jpeg" alt="Logo" class="footer-logo">
-                <h2>SLT Public School</h2>
-                <div class="links mt">
-                    <a href="mailto:sltpsgkl23@gmail.com">sltpsgkl23@gmail.com</a>
-                    <a href="tel:+918885011111">+91 88850 11111</a>
-                </div>
+        <div class="footer-top">
+            <img src="logo.jpeg" alt="SLT Public School Logo" class="footer-logo">
+            <h2>SLT Public School</h2>
+            <p>Bodhivruksha Campus, Chandriki Road, Gurumitkal - 585214</p>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-meta">
+                <span>sltpsgkl23@gmail.com</span>
+                <span>•</span>
+                <span>+91 88850 11111</span>
+                <span>•</span>
+                <span>CBSE Affiliation: 830809</span>
             </div>
-            <div class="footer-bottom">
-                <p>Managed by Sri Laxmi Thimmappa Educational and Charitable Trust.</p>
-                <div class="footer-meta">
-                    <p>&copy; 2026 SLT Public School. All rights reserved.</p>
-                    <p class="credit">Made by <a href="https://jjcoders.web.app" target="_blank">JJ Coders</a></p>
-                </div>
+            <div class="credit mt">
+                &copy; 2026 SLT Public School. All rights reserved. <br>
+                Crafted with passion by <a href="https://jjcoders.web.app" target="_blank">JJ Coders</a>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="script.js"></script>
+    <!-- JavaScript for Animations -->
+    <script>
+        // Hamburger Menu
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if(hamburger) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+        }
+
+        // Scroll Effects (Navbar & Scenes)
+        const navbar = document.querySelector('.navbar');
+        const scenes = document.querySelectorAll('.scene');
+        
+        window.addEventListener('scroll', () => {
+            // Navbar background
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            // Scene active state (for subtle background zoom)
+            scenes.forEach(scene => {
+                const rect = scene.getBoundingClientRect();
+                if (rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
+                    scene.classList.add('active');
+                } else {
+                    scene.classList.remove('active');
+                }
+            });
+        });
+
+        // Intersection Observer for fade-up animations
+        const fadeElements = document.querySelectorAll('.fade-up');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Optional: Stop observing once visible if you only want it to animate once
+                    // observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        });
+
+        fadeElements.forEach(el => observer.observe(el));
+    </script>
+
 </body>
 </html>
