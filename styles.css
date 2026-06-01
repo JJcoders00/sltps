@@ -286,6 +286,13 @@ p { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-secondary); margin
     margin-top: 2rem;
 }
 
+.hero-buttons {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
 .stat h3 {
     font-size: 3rem;
     font-weight: 800;
@@ -675,6 +682,16 @@ p { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-secondary); margin
         transform: translateY(-20px) scale(0.95);
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         pointer-events: none;
+    }
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    .hero-buttons a {
+        width: 100%;
+        text-align: center;
+        padding: 1rem 1rem;
     }
     .nav-links.active { 
         opacity: 1;
