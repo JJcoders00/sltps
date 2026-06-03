@@ -7,8 +7,9 @@ import { auth, db, storage } from './firebase-config.js';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 import { collection, addDoc, getDocs, query, orderBy, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js";
+import { deleteDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
-let currentRole = ''; // 'admission', 'parent', 'student', 'staff'
+let currentRole = ''; // 'admission', 'parent', 'student', 'staff', 'principal'
 let currentStep = 1;
 const totalSteps = 4;
 let isSignUpMode = false;
@@ -26,6 +27,8 @@ window.trackApplication = trackApplication;
 window.viewApplicationDetails = viewApplicationDetails;
 window.closeAppModal = closeAppModal;
 window.updateApplicationStatus = updateApplicationStatus;
+window.publishMessage = publishMessage;
+window.deleteMessage = deleteMessage;
 
 let applicationsCache = {};
 let currentViewedTrackingId = null;
@@ -72,6 +75,10 @@ function selectRole(role) {
         document.getElementById('email-auth-title').innerText = "Staff Login";
         document.getElementById('email-auth-desc').innerText = "Enter your staff email and password.";
         switchView('view-auth-email');
+    } else if (role === 'principal') {
+        document.getElementById('email-auth-title').innerText = "Principal Login";
+        document.getElementById('email-auth-desc').innerText = "Enter your principal credentials.";
+        switchView('view-auth-email');
     } else if (role === 'parent' || role === 'student') {
         document.getElementById('email-auth-title').innerText = role === 'parent' ? "Parent Login" : "Student Login";
         document.getElementById('email-auth-desc').innerText = "Enter your registered email and password.";
@@ -96,7 +103,8 @@ function updateAuthUI() {
         if(toggleText) toggleText.innerText = "Already have an account?";
         if(toggleLink) toggleLink.innerText = "Login";
     } else {
-        document.getElementById('email-auth-title').innerText = currentRole === 'staff' ? "Staff Login" : (currentRole === 'parent' ? "Parent Login" : "Student Login");
+        const titleMap = { 'staff': 'Staff Login', 'principal': 'Principal Login', 'parent': 'Parent Login', 'student': 'Student Login' };
+        document.getElementById('email-auth-title').innerText = titleMap[currentRole] || "Login";
         btn.innerText = "Login to Portal";
         if(toggleText) toggleText.innerText = "Don't have an account?";
         if(toggleLink) toggleLink.innerText = "Sign Up";
@@ -129,6 +137,13 @@ document.getElementById('auth-email-form')?.addEventListener('submit', async (e)
             return;
         }
 
+        // Principal Bypass
+        if ((email === 'leenaj' || email === 'leenaj@sltps.com' || email === 'leenaj@sltps') && password === 'leenaprincipal@sltps' && currentRole === 'principal') {
+            switchView('view-principal-dash');
+            loadPrincipalMessages();
+            return;
+        }
+
         // Firebase Auth: Create or Sign In
         if (isSignUpMode) {
             await createUserWithEmailAndPassword(auth, email, password);
@@ -143,6 +158,9 @@ document.getElementById('auth-email-form')?.addEventListener('submit', async (e)
         } else if (currentRole === 'staff') {
             switchView('view-staff-dash');
             loadStaffDashboard();
+        } else if (currentRole === 'principal') {
+            switchView('view-principal-dash');
+            loadPrincipalMessages();
         } else {
             switchView('view-student-dash');
         }
@@ -514,6 +532,7 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
         // 4. Show Success View
         document.getElementById('tracking-id').innerText = trackingId;
         switchView('view-success');
+        if (window.burstConfetti) window.burstConfetti();
 
     } catch (error) {
         console.error("Error submitting application: ", error);
@@ -523,3 +542,112 @@ document.getElementById('application-form')?.addEventListener('submit', async (e
         submitBtn.disabled = false;
     }
 });
+
+// ==========================================
+// PRINCIPAL MESSAGES LOGIC
+// ==========================================
+
+async function publishMessage(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-publish');
+    const resultDiv = document.getElementById('publish-result');
+    
+    btn.innerText = "Publishing...";
+    btn.disabled = true;
+    resultDiv.style.color = "var(--text-secondary)";
+    resultDiv.innerText = "Saving to database...";
+
+    try {
+        const title = document.getElementById('msg-title').value;
+        const type = document.getElementById('msg-type').value;
+        const content = document.getElementById('msg-content').value;
+        const durationDays = parseInt(document.getElementById('msg-expiration').value);
+
+        const now = new Date();
+        const expiresAt = new Date(now.getTime() + (durationDays * 24 * 60 * 60 * 1000));
+
+        const messageData = {
+            title,
+            type,
+            content,
+            createdAt: now,
+            expiresAt: expiresAt
+        };
+
+        await addDoc(collection(db, "principal_messages"), messageData);
+        
+        resultDiv.style.color = "#4ade80";
+        resultDiv.innerText = "Message published successfully!";
+        
+        // Reset form
+        document.getElementById('compose-message-form').reset();
+        
+        // Reload list
+        loadPrincipalMessages();
+        
+        setTimeout(() => { resultDiv.innerText = ""; }, 3000);
+        
+    } catch (error) {
+        console.error("Error publishing message:", error);
+        resultDiv.style.color = "#ef4444";
+        resultDiv.innerText = "Failed to publish message.";
+    } finally {
+        btn.innerText = "Publish Message";
+        btn.disabled = false;
+    }
+}
+
+async function loadPrincipalMessages() {
+    const tableBody = document.getElementById('principal-messages-table');
+    tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">Loading messages...</td></tr>';
+    
+    try {
+        const q = query(collection(db, "principal_messages"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem; color: #a1a1aa;">No messages found.</td></tr>';
+            return;
+        }
+
+        let html = '';
+        const now = new Date();
+        
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const expiresAt = data.expiresAt ? data.expiresAt.toDate() : null;
+            const isExpired = expiresAt && expiresAt < now;
+            
+            const expiresStr = expiresAt ? expiresAt.toLocaleDateString() : 'Never';
+            const statusColor = isExpired ? '#ef4444' : '#4ade80';
+            
+            html += `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); opacity: ${isExpired ? 0.6 : 1};">
+                    <td style="padding: 1rem;">${data.title}</td>
+                    <td style="padding: 1rem;">${data.type || 'Announcement'}</td>
+                    <td style="padding: 1rem; color: ${statusColor};">${expiresStr} ${isExpired ? '(Expired)' : ''}</td>
+                    <td style="padding: 1rem;">
+                        <button onclick="deleteMessage('${doc.id}')" style="background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 0.3rem 0.8rem; border-radius: 5px; cursor: pointer; transition: all 0.3s;">Delete</button>
+                    </td>
+                </tr>
+            `;
+        });
+        tableBody.innerHTML = html;
+        
+    } catch (error) {
+        console.error("Error loading messages:", error);
+        tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 2rem; color: #ef4444;">Error loading messages. Make sure Firestore rules allow reading.</td></tr>`;
+    }
+}
+
+async function deleteMessage(docId) {
+    if (!confirm("Are you sure you want to delete this message?")) return;
+    
+    try {
+        await deleteDoc(doc(db, "principal_messages", docId));
+        loadPrincipalMessages();
+    } catch (error) {
+        console.error("Error deleting message:", error);
+        alert("Failed to delete message.");
+    }
+}

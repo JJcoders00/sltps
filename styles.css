@@ -654,6 +654,44 @@ p { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-secondary); margin
 }
 
 /* ==========================================================================
+   Profile & Split Scenes
+   ========================================================================== */
+.split-scene .content-layer {
+    padding: 4rem 2rem;
+}
+.profile-layout {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    padding: 3rem;
+}
+.profile-layout.reverse-layout {
+    flex-direction: row-reverse;
+}
+.profile-image {
+    flex: 0 0 350px;
+}
+.profile-image img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 2px solid rgba(255,255,255,0.1);
+}
+.profile-text {
+    flex: 1;
+}
+.profile-text h2 {
+    margin-bottom: 0.5rem;
+}
+
+/* ==========================================================================
    Responsive
    ========================================================================== */
 @media (max-width: 1024px) {
@@ -682,6 +720,24 @@ p { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-secondary); margin
         transform: translateY(-20px) scale(0.95);
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         pointer-events: none;
+    }
+    .profile-layout, .profile-layout.reverse-layout {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+    .profile-image {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    .profile-text.right-align, .profile-text.left-align {
+        text-align: center;
+        align-items: center;
+    }
+    .profile-text.right-align p, .profile-text.left-align p {
+        text-align: center;
     }
     .hero-buttons {
         flex-direction: column;

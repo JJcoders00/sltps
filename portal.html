@@ -14,7 +14,7 @@
     <nav class="navbar scrolled">
         <div class="nav-container">
             <a href="index.html" class="logo">
-                <img src="logo.jpeg" alt="SLT Public School Logo">
+                <img src="logo.webp" alt="SLT Public School Logo">
                 <div class="logo-text">
                     <span class="brand-name">SLT Public School</span>
                 </div>
@@ -31,7 +31,7 @@
     </nav>
 
     <!-- Portal Background -->
-    <div class="bg-layer portal-bg" style="background-image: url('bg_campus_sunrise_1780156081202.png'); filter: blur(8px) brightness(0.3);"></div>
+    <div class="bg-layer portal-bg" style="background-image: url('bg-hero.webp'); filter: blur(8px) brightness(0.3);"></div>
     
     <div class="portal-wrapper">
         
@@ -57,6 +57,11 @@
                     <div class="icon float-anim">🎓</div>
                     <h4>Student Portal</h4>
                     <p>Access homework, timetable, and exam grades.</p>
+                </div>
+                <div class="role-card" onclick="selectRole('principal')">
+                    <div class="icon float-anim">👑</div>
+                    <h4>Principal Portal</h4>
+                    <p>Publish messages and manage announcements.</p>
                 </div>
                 <div class="role-card" onclick="selectRole('staff')">
                     <div class="icon">👔</div>
@@ -372,6 +377,79 @@
             </div>
         </div>
 
+        <!-- ==========================================
+             PRINCIPAL DASHBOARD
+             ========================================== -->
+        <div id="view-principal-dash" class="portal-view">
+            <div class="glass-container" style="max-width: 1200px;">
+                <div class="dashboard-header">
+                    <h2>Principal Portal</h2>
+                    <button class="btn-outline" onclick="logout()">Logout</button>
+                </div>
+                <p class="text-secondary mt-2">Publish Messages & Announcements</p>
+                
+                <div class="grid-3 mt-4" style="grid-template-columns: 1fr 2fr; gap: 2rem;">
+                    
+                    <!-- Compose Message Widget -->
+                    <div class="widget full-width" style="grid-column: 1;">
+                        <h4 style="margin-bottom: 1rem;">New Message</h4>
+                        <form id="compose-message-form" class="glass-form" style="padding: 1.5rem;" onsubmit="publishMessage(event)">
+                            <div class="form-group mb-2">
+                                <label>Title</label>
+                                <input type="text" id="msg-title" required placeholder="e.g. Summer Vacation Rules">
+                            </div>
+                            <div class="form-group mb-2">
+                                <label>Type</label>
+                                <select id="msg-type" class="portal-select" required style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.8rem; border-radius: 10px;">
+                                    <option value="Announcement">Announcement</option>
+                                    <option value="Message">Message</option>
+                                    <option value="Rule">Rule</option>
+                                    <option value="Event">Event</option>
+                                    <option value="Article">Article</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-2">
+                                <label>Content</label>
+                                <textarea id="msg-content" rows="6" required placeholder="Write your message here..."></textarea>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label>Expiration (Duration)</label>
+                                <select id="msg-expiration" class="portal-select" required style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.8rem; border-radius: 10px;">
+                                    <option value="1">1 Day</option>
+                                    <option value="3">3 Days</option>
+                                    <option value="7">1 Week</option>
+                                    <option value="30">1 Month</option>
+                                    <option value="365">1 Year</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-solid w-100" id="btn-publish">Publish Message</button>
+                            <div id="publish-result" class="mt-2" style="font-size: 0.9rem; text-align: center;"></div>
+                        </form>
+                    </div>
+
+                    <!-- Manage Messages Widget -->
+                    <div class="widget full-width" style="grid-column: 2;">
+                        <h4>Manage Active Messages</h4>
+                        <div style="overflow-x: auto; margin-top: 1rem;">
+                            <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                        <th style="padding: 1rem;">Title</th>
+                                        <th style="padding: 1rem;">Type</th>
+                                        <th style="padding: 1rem;">Expires On</th>
+                                        <th style="padding: 1rem;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="principal-messages-table">
+                                    <tr><td colspan="4" style="text-align:center; padding: 2rem;">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
         <!-- ==========================================
@@ -444,5 +522,8 @@
 
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     </script>
+    
+    <!-- Magic Effects -->
+    <script src="magic-effects.js"></script>
 </body>
 </html>

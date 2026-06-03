@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principal's Messages | SLT Public School</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css?v=6">
+    <link rel="stylesheet" href="portal.css?v=6">
+    
+    <style>
+        .messages-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .message-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        .message-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 1rem;
+        }
+        .message-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-accent);
+        }
+        .message-type {
+            background: rgba(251, 224, 93, 0.2);
+            color: var(--secondary-accent);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid var(--secondary-accent);
+        }
+        .message-meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        .message-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #fff;
+            white-space: pre-wrap;
+        }
+        .no-messages {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body class="portal-body" style="background-color: var(--bg-dark); min-height: 100vh;">
+
+    <!-- Navigation -->
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.webp" alt="SLT Public School Logo">
+                <div class="logo-text">
+                    <span class="brand-name">SLT Public School</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="index.html#principal">Back to Principal's Desk</a>
+                <a href="index.html">Home</a>
+            </div>
+            <div class="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Background -->
+    <div class="bg-layer portal-bg" style="background-image: url('bg-hero.webp'); filter: blur(8px) brightness(0.2); position: fixed;"></div>
+    
+    <!-- Content -->
+    <div class="content-layer" style="position: relative; z-index: 10; padding-top: 120px;">
+        <div class="center-align mb-4 fade-up">
+            <h1 class="fade-up gradient-text">Principal's Messages</h1>
+            <p class="fade-up delay-1 large-text" style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Official Announcements, Rules, and Articles.</p>
+        </div>
+        
+        <!-- Functional Controls: Filter and Search -->
+        <div class="fade-up delay-1" style="max-width: 900px; margin: 0 auto; padding: 0 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+            <input type="text" id="search-input" placeholder="Search messages..." style="flex: 1; min-width: 200px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 1rem; border-radius: 10px; font-family: var(--font-main);">
+            <select id="type-filter" style="min-width: 150px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 1rem; border-radius: 10px; font-family: var(--font-main);">
+                <option value="All">All Types</option>
+                <option value="Announcement">Announcements</option>
+                <option value="Message">Messages</option>
+                <option value="Rule">Rules</option>
+                <option value="Event">Events</option>
+                <option value="Article">Articles</option>
+            </select>
+        </div>
+
+        <div class="messages-container fade-up delay-2" id="messages-container">
+            <!-- Loader -->
+            <div style="text-align: center; padding: 4rem; color: var(--primary-accent);">
+                Loading messages...
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+        let allMessages = [];
+
+        async function loadMessages() {
+            const container = document.getElementById('messages-container');
+            try {
+                const q = query(collection(db, "principal_messages"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                const now = new Date();
+                allMessages = [];
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const expiresAt = data.expiresAt ? data.expiresAt.toDate() : null;
+                    
+                    // Only keep if it hasn't expired
+                    if (!expiresAt || expiresAt > now) {
+                        allMessages.push({ ...data, id: doc.id });
+                    }
+                });
+
+                renderMessages(allMessages);
+            } catch (error) {
+                console.error("Error loading messages:", error);
+                container.innerHTML = `<div class="no-messages" style="color: #ef4444;">Error loading messages. Please try again later.</div>`;
+            }
+        }
+
+        function renderMessages(messagesToRender) {
+            const container = document.getElementById('messages-container');
+            if (messagesToRender.length === 0) {
+                container.innerHTML = `<div class="no-messages">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+                    No messages found matching your criteria.
+                </div>`;
+                return;
+            }
+
+            let html = '';
+            messagesToRender.forEach(data => {
+                const dateStr = data.createdAt ? data.createdAt.toDate().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A';
+                
+                html += `
+                <div class="message-card">
+                    <div class="message-header">
+                        <div class="message-title">${data.title}</div>
+                        <div class="message-type">${data.type || 'Announcement'}</div>
+                    </div>
+                    <div class="message-meta">Published on ${dateStr}</div>
+                    <div class="message-content">${data.content}</div>
+                </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function filterMessages() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const typeFilter = document.getElementById('type-filter').value;
+
+            const filtered = allMessages.filter(msg => {
+                const matchesSearch = (msg.title && msg.title.toLowerCase().includes(searchTerm)) || 
+                                      (msg.content && msg.content.toLowerCase().includes(searchTerm));
+                const matchesType = typeFilter === 'All' || msg.type === typeFilter;
+                return matchesSearch && matchesType;
+            });
+
+            renderMessages(filtered);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMessages();
+            document.getElementById('search-input').addEventListener('input', filterMessages);
+            document.getElementById('type-filter').addEventListener('change', filterMessages);
+        });
+        
+        // Hamburger Menu Logic
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        if(hamburger) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+        }
+    </script>
+    
+    <script>
+        // Intersection Observer for fade-up animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        // Observe elements that are already in DOM, plus any added dynamically
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        
+        // We also want to observe messages as they are rendered, so we create a MutationObserver
+        const mutationObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes) {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1 && node.classList.contains('message-card')) {
+                            // Automatically make message cards visible since they are within a visible container
+                            node.classList.add('visible');
+                        }
+                    });
+                }
+            });
+        });
+        
+        mutationObserver.observe(document.body, { childList: true, subtree: true });
+        
+        // To be completely safe against blank screens, if JavaScript fails or takes too long, just make everything visible
+        setTimeout(() => {
+            document.querySelectorAll('.fade-up').forEach(el => el.classList.add('visible'));
+        }, 1000);
+    </script>
+
+    <!-- Magic Effects -->
+    <script src="magic-effects.js"></script>
+</body>
+</html>
