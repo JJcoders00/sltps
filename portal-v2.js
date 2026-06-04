@@ -561,6 +561,7 @@ async function publishMessage(e) {
         const title = document.getElementById('msg-title').value;
         const type = document.getElementById('msg-type').value;
         const content = document.getElementById('msg-content').value;
+        const isUrgent = document.getElementById('msg-urgent').checked;
         const durationDays = parseInt(document.getElementById('msg-expiration').value);
 
         const now = new Date();
@@ -570,6 +571,7 @@ async function publishMessage(e) {
             title,
             type,
             content,
+            isUrgent,
             createdAt: now,
             expiresAt: expiresAt
         };
@@ -621,13 +623,34 @@ async function loadPrincipalMessages() {
             const expiresStr = expiresAt ? expiresAt.toLocaleDateString() : 'Never';
             const statusColor = isExpired ? '#ef4444' : '#4ade80';
             
+            // Badge color mapping
+            let typeColor = 'var(--secondary-accent)';
+            let typeBg = 'rgba(251, 224, 93, 0.2)';
+            
+            if (data.type === 'Rule') {
+                typeColor = '#ef4444'; typeBg = 'rgba(239,68,68,0.2)';
+            } else if (data.type === 'Event') {
+                typeColor = '#10b981'; typeBg = 'rgba(16,185,129,0.2)';
+            } else if (data.type === 'Announcement') {
+                typeColor = '#3b82f6'; typeBg = 'rgba(59,130,246,0.2)';
+            } else if (data.type === 'Article') {
+                typeColor = '#8b5cf6'; typeBg = 'rgba(139,92,246,0.2)';
+            }
+
+            const urgentBadge = data.isUrgent ? `<span style="background: rgba(239,68,68,0.2); color: #ef4444; padding: 0.2rem 0.5rem; border-radius: 5px; font-size: 0.7rem; margin-left: 10px; border: 1px solid #ef4444;">URGENT</span>` : '';
+            
             html += `
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); opacity: ${isExpired ? 0.6 : 1};">
-                    <td style="padding: 1rem;">${data.title}</td>
-                    <td style="padding: 1rem;">${data.type || 'Announcement'}</td>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); opacity: ${isExpired ? 0.6 : 1}; transition: background 0.2s;">
+                    <td style="padding: 1rem;">
+                        <strong>${data.title}</strong>
+                        ${urgentBadge}
+                    </td>
+                    <td style="padding: 1rem;">
+                        <span style="background: ${typeBg}; color: ${typeColor}; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; border: 1px solid ${typeColor};">${data.type || 'Announcement'}</span>
+                    </td>
                     <td style="padding: 1rem; color: ${statusColor};">${expiresStr} ${isExpired ? '(Expired)' : ''}</td>
                     <td style="padding: 1rem;">
-                        <button onclick="deleteMessage('${doc.id}')" style="background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 0.3rem 0.8rem; border-radius: 5px; cursor: pointer; transition: all 0.3s;">Delete</button>
+                        <button onclick="deleteMessage('${doc.id}')" class="btn-outline" style="border-color: #ef4444; color: #ef4444; padding: 0.3rem 0.8rem;">Delete</button>
                     </td>
                 </tr>
             `;

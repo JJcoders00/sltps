@@ -1,10 +1,10 @@
 /**
  * magic-effects.js (Ultimate Edition: Mobile + Desktop)
  * Adds tactile animations, touch ripple effects, haptic feedback, 
- * synthesized sounds, cursor trails, and a magical entry!
+ * synthesized musical sounds, cursor trails, and a magical entry!
  */
 
-// --- 1. Audio Synthesis ---
+// --- 1. Audio Synthesis (Musical Piano/Chimes) ---
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let audioCtx;
 let audioUnlocked = false;
@@ -32,21 +32,41 @@ document.addEventListener('touchstart', () => {
     }
 }, { once: true });
 
-function playBloop() {
+// Pentatonic scale frequencies (C Major Pentatonic) for a harmonious melody
+const pentatonicScale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
+let noteIndex = 0;
+let lastPlayTime = 0;
+
+function playPianoNote() {
     if (!audioUnlocked) return;
+    
+    const now = Date.now();
+    // Throttle: prevent sounds from overlapping too messily (max 1 sound per 100ms)
+    if (now - lastPlayTime < 100) return; 
+    lastPlayTime = now;
+
     try {
         initAudio();
+        const freq = pentatonicScale[noteIndex];
+        noteIndex = (noteIndex + 1) % pentatonicScale.length;
+
         const osc = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
+        
+        // Sine wave with a sharp decay sounds like an electric piano or chime
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
-        gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+        osc.frequency.value = freq;
+        
+        // Envelope: quick attack, slow exponential decay
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 0.02);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.0);
+        
         osc.connect(gainNode);
         gainNode.connect(audioCtx.destination);
+        
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.1);
+        osc.stop(audioCtx.currentTime + 1.2);
     } catch(e) {}
 }
 
@@ -54,7 +74,8 @@ function playTada() {
     if (!audioUnlocked) return;
     try {
         initAudio();
-        [440, 554.37, 659.25].forEach((freq, i) => {
+        // A celebratory C Major chord
+        [261.63, 329.63, 392.00, 523.25].forEach((freq, i) => {
             const osc = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
             osc.type = 'triangle';
@@ -70,10 +91,17 @@ function playTada() {
     } catch(e) {}
 }
 
-// --- 2. Haptic Feedback ---
+// --- 2. Haptic Feedback (Throttled for mobile) ---
+let lastHapticTime = 0;
 function hapticTap() {
-    if (navigator.vibrate) navigator.vibrate(15);
+    const now = Date.now();
+    // Prevent phones from vibrating aggressively multiple times in a row
+    if (now - lastHapticTime < 200) return;
+    lastHapticTime = now;
+    
+    if (navigator.vibrate) navigator.vibrate(10); // Very light, crisp tap
 }
+
 function hapticSuccess() {
     if (navigator.vibrate) navigator.vibrate([30, 50, 30, 50, 100]);
 }
@@ -140,7 +168,6 @@ function burstConfetti() {
 
 // --- 5. Magic Cursor Trail (Desktop) ---
 let lastTrailTime = 0;
-// Only add trail if it's not a touch device (coarse pointer)
 if (window.matchMedia("(pointer: fine)").matches) {
     document.addEventListener('mousemove', (e) => {
         const now = Date.now();
@@ -171,7 +198,6 @@ if (window.matchMedia("(pointer: fine)").matches) {
 
 // --- 6. Magical Entry Animation ---
 function triggerMagicalEntry() {
-    // A visual shower of stars falling from the top of the screen when entering
     const width = window.innerWidth;
     for(let i=0; i<25; i++) {
         setTimeout(() => {
@@ -192,13 +218,12 @@ function triggerMagicalEntry() {
                 star.style.opacity = '0';
             });
             setTimeout(() => star.remove(), 3000);
-        }, i * 50); // Stagger the falling stars
+        }, i * 50); 
     }
 }
 
 // --- 7. Attach Effects to Interactions ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Trigger magical entry!
     triggerMagicalEntry();
 
     const attachEffects = () => {
@@ -208,8 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!el.dataset.hasEffects) {
                 el.dataset.hasEffects = 'true';
                 
-                // Desktop Hover Sound
-                el.addEventListener('mouseenter', playBloop);
+                // Desktop Hover Sound (Musical Piano)
+                el.addEventListener('mouseenter', playPianoNote);
                 
                 // Mobile/Desktop Ripple & Haptic
                 if (window.getComputedStyle(el).position === 'static') {

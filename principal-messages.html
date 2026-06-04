@@ -45,24 +45,35 @@
             color: var(--primary-accent);
         }
         .message-type {
-            background: rgba(251, 224, 93, 0.2);
-            color: var(--secondary-accent);
             padding: 0.3rem 1rem;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            border: 1px solid var(--secondary-accent);
+            font-weight: 800;
+        }
+        .urgent-pulse {
+            animation: pulse-border 2s infinite;
+            border: 2px solid #ef4444 !important;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
         .message-meta {
             font-size: 0.85rem;
             color: var(--text-secondary);
             margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .message-content {
             font-size: 1.1rem;
             line-height: 1.8;
-            color: #fff;
+            color: #d1d5db;
             white-space: pre-wrap;
         }
         .no-messages {
@@ -167,17 +178,46 @@
                 return;
             }
 
+            // Sort: Urgent first, then chronological
+            const sortedMessages = [...messagesToRender].sort((a, b) => {
+                if (a.isUrgent && !b.isUrgent) return -1;
+                if (!a.isUrgent && b.isUrgent) return 1;
+                // Fallback to chronological (which they already are from Firestore)
+                return 0;
+            });
+
             let html = '';
-            messagesToRender.forEach(data => {
+            sortedMessages.forEach(data => {
                 const dateStr = data.createdAt ? data.createdAt.toDate().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A';
                 
+                // UX Design based on MAANG System Design Patterns
+                let typeColor = 'var(--secondary-accent)';
+                let typeBg = 'rgba(251, 224, 93, 0.1)';
+                let icon = '✉️';
+                
+                if (data.type === 'Rule') {
+                    typeColor = '#ef4444'; typeBg = 'rgba(239,68,68,0.1)'; icon = '🛡️';
+                } else if (data.type === 'Event') {
+                    typeColor = '#10b981'; typeBg = 'rgba(16,185,129,0.1)'; icon = '📅';
+                } else if (data.type === 'Announcement') {
+                    typeColor = '#3b82f6'; typeBg = 'rgba(59,130,246,0.1)'; icon = '📢';
+                } else if (data.type === 'Article') {
+                    typeColor = '#8b5cf6'; typeBg = 'rgba(139,92,246,0.1)'; icon = '📝';
+                }
+
+                const urgentClass = data.isUrgent ? 'urgent-pulse' : '';
+                const urgentTag = data.isUrgent ? `<span style="color: #ef4444; font-weight: bold;">🚨 URGENT • </span>` : '';
+                
                 html += `
-                <div class="message-card">
+                <div class="message-card ${urgentClass}" style="border-left: 4px solid ${typeColor}; background: linear-gradient(90deg, ${typeBg} 0%, rgba(255,255,255,0.02) 100%);">
                     <div class="message-header">
-                        <div class="message-title">${data.title}</div>
-                        <div class="message-type">${data.type || 'Announcement'}</div>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="font-size: 2rem; background: rgba(0,0,0,0.3); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">${icon}</div>
+                            <div class="message-title">${data.title}</div>
+                        </div>
+                        <div class="message-type" style="color: ${typeColor}; border: 1px solid ${typeColor};">${data.type || 'Message'}</div>
                     </div>
-                    <div class="message-meta">Published on ${dateStr}</div>
+                    <div class="message-meta">${urgentTag} Published on ${dateStr}</div>
                     <div class="message-content">${data.content}</div>
                 </div>
                 `;
