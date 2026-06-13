@@ -296,7 +296,7 @@
                 <h4 style="margin-top: 1rem;">Important Documents</h4>
                 <p><strong>Affiliation No:</strong> 830809 <br> <strong>School Code:</strong> 45765</p>
                 
-                <a href="#" class="btn-solid" style="margin-top: 1.5rem;">Download All Docs</a>
+                <a href="mandatory-disclosure.html" class="btn-solid" style="margin-top: 1.5rem;">View Mandatory Disclosure</a>
             </div>
 
             <!-- Right Side: Student pointing exactly at the CBSE box -->
@@ -312,15 +312,84 @@
         <div class="overlay dark"></div>
         <div class="content-layer">
             <h2 class="fade-up center-align">Campus Gallery</h2>
-            <div class="gallery-grid fade-up delay-1">
-                <div class="gallery-item"><img src="gallery-1.webp" alt="Gallery 1"></div>
-                <div class="gallery-item"><img src="gallery-2.webp" alt="Gallery 2"></div>
-                <div class="gallery-item"><img src="gallery-3.webp" alt="Gallery 3"></div>
-                <div class="gallery-item"><img src="gallery-4.webp" alt="Gallery 4"></div>
-                <div class="gallery-item"><img src="gallery-6.webp" alt="Gallery 5"></div>
+            
+            <div class="gallery-filters fade-up delay-1">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="campus">Campus</button>
+                <button class="filter-btn" data-filter="events">Events</button>
+            </div>
+
+            <div class="gallery-grid fade-up delay-2" id="gallery-container">
+                <!-- Campus -->
+                <div class="gallery-item campus" onclick="openLightbox('gallery-1.webp', 'Campus View')">
+                    <div class="gallery-bg" style="background-image: url('gallery-1.webp');"></div>
+                    <img src="gallery-1.webp" alt="Campus">
+                    <div class="gallery-overlay"><h4>Campus View</h4></div>
+                </div>
+                <div class="gallery-item campus" onclick="openLightbox('gallery-2.webp', 'School Building')">
+                    <div class="gallery-bg" style="background-image: url('gallery-2.webp');"></div>
+                    <img src="gallery-2.webp" alt="Campus">
+                    <div class="gallery-overlay"><h4>School Building</h4></div>
+                </div>
+                <div class="gallery-item campus" onclick="openLightbox('gallery-3.webp', 'Playground')">
+                    <div class="gallery-bg" style="background-image: url('gallery-3.webp');"></div>
+                    <img src="gallery-3.webp" alt="Campus">
+                    <div class="gallery-overlay"><h4>Playground</h4></div>
+                </div>
+                <div class="gallery-item campus" onclick="openLightbox('gallery-4.webp', 'Classroom')">
+                    <div class="gallery-bg" style="background-image: url('gallery-4.webp');"></div>
+                    <img src="gallery-4.webp" alt="Campus">
+                    <div class="gallery-overlay"><h4>Classroom</h4></div>
+                </div>
+                <div class="gallery-item campus" onclick="openLightbox('gallery-6.webp', 'Library')">
+                    <div class="gallery-bg" style="background-image: url('gallery-6.webp');"></div>
+                    <img src="gallery-6.webp" alt="Campus">
+                    <div class="gallery-overlay"><h4>Library</h4></div>
+                </div>
+
+                <!-- Events: Environment Day -->
+                <div class="gallery-item events" onclick="openLightbox('environment-day (1).jpeg', 'Environment Day')">
+                    <div class="gallery-bg" style="background-image: url('environment-day (1).jpeg');"></div>
+                    <img src="environment-day (1).jpeg" alt="Environment Day">
+                    <div class="gallery-overlay"><h4>Environment Day</h4></div>
+                </div>
+                <div class="gallery-item events" onclick="openLightbox('environment-day (2).jpeg', 'Environment Day')">
+                    <div class="gallery-bg" style="background-image: url('environment-day (2).jpeg');"></div>
+                    <img src="environment-day (2).jpeg" alt="Environment Day">
+                    <div class="gallery-overlay"><h4>Environment Day</h4></div>
+                </div>
+                <div class="gallery-item events" onclick="openLightbox('environment-day (3).jpeg', 'Environment Day')">
+                    <div class="gallery-bg" style="background-image: url('environment-day (3).jpeg');"></div>
+                    <img src="environment-day (3).jpeg" alt="Environment Day">
+                    <div class="gallery-overlay"><h4>Environment Day</h4></div>
+                </div>
+                <div class="gallery-item events" onclick="openLightbox('environment-day (4).jpeg', 'Environment Day')">
+                    <div class="gallery-bg" style="background-image: url('environment-day (4).jpeg');"></div>
+                    <img src="environment-day (4).jpeg" alt="Environment Day">
+                    <div class="gallery-overlay"><h4>Environment Day</h4></div>
+                </div>
+
+                <!-- Events: Quiz -->
+                <div class="gallery-item events" onclick="openLightbox('quiz1 (1).jpeg', 'Quiz Competition')">
+                    <div class="gallery-bg" style="background-image: url('quiz1 (1).jpeg');"></div>
+                    <img src="quiz1 (1).jpeg" alt="Quiz Competition">
+                    <div class="gallery-overlay"><h4>Quiz Competition</h4></div>
+                </div>
+                <div class="gallery-item events" onclick="openLightbox('quiz1 (2).jpeg', 'Quiz Competition')">
+                    <div class="gallery-bg" style="background-image: url('quiz1 (2).jpeg');"></div>
+                    <img src="quiz1 (2).jpeg" alt="Quiz Competition">
+                    <div class="gallery-overlay"><h4>Quiz Competition</h4></div>
+                </div>
             </div>
         </div>
     </section>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+        <div id="lightbox-caption"></div>
+    </div>
 
     <!-- Scene 10: Contact Form -->
     <section class="scene" id="contact">
@@ -428,8 +497,72 @@
         fadeElements.forEach(el => observer.observe(el));
     </script>
     
-    <!-- Magic Effects for Children WOW factor -->
+    <!-- App Scripts -->
+    <script src="script.js"></script>
     <script src="magic-effects.js"></script>
 
+    <!-- Gallery Scripts -->
+    <script>
+        // Gallery Filtering
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                btn.classList.add('active');
+                
+                const filterValue = btn.getAttribute('data-filter');
+                
+                galleryItems.forEach(item => {
+                    if (filterValue === 'all' || item.classList.contains(filterValue)) {
+                        item.style.display = 'flex';
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'scale(1)';
+                        }, 50);
+                    } else {
+                        item.style.opacity = '0';
+                        item.style.transform = 'scale(0.8)';
+                        setTimeout(() => {
+                            item.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // Lightbox Functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+
+        function openLightbox(src, caption) {
+            lightbox.style.display = 'flex';
+            setTimeout(() => {
+                lightbox.classList.add('active');
+            }, 10);
+            lightboxImg.src = src;
+            lightboxCaption.textContent = caption;
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            setTimeout(() => {
+                lightbox.style.display = 'none';
+            }, 300);
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        }
+
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+    </script>
 </body>
 </html>
