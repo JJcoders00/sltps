@@ -1199,15 +1199,16 @@
                 <div class="dashboard-header">
                     <div class="dashboard-title-group">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                            <span class="status-pill highlight">MASTER IDENTITY & SECURITY VAULT</span>
-                            <span style="font-size: 0.8rem; color: #34d399; font-weight: 700;">● Cloud Database Active</span>
+                            <span class="status-pill highlight" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">👑 SUPREME SYSTEM CONTROLLER</span>
+                            <span style="font-size: 0.8rem; color: #34d399; font-weight: 700;">● Absolute Authority Active</span>
                         </div>
-                        <h2>Computer Operator Command Suite</h2>
-                        <p class="dashboard-subtitle">Master Security Officer: <strong>Narendra Saka Sir</strong> (<span style="color: var(--portal-accent-gold); font-family: monospace;">saka@slte.in</span>)</p>
+                        <h2>Computer Operator Master Control Suite</h2>
+                        <p class="dashboard-subtitle">Master Controller: <strong>Narendra Saka Sir</strong> (<span style="color: var(--portal-accent-gold); font-family: monospace;">saka@slte.in</span>) | Full Database Read, Write & Override</p>
                     </div>
-                    <div class="dashboard-actions">
-                        <button class="btn-solid btn-sm" onclick="openChangePasswordModal('new', 'custom', 'New User', '')">➕ Assign Custom Password</button>
-                        <button class="btn-outline btn-sm" onclick="exportDatabaseSnapshot()">💾 Download Backup</button>
+                    <div class="dashboard-actions" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="btn-solid btn-success btn-sm" onclick="openCreateUserModal()">➕ Create New User / Account</button>
+                        <button class="btn-outline btn-sm" onclick="exportDatabaseSnapshot()">📥 Backup DB Snapshot</button>
+                        <button class="btn-outline btn-sm" onclick="loadOperatorDashboard()">🔄 Live Resync</button>
                         <button class="btn-outline btn-sm" onclick="logout()">Logout</button>
                     </div>
                 </div>
@@ -1215,46 +1216,51 @@
                 <!-- Live Metrics Strip -->
                 <div class="kpi-grid mb-3">
                     <div class="kpi-card">
-                        <div class="kpi-title">TOTAL REGISTERED ACCOUNTS</div>
+                        <div class="kpi-title">TOTAL REGISTERED IDENTITIES</div>
                         <div class="kpi-value" id="op-kpi-total">278</div>
-                        <div class="kpi-subtitle">Across All 10 Grades + Staff</div>
+                        <div class="kpi-subtitle">Admin, Teachers, 263 Students</div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-title">CLASS TEACHER ACCOUNTS</div>
+                        <div class="kpi-title">CLASS TEACHER SUITE</div>
                         <div class="kpi-value" id="op-kpi-teachers" style="color: #60a5fa;">13</div>
                         <div class="kpi-subtitle">Pre-KG, LKG, UKG, Class 1-10</div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-title">STUDENT & PARENT IDENTITIES</div>
+                        <div class="kpi-title">STUDENT ROSTER RECORDS</div>
                         <div class="kpi-value" id="op-kpi-students" style="color: #34d399;">263</div>
-                        <div class="kpi-subtitle">PEN-Linked Verified Records</div>
+                        <div class="kpi-subtitle">Full Cloud Profiles & Fees</div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-title">SECURITY LEVEL</div>
-                        <div class="kpi-value" style="color: var(--portal-accent-gold);">TIER-1</div>
-                        <div class="kpi-subtitle">Dynamic Firestore Encryption</div>
+                        <div class="kpi-title">AUTHORITY LEVEL</div>
+                        <div class="kpi-value" style="color: var(--portal-accent-gold);">SUPREME</div>
+                        <div class="kpi-subtitle">Root Cloud Override</div>
                     </div>
                 </div>
 
                 <!-- Operator Tabs -->
                 <div class="tab-nav">
-                    <button class="tab-btn active" onclick="switchOperatorTab('vault')">🔐 Master Password Vault</button>
-                    <button class="tab-btn" onclick="switchOperatorTab('audit')">🛡️ Security & Session Audit Logs</button>
-                    <button class="tab-btn" onclick="switchOperatorTab('backup')">💾 Database Snapshot & Utilities</button>
+                    <button class="tab-btn active" onclick="switchOperatorTab('vault')">🔐 Supreme User & Password Vault</button>
+                    <button class="tab-btn" onclick="switchOperatorTab('students')">🎓 Student & Parent Master (263)</button>
+                    <button class="tab-btn" onclick="switchOperatorTab('classes')">🏫 Class Teacher Assignments</button>
+                    <button class="tab-btn" onclick="switchOperatorTab('audit')">🛡️ Security Audit Logs</button>
+                    <button class="tab-btn" onclick="switchOperatorTab('backup')">💾 Cloud Backup & Recovery</button>
                 </div>
 
                 <!-- TAB 1: Master Password Vault -->
                 <div id="tab-op-vault" class="tab-content active">
                     <div class="widget">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 1.25rem;">
-                            <div class="widget-title" style="margin-bottom:0;">Live User Directory & Password Manager</div>
+                            <div>
+                                <div class="widget-title" style="margin-bottom:0;">Live User Directory & Supreme Credential Editor</div>
+                                <div class="text-secondary small">Edit any user's name, email, role, or password with immediate cloud sync</div>
+                            </div>
                             <div style="display:flex; gap:8px; flex-wrap:wrap;">
                                 <select id="operator-role-filter" class="portal-select" style="width: auto; padding: 0.4rem 1rem;" onchange="filterOperatorCredentials()">
-                                    <option value="all">All Roles (Admin, Principal, Teachers, Students)</option>
+                                    <option value="all">All Roles (Admin, Principal, Teachers, Staff)</option>
                                     <option value="admin_core">Administration & Principal</option>
                                     <option value="teachers">Class Teachers (Class 1 - 10)</option>
+                                    <option value="staff">Staff Officers</option>
                                     <option value="students">Students (263 Roster)</option>
-                                    <option value="parents">Parents (PEN Linked)</option>
                                 </select>
                                 <input type="text" id="operator-search-input" class="portal-input" style="max-width: 250px; padding: 0.4rem 1rem;" placeholder="Search Name, Email, PEN..." oninput="filterOperatorCredentials()">
                             </div>
@@ -1269,7 +1275,7 @@
                                         <th>Email / Registered PEN</th>
                                         <th>Active Password (Live)</th>
                                         <th>Last Updated</th>
-                                        <th>Actions</th>
+                                        <th>Supreme Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="operator-credentials-table">
@@ -1280,7 +1286,83 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: Security & Session Audit Logs -->
+                <!-- TAB 2: Student & Parent Master (263) -->
+                <div id="tab-op-students" class="tab-content" style="display:none;">
+                    <div class="widget">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 1.25rem;">
+                            <div>
+                                <div class="widget-title" style="margin-bottom:0;">Supreme Student & Parent Master Controller</div>
+                                <div class="text-secondary small">Direct editing of Name, PEN, Category, Annual Fees, and Parent details</div>
+                            </div>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <select id="op-student-class-filter" class="portal-select" style="width: auto; padding: 0.4rem 1rem;" onchange="filterOperatorStudents()">
+                                    <option value="all">All Classes (263 Students)</option>
+                                    <option value="Class 1">Class 1</option>
+                                    <option value="Class 2">Class 2</option>
+                                    <option value="Class 3">Class 3</option>
+                                    <option value="Class 4">Class 4</option>
+                                    <option value="Class 5">Class 5</option>
+                                    <option value="Class 6">Class 6</option>
+                                    <option value="Class 7">Class 7</option>
+                                    <option value="Class 8">Class 8</option>
+                                    <option value="Class 9">Class 9</option>
+                                    <option value="Class 10">Class 10</option>
+                                    <option value="Pre-KG">Pre-KG</option>
+                                    <option value="LKG">LKG</option>
+                                    <option value="UKG">UKG</option>
+                                </select>
+                                <input type="text" id="op-student-search-input" class="portal-input" style="max-width: 250px; padding: 0.4rem 1rem;" placeholder="Search Student Name, PEN, Roll..." oninput="filterOperatorStudents()">
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>PEN Number</th>
+                                        <th>Roll No</th>
+                                        <th>Student Full Name</th>
+                                        <th>Class</th>
+                                        <th>Category</th>
+                                        <th>Fee Status</th>
+                                        <th>Parent WhatsApp</th>
+                                        <th>Supreme Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="operator-students-tbody">
+                                    <tr><td colspan="8" style="text-align:center; padding: 2rem;">Loading student database...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: Class Teacher Assignments -->
+                <div id="tab-op-classes" class="tab-content" style="display:none;">
+                    <div class="widget">
+                        <div class="widget-title">Classroom Faculty & Roster Allocation</div>
+                        <div class="text-secondary small mb-3">Reassign class teachers, update faculty credentials, and oversee grade distribution</div>
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Classroom Grade</th>
+                                        <th>Section</th>
+                                        <th>Designated Class Teacher</th>
+                                        <th>Teacher Official Email</th>
+                                        <th>Enrolled Students</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="operator-classes-tbody">
+                                    <tr><td colspan="6" style="text-align:center; padding: 2rem;">Loading class assignments...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: Security & Session Audit Logs -->
                 <div id="tab-op-audit" class="tab-content" style="display:none;">
                     <div class="widget">
                         <div class="widget-title">Live Security & Identity Audit Trail</div>
@@ -1303,7 +1385,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 3: Database Snapshot & Utilities -->
+                <!-- TAB 5: Database Snapshot & Utilities -->
                 <div id="tab-op-backup" class="tab-content" style="display:none;">
                     <div class="grid-2">
                         <div class="widget">
@@ -2075,6 +2157,203 @@
         </div>
     </div>
 
+    <!-- Supreme Master Entity Edit Modal for Computer Operator (Narendra Saka Sir) -->
+    <div id="supreme-edit-user-modal" class="portal-modal-overlay">
+        <div class="modal-content-card" style="max-width: 650px;">
+            <button class="modal-close-btn" onclick="closeSupremeEditModal()">&times;</button>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem;">
+                <div style="font-size: 2rem;">⚡</div>
+                <div>
+                    <h3 style="margin: 0; color: var(--portal-accent-gold);">Supreme Authority Master Editor</h3>
+                    <div style="font-size: 0.85rem; color: var(--portal-text-muted);">Operator Narendra Saka Sir • Absolute Read, Write & Override</div>
+                </div>
+            </div>
+
+            <form id="supreme-edit-form" onsubmit="handleSaveSupremeEdit(event)">
+                <input type="hidden" id="sup-edit-id">
+                <input type="hidden" id="sup-edit-type">
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>User / Entity Name *</label>
+                        <input type="text" id="sup-edit-name" class="portal-input" required placeholder="Full Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>System Role / Privilege Level *</label>
+                        <select id="sup-edit-role" class="portal-select" required>
+                            <option value="operator">Super-Admin / Security Officer</option>
+                            <option value="admin">Executive Admin & Audit (A.N. Rathod Sir)</option>
+                            <option value="principal">Academic Principal</option>
+                            <option value="teacher">Class Teacher</option>
+                            <option value="staff">Staff / Fee Counter Officer</option>
+                            <option value="student">Enrolled Student</option>
+                            <option value="parent">Parent</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address or Login Username *</label>
+                        <input type="text" id="sup-edit-email" class="portal-input" required placeholder="user@slte.in">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Assigned Class / Grade</label>
+                        <select id="sup-edit-class" class="portal-select">
+                            <option value="">None / General</option>
+                            <option value="Pre-KG">Pre-KG</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10">Class 10</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Student PEN Number / Roll Number</label>
+                        <input type="text" id="sup-edit-pen" class="portal-input" placeholder="e.g. 23455307929 / SLT-2026-001">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contact Phone / WhatsApp</label>
+                        <input type="tel" id="sup-edit-phone" class="portal-input" placeholder="9888877777">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label style="color: var(--portal-accent-gold);">Assigned Cloud Password *</label>
+                        <div style="position: relative;">
+                            <input type="text" id="sup-edit-password" class="portal-input" required placeholder="Enter active password" style="font-weight: 700; letter-spacing: 0.5px; font-family: monospace; color: #34d399;">
+                        </div>
+                        <div class="text-secondary small mt-1">This password will immediately overwrite live Firestore and enable instant portal login.</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+                    <button type="button" class="btn-outline btn-sm" style="color: #ef4444; border-color: rgba(239,68,68,0.4);" onclick="handleDeleteSupremeEntity()">🗑️ Delete Account</button>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn-outline btn-sm" onclick="closeSupremeEditModal()">Cancel</button>
+                        <button type="submit" class="btn-solid btn-success btn-sm" id="btn-save-sup-edit">⚡ Save Supreme Changes in Cloud</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create New System Entity Modal for Operator -->
+    <div id="create-user-modal" class="portal-modal-overlay">
+        <div class="modal-content-card" style="max-width: 600px;">
+            <button class="modal-close-btn" onclick="closeCreateUserModal()">&times;</button>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem;">
+                <div style="font-size: 2rem;">➕</div>
+                <div>
+                    <h3 style="margin: 0; color: var(--portal-accent-blue);">Create New System Account</h3>
+                    <div style="font-size: 0.85rem; color: var(--portal-text-muted);">Add new administrative, teacher, or staff identity to Cloud</div>
+                </div>
+            </div>
+
+            <form id="create-user-form" onsubmit="handleCreateNewUser(event)">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Officer / User Full Name *</label>
+                        <input type="text" id="create-user-name" class="portal-input" required placeholder="e.g. Mr. Rajesh Sharma">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Role / Authority Level *</label>
+                        <select id="create-user-role" class="portal-select" required>
+                            <option value="teacher">Class Teacher</option>
+                            <option value="admin">Executive Administrator</option>
+                            <option value="principal">Academic Principal</option>
+                            <option value="staff">School Operations / Staff</option>
+                            <option value="operator">Computer Operator</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address / Username *</label>
+                        <input type="text" id="create-user-email" class="portal-input" required placeholder="e.g. teacher.c11@slte.in">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Assigned Class (For Teachers)</label>
+                        <select id="create-user-class" class="portal-select">
+                            <option value="">None</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10">Class 10</option>
+                            <option value="Pre-KG">Pre-KG</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Initial Password *</label>
+                        <input type="text" id="create-user-password" class="portal-input" required placeholder="Enter password (e.g. sltps@2026)" style="font-weight: 700; font-family: monospace;">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 1.5rem;">
+                    <button type="button" class="btn-outline btn-sm" onclick="closeCreateUserModal()">Cancel</button>
+                    <button type="submit" class="btn-solid btn-success btn-sm" id="btn-create-user-submit">💾 Create & Deploy Account to Cloud</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reassign Classroom Faculty Modal -->
+    <div id="reassign-class-modal" class="portal-modal-overlay">
+        <div class="modal-content-card" style="max-width: 500px;">
+            <button class="modal-close-btn" onclick="closeReassignClassModal()">&times;</button>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem;">
+                <div style="font-size: 2rem;">🏫</div>
+                <div>
+                    <h3 style="margin: 0; color: var(--portal-accent-gold);">Reassign Class Teacher</h3>
+                    <div style="font-size: 0.85rem; color: var(--portal-text-muted);" id="reassign-modal-grade-title">Class 1 - Section A</div>
+                </div>
+            </div>
+
+            <form id="reassign-class-form" onsubmit="handleSaveClassReassignment(event)">
+                <input type="hidden" id="reassign-modal-classid">
+
+                <div class="form-group mb-3">
+                    <label>New Assigned Class Teacher Name *</label>
+                    <input type="text" id="reassign-modal-teacher-name" class="portal-input" required placeholder="e.g. Mr. Anand Kumar">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Teacher Official Email / Login ID *</label>
+                    <input type="text" id="reassign-modal-teacher-email" class="portal-input" required placeholder="e.g. teacher.c1@slte.in">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Teacher Workspace Password *</label>
+                    <input type="text" id="reassign-modal-teacher-pass" class="portal-input" required placeholder="e.g. class1@2026" style="font-weight:700; font-family: monospace;">
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 1.5rem;">
+                    <button type="button" class="btn-outline btn-sm" onclick="closeReassignClassModal()">Cancel</button>
+                    <button type="submit" class="btn-solid btn-success btn-sm" id="btn-save-reassign">💾 Save Class Assignment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Switch / Link Child Modal for Parents -->
     <div id="link-child-modal" class="portal-modal-overlay">
         <div class="modal-content-card" style="max-width: 500px;">
@@ -2114,7 +2393,7 @@
     </div>
 
     <!-- Scripts -->
-    <script type="module" src="../portal-v2.js?v=13"></script>
+    <script type="module" src="../portal-v2.js?v=14"></script>
     <script>
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {

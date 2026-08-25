@@ -105,12 +105,23 @@ window.handleSaveStudentEdit = handleSaveStudentEdit;
 window.closeReceiptModal = closeReceiptModal;
 window.seedClassesAndRostersToFirestore = seedClassesAndRostersToFirestore;
 
-// Computer Operator Handlers (Saka Sir)
+// Computer Operator Handlers (Saka Sir - Supreme Authority)
 window.switchOperatorTab = switchOperatorTab;
 window.filterOperatorCredentials = filterOperatorCredentials;
+window.filterOperatorStudents = filterOperatorStudents;
 window.openChangePasswordModal = openChangePasswordModal;
 window.closeChangePasswordModal = closeChangePasswordModal;
 window.handleSavePasswordChange = handleSavePasswordChange;
+window.openSupremeEditModal = openSupremeEditModal;
+window.closeSupremeEditModal = closeSupremeEditModal;
+window.handleSaveSupremeEdit = handleSaveSupremeEdit;
+window.handleDeleteSupremeEntity = handleDeleteSupremeEntity;
+window.openCreateUserModal = openCreateUserModal;
+window.closeCreateUserModal = closeCreateUserModal;
+window.handleCreateNewUser = handleCreateNewUser;
+window.openReassignClassModal = openReassignClassModal;
+window.closeReassignClassModal = closeReassignClassModal;
+window.handleSaveClassReassignment = handleSaveClassReassignment;
 window.exportDatabaseSnapshot = exportDatabaseSnapshot;
 window.resetAllDefaultCredentials = resetAllDefaultCredentials;
 
@@ -2649,30 +2660,42 @@ async function seedClassesAndRostersToFirestore() {
 
 // ==========================================
 // COMPUTER OPERATOR COMMAND SUITE (SAKA SIR)
+// PORTAL 7: COMPUTER OPERATOR MASTER SUITE (SUPREME AUTHORITY)
 // ==========================================
 
-let operatorFilteredList = [];
-
 function switchOperatorTab(tab) {
+    const tabs = ['vault', 'students', 'classes', 'audit', 'backup'];
+    tabs.forEach(t => {
+        const el = document.getElementById(`tab-op-${t}`);
+        if (el) el.style.display = 'none';
+    });
+
     document.querySelectorAll('#view-operator-dash .tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('#view-operator-dash .tab-content').forEach(c => c.style.display = 'none');
 
     const activeBtn = Array.from(document.querySelectorAll('#view-operator-dash .tab-btn')).find(b => b.getAttribute('onclick')?.includes(tab));
     if (activeBtn) activeBtn.classList.add('active');
 
     const target = document.getElementById(`tab-op-${tab}`);
     if (target) target.style.display = 'block';
+
+    if (tab === 'students') {
+        loadOperatorStudents();
+    } else if (tab === 'classes') {
+        loadOperatorClasses();
+    } else if (tab === 'audit') {
+        loadOperatorAuditLogs();
+    }
 }
 
 async function loadOperatorDashboard() {
     const tbody = document.getElementById('operator-credentials-table');
-    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">Loading master credentials vault from Firestore...</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">Loading supreme credentials vault from Firestore...</td></tr>';
 
     try {
         const credentials = await getSystemCredentialsMaster();
         const students = await getAllStudentsMaster();
 
-        // Update KPIs
+        // Update Supreme Metrics
         const totalAccounts = credentials.length + students.length;
         const kpiTot = document.getElementById('op-kpi-total');
         if (kpiTot) kpiTot.innerText = totalAccounts.toString();
@@ -2682,6 +2705,8 @@ async function loadOperatorDashboard() {
         if (kpiStu) kpiStu.innerText = students.length.toString();
 
         renderOperatorCredentials(credentials);
+        loadOperatorStudents();
+        loadOperatorClasses();
         loadOperatorAuditLogs();
     } catch (e) {
         console.error("Error loading operator vault:", e);
@@ -2700,7 +2725,7 @@ function renderOperatorCredentials(list) {
     let html = '';
     list.forEach(item => {
         const rolePillClass = item.role === 'operator' ? 'highlight' : item.role === 'admin' ? 'enrolled' : item.role === 'teacher' ? 'submitted' : 'status-pill';
-        const maskedPass = item.password || '••••••••';
+        const displayPass = item.password || '••••••••';
         const isOperator = item.role === 'operator';
 
         html += `
@@ -2708,14 +2733,15 @@ function renderOperatorCredentials(list) {
                 <td><strong>${item.name || 'User'}</strong></td>
                 <td><span class="status-pill ${rolePillClass}" style="font-size:0.75rem;">${item.level || item.role.toUpperCase()}</span></td>
                 <td style="font-family: monospace; color: var(--portal-accent-gold); font-weight: 600;">${item.email || item.pen || item.id}</td>
-                <td style="font-family: monospace; letter-spacing: 1px; color: #34d399;">
-                    <span id="pass-display-${item.id}">${maskedPass}</span>
+                <td style="font-family: monospace; font-weight:700; color: #34d399;">
+                    <span id="pass-display-${item.id}">${displayPass}</span>
                 </td>
                 <td style="font-size: 0.8rem; color: var(--portal-text-muted);">${item.updatedAt || 'Recent'}</td>
                 <td>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn-solid btn-sm" onclick="openChangePasswordModal('${item.id}', '${item.role}', '${item.name}', '${item.password || ''}')" style="font-size:0.75rem; padding:0.25rem 0.6rem;">✏️ Change Password</button>
-                        ${!isOperator ? `<button class="btn-outline btn-sm" onclick="resetUserToDefaultPassword('${item.id}')" style="font-size:0.75rem; padding:0.25rem 0.5rem;" title="Reset to Default">🔄</button>` : ''}
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <button class="btn-solid btn-sm" onclick="openSupremeEditModal('${item.id}', 'credential')" style="font-size:0.75rem; padding:0.25rem 0.6rem; background: linear-gradient(135deg, #f59e0b, #d97706);" title="Supreme Edit Everything">⚡ Edit</button>
+                        <button class="btn-outline btn-sm" onclick="openChangePasswordModal('${item.id}', '${item.role}', '${item.name}', '${item.password || ''}')" style="font-size:0.75rem; padding:0.25rem 0.6rem;">🔑 Pass</button>
+                        ${!isOperator ? `<button class="btn-outline btn-sm" onclick="handleDeleteSupremeEntity('${item.id}', 'credential')" style="font-size:0.75rem; padding:0.25rem 0.5rem; color:#ef4444; border-color:rgba(239,68,68,0.3);" title="Delete Account">🗑️</button>` : ''}
                     </div>
                 </td>
             </tr>
@@ -2734,22 +2760,24 @@ async function filterOperatorCredentials() {
 
     let combined = [...allCreds];
 
-    if (roleFilter === 'students' || roleFilter === 'parents') {
+    if (roleFilter === 'students') {
         const studentCreds = students.map(s => ({
             id: s.rollNumber || s.id,
             name: s.name,
-            role: roleFilter === 'students' ? 'student' : 'parent',
-            level: roleFilter === 'students' ? `Student (${s.className})` : `Parent of ${s.name}`,
+            role: 'student',
+            level: `Student (${s.className || 'Class 1'})`,
             email: s.pen || s.rollNumber,
             pen: s.pen,
-            password: s.customPassword || (roleFilter === 'students' ? 'student123' : 'parent123'),
+            password: s.customPassword || 'student123',
             updatedAt: s.updatedAt ? new Date(s.updatedAt).toLocaleDateString('en-IN') : 'Default'
         }));
         combined = studentCreds;
     } else if (roleFilter === 'admin_core') {
-        combined = combined.filter(c => c.role === 'admin' || c.role === 'principal' || c.role === 'operator' || c.role === 'staff');
+        combined = combined.filter(c => c.role === 'admin' || c.role === 'principal' || c.role === 'operator');
     } else if (roleFilter === 'teachers') {
         combined = combined.filter(c => c.role === 'teacher');
+    } else if (roleFilter === 'staff') {
+        combined = combined.filter(c => c.role === 'staff' || c.role === 'school');
     }
 
     if (queryStr) {
@@ -2757,131 +2785,401 @@ async function filterOperatorCredentials() {
             (c.name && c.name.toLowerCase().includes(queryStr)) ||
             (c.email && c.email.toLowerCase().includes(queryStr)) ||
             (c.id && c.id.toLowerCase().includes(queryStr)) ||
-            (c.pen && c.pen.toLowerCase().includes(queryStr))
+            (c.pen && c.pen.toString().toLowerCase().includes(queryStr))
         );
     }
 
     renderOperatorCredentials(combined);
 }
 
-function openChangePasswordModal(userId, role, name, currentPass) {
-    document.getElementById('pass-modal-userid').value = userId;
-    document.getElementById('pass-modal-role').value = role;
-    document.getElementById('pass-modal-name').value = name || 'User';
-    document.getElementById('pass-modal-email').value = userId;
-    document.getElementById('pass-modal-newpass').value = currentPass || '';
-    document.getElementById('modal-pass-user-desc').innerText = `Target: ${name} (${role.toUpperCase()})`;
+// Supreme Tab 2: Student & Parent Master Controller
+async function loadOperatorStudents() {
+    const tbody = document.getElementById('operator-students-tbody');
+    if (!tbody) return;
 
-    document.getElementById('change-password-modal').classList.add('active');
+    try {
+        const students = await getAllStudentsMaster();
+        filterOperatorStudents();
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: #ef4444;">Failed to load students.</td></tr>';
+    }
 }
 
-function closeChangePasswordModal() {
-    document.getElementById('change-password-modal').classList.remove('active');
+async function filterOperatorStudents() {
+    const tbody = document.getElementById('operator-students-tbody');
+    if (!tbody) return;
+
+    const classFilter = document.getElementById('op-student-class-filter')?.value || 'all';
+    const queryStr = document.getElementById('op-student-search-input')?.value.trim().toLowerCase() || '';
+
+    let students = await getAllStudentsMaster();
+
+    if (classFilter !== 'all') {
+        students = students.filter(s => (s.className === classFilter || s.grade === classFilter));
+    }
+
+    if (queryStr) {
+        students = students.filter(s => 
+            (s.name && s.name.toLowerCase().includes(queryStr)) ||
+            (s.pen && s.pen.toString().toLowerCase().includes(queryStr)) ||
+            (s.rollNumber && s.rollNumber.toLowerCase().includes(queryStr)) ||
+            (s.parentPhone && s.parentPhone.includes(queryStr))
+        );
+    }
+
+    if (students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: var(--portal-text-muted);">No student records found.</td></tr>';
+        return;
+    }
+
+    let html = '';
+    students.forEach(stu => {
+        const feePending = stu.feePending !== undefined ? stu.feePending : (stu.feeTotal || 25000);
+        const feeBadge = feePending <= 0 
+            ? `<span class="status-pill paid" style="font-size:0.75rem;">Fully Paid</span>` 
+            : `<span class="status-pill pending" style="font-size:0.75rem;">Due ₹${feePending.toLocaleString('en-IN')}</span>`;
+
+        html += `
+            <tr>
+                <td style="font-family:monospace; font-weight:700; color:var(--portal-accent-gold);">${stu.pen || stu.rollNumber || 'N/A'}</td>
+                <td style="font-size:0.85rem; color:var(--portal-text-muted);">${stu.rollNumber || stu.id}</td>
+                <td><strong>${stu.name}</strong></td>
+                <td>${stu.className || stu.grade || 'Class 1'} - ${stu.section || 'A'}</td>
+                <td><span class="profile-pill" style="font-size:0.75rem;">${stu.socialCategory || 'General'}</span></td>
+                <td>${feeBadge}</td>
+                <td>${stu.parentPhone || '--'}</td>
+                <td>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-solid btn-sm" onclick="openEditStudentModal('${stu.rollNumber || stu.id}')" style="font-size:0.75rem; padding:0.25rem 0.6rem;">⚡ Edit All</button>
+                        <button class="btn-outline btn-sm" onclick="handleDeleteSupremeEntity('${stu.rollNumber || stu.id}', 'student')" style="font-size:0.75rem; padding:0.25rem 0.5rem; color:#ef4444; border-color:rgba(239,68,68,0.3);">🗑️</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
 }
 
-async function handleSavePasswordChange(e) {
+// Supreme Tab 3: Class Teacher & Academic Assignments
+async function loadOperatorClasses() {
+    const tbody = document.getElementById('operator-classes-tbody');
+    if (!tbody) return;
+
+    try {
+        const students = await getAllStudentsMaster();
+        const credentials = await getSystemCredentialsMaster();
+
+        let html = '';
+        STANDARD_CLASSES.forEach(cls => {
+            const count = students.filter(s => (s.className === cls.className || s.grade === cls.className)).length;
+            const teacherCred = credentials.find(c => c.role === 'teacher' && (c.classId === cls.className || c.classId === cls.id));
+            const teacherName = teacherCred ? teacherCred.name : cls.teacherName;
+            const teacherEmail = teacherCred ? teacherCred.email : `teacher.${cls.className.toLowerCase().replace(/class\s*/, 'c').replace(/ /g, '')}@slte.in`;
+
+            html += `
+                <tr>
+                    <td><strong>${cls.className}</strong></td>
+                    <td>Section ${cls.section || 'A'}</td>
+                    <td style="color:var(--portal-accent-gold); font-weight:700;">${teacherName}</td>
+                    <td style="font-family:monospace; font-size:0.85rem;">${teacherEmail}</td>
+                    <td><strong>${count} Students</strong></td>
+                    <td>
+                        <button class="btn-outline btn-sm" onclick="openReassignClassModal('${cls.className}')" style="font-size:0.75rem; padding:0.25rem 0.6rem;">🔄 Reassign Teacher</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML = html;
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem; color: #ef4444;">Failed to load classes.</td></tr>';
+    }
+}
+
+// ==========================================
+// SUPREME MASTER EDIT MODAL HANDLERS
+// ==========================================
+
+async function openSupremeEditModal(id, type) {
+    const credentials = await getSystemCredentialsMaster();
+    const students = await getAllStudentsMaster();
+
+    let target = null;
+    if (type === 'student') {
+        target = students.find(s => (s.rollNumber === id || s.id === id || s.pen === id));
+    } else {
+        target = credentials.find(c => (c.id === id || c.email === id));
+    }
+
+    if (!target && type === 'credential') {
+        target = DEFAULT_SYSTEM_CREDENTIALS.find(c => (c.id === id || c.email === id));
+    }
+
+    if (!target) {
+        alert("Target record not found in system.");
+        return;
+    }
+
+    document.getElementById('sup-edit-id').value = id;
+    document.getElementById('sup-edit-type').value = type;
+    document.getElementById('sup-edit-name').value = target.name || '';
+    document.getElementById('sup-edit-role').value = target.role || 'teacher';
+    document.getElementById('sup-edit-email').value = target.email || target.pen || id;
+    document.getElementById('sup-edit-class').value = target.classId || target.className || '';
+    document.getElementById('sup-edit-pen').value = target.pen || target.rollNumber || '';
+    document.getElementById('sup-edit-phone').value = target.parentPhone || target.phone || '';
+    document.getElementById('sup-edit-password').value = target.password || target.customPassword || 'sltps@2026';
+
+    document.getElementById('supreme-edit-user-modal').classList.add('active');
+}
+
+function closeSupremeEditModal() {
+    document.getElementById('supreme-edit-user-modal').classList.remove('active');
+}
+
+async function handleSaveSupremeEdit(e) {
     e.preventDefault();
-    const userId = document.getElementById('pass-modal-userid').value;
-    const newPass = document.getElementById('pass-modal-newpass').value.trim();
-    const role = document.getElementById('pass-modal-role').value;
-    const name = document.getElementById('pass-modal-name').value;
-    const btn = document.getElementById('btn-save-pass-modal');
+    const id = document.getElementById('sup-edit-id').value;
+    const type = document.getElementById('sup-edit-type').value;
+    const name = document.getElementById('sup-edit-name').value.trim();
+    const role = document.getElementById('sup-edit-role').value;
+    const email = document.getElementById('sup-edit-email').value.trim();
+    const classId = document.getElementById('sup-edit-class').value;
+    const pen = document.getElementById('sup-edit-pen').value.trim();
+    const phone = document.getElementById('sup-edit-phone').value.trim();
+    const password = document.getElementById('sup-edit-password').value.trim();
+    const btn = document.getElementById('btn-save-sup-edit');
 
-    if (!userId || !newPass) {
-        alert("Please enter a valid new password.");
+    try {
+        btn.disabled = true;
+        btn.innerText = "⚡ Committing Supreme Override...";
+
+        const docKey = id.toLowerCase().replace(/ /g, '_');
+        const updateData = {
+            id: id,
+            name: name,
+            role: role,
+            email: email,
+            classId: classId,
+            pen: pen,
+            phone: phone,
+            password: password,
+            updatedAt: new Date().toLocaleDateString('en-IN'),
+            modifiedBy: "Narendra Saka Sir (Supreme Operator)"
+        };
+
+        // Write directly to Firestore `system_credentials`
+        await setDoc(doc(db, "system_credentials", docKey), updateData, { merge: true });
+
+        // If editing a student, update `students` collection as well
+        if (type === 'student' || role === 'student') {
+            await setDoc(doc(db, "students", docKey), {
+                name: name,
+                className: classId,
+                pen: pen,
+                parentPhone: phone,
+                customPassword: password,
+                updatedAt: new Date().toISOString()
+            }, { merge: true });
+        }
+
+        // Record supreme event in security audit log
+        await addDoc(collection(db, "security_audit_logs"), {
+            event: "[SUPREME OVERRIDE] Account Modified",
+            targetUser: id,
+            targetName: name,
+            targetRole: role,
+            newEmail: email,
+            modifiedBy: "Narendra Saka Sir",
+            timestamp: new Date()
+        });
+
+        // Invalidate caches
+        systemCredentialsCache = null;
+        allStudentsList = null;
+
+        closeSupremeEditModal();
+        await loadOperatorDashboard();
+
+        if (window.burstConfetti) window.burstConfetti();
+        alert(`[SUPREME SUCCESS] Record for ${name} (${id}) updated in Cloud!\nActive Password: ${password}`);
+
+    } catch (err) {
+        console.error("Supreme edit error:", err);
+        alert("Failed to save supreme changes: " + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "⚡ Save Supreme Changes in Cloud";
+    }
+}
+
+async function handleDeleteSupremeEntity(targetId, targetType) {
+    const target = targetId || document.getElementById('sup-edit-id')?.value;
+    const type = targetType || document.getElementById('sup-edit-type')?.value || 'credential';
+
+    if (!target) return;
+
+    if (!confirm(`⚠️ SUPREME AUTHORITY CONFIRMATION:\nAre you sure you want to permanently delete "${target}" from the SLT Cloud Database?`)) {
         return;
     }
 
     try {
-        btn.disabled = true;
-        btn.innerText = "Encrypting & Saving...";
+        const docKey = target.toLowerCase().replace(/ /g, '_');
+        if (type === 'student') {
+            await deleteDoc(doc(db, "students", docKey));
+        } else {
+            await deleteDoc(doc(db, "system_credentials", docKey));
+        }
 
-        const updateData = {
-            id: userId,
-            email: userId,
+        await addDoc(collection(db, "security_audit_logs"), {
+            event: "[SUPREME ACTION] Record Deleted",
+            targetUser: target,
+            modifiedBy: "Narendra Saka Sir",
+            timestamp: new Date()
+        });
+
+        // Invalidate caches
+        systemCredentialsCache = null;
+        allStudentsList = null;
+
+        closeSupremeEditModal();
+        await loadOperatorDashboard();
+        alert(`Record "${target}" has been deleted from the database.`);
+    } catch (e) {
+        alert("Delete failed: " + e.message);
+    }
+}
+
+// Create New User Handlers
+function openCreateUserModal() {
+    document.getElementById('create-user-form')?.reset();
+    document.getElementById('create-user-modal').classList.add('active');
+}
+
+function closeCreateUserModal() {
+    document.getElementById('create-user-modal').classList.remove('active');
+}
+
+async function handleCreateNewUser(e) {
+    e.preventDefault();
+    const name = document.getElementById('create-user-name').value.trim();
+    const role = document.getElementById('create-user-role').value;
+    const email = document.getElementById('create-user-email').value.trim();
+    const classId = document.getElementById('create-user-class').value;
+    const password = document.getElementById('create-user-password').value.trim();
+    const btn = document.getElementById('btn-create-user-submit');
+
+    try {
+        btn.disabled = true;
+        btn.innerText = "Deploying Account...";
+
+        const docKey = email.toLowerCase().replace(/[^a-z0-9_]/g, '_');
+        const newRecord = {
+            id: email,
             name: name,
             role: role,
-            password: newPass,
+            email: email,
+            classId: classId || '',
+            password: password,
+            createdAt: new Date().toISOString(),
             updatedAt: new Date().toLocaleDateString('en-IN'),
-            modifiedBy: "Narendra Saka Sir (Operator)"
+            modifiedBy: "Narendra Saka Sir (Supreme Operator)"
         };
 
-        // Write directly to Firestore `system_credentials`
-        await setDoc(doc(db, "system_credentials", userId.toLowerCase()), updateData, { merge: true });
+        await setDoc(doc(db, "system_credentials", docKey), newRecord);
 
-        // Record in security audit log
         await addDoc(collection(db, "security_audit_logs"), {
-            event: "Password Modified",
-            targetUser: userId,
+            event: "[SUPREME ACTION] New Account Created",
+            targetUser: email,
             targetName: name,
             targetRole: role,
             modifiedBy: "Narendra Saka Sir",
             timestamp: new Date()
         });
 
-        closeChangePasswordModal();
+        systemCredentialsCache = null;
+        closeCreateUserModal();
         await loadOperatorDashboard();
 
         if (window.burstConfetti) window.burstConfetti();
-        alert(`Password for ${name} (${userId}) successfully updated in Cloud!\nNew Password: ${newPass}`);
+        alert(`Account created for ${name} (${email})!\nPassword: ${password}`);
+
     } catch (err) {
-        console.error("Password update error:", err);
-        alert("Failed to update password: " + err.message);
+        alert("Failed to create account: " + err.message);
     } finally {
         btn.disabled = false;
-        btn.innerText = "💾 Update Password in Cloud";
+        btn.innerText = "💾 Create & Deploy Account to Cloud";
     }
 }
 
-async function resetUserToDefaultPassword(userId) {
-    const def = DEFAULT_SYSTEM_CREDENTIALS.find(d => d.id.toLowerCase() === userId.toLowerCase());
-    const defaultPass = def ? def.password : 'sltps@2026';
+// Reassign Class Teacher Modal Handlers
+function openReassignClassModal(className) {
+    document.getElementById('reassign-modal-classid').value = className;
+    document.getElementById('reassign-modal-grade-title').innerText = `${className} - Section A`;
 
-    if (!confirm(`Reset password for "${userId}" back to default (${defaultPass})?`)) return;
+    const cls = STANDARD_CLASSES.find(c => c.className === className);
+    document.getElementById('reassign-modal-teacher-name').value = cls ? cls.teacherName : '';
+    document.getElementById('reassign-modal-teacher-email').value = `teacher.${className.toLowerCase().replace(/class\s*/, 'c').replace(/ /g, '')}@slte.in`;
+    document.getElementById('reassign-modal-teacher-pass').value = `${className.toLowerCase().replace(/ /g, '')}@2026`;
+
+    document.getElementById('reassign-class-modal').classList.add('active');
+}
+
+function closeReassignClassModal() {
+    document.getElementById('reassign-class-modal').classList.remove('active');
+}
+
+async function handleSaveClassReassignment(e) {
+    e.preventDefault();
+    const className = document.getElementById('reassign-modal-classid').value;
+    const teacherName = document.getElementById('reassign-modal-teacher-name').value.trim();
+    const teacherEmail = document.getElementById('reassign-modal-teacher-email').value.trim();
+    const password = document.getElementById('reassign-modal-teacher-pass').value.trim();
+    const btn = document.getElementById('btn-save-reassign');
 
     try {
-        await setDoc(doc(db, "system_credentials", userId.toLowerCase()), {
-            password: defaultPass,
-            updatedAt: new Date().toLocaleDateString('en-IN')
+        btn.disabled = true;
+        btn.innerText = "Reassigning Faculty...";
+
+        const docKey = teacherEmail.toLowerCase().replace(/[^a-z0-9_]/g, '_');
+        await setDoc(doc(db, "system_credentials", docKey), {
+            id: teacherEmail,
+            name: teacherName,
+            role: 'teacher',
+            classId: className,
+            email: teacherEmail,
+            password: password,
+            updatedAt: new Date().toLocaleDateString('en-IN'),
+            modifiedBy: "Narendra Saka Sir (Supreme Operator)"
         }, { merge: true });
 
-        await loadOperatorDashboard();
-        alert(`Password for ${userId} reset to default: ${defaultPass}`);
-    } catch (e) {
-        alert("Error resetting password: " + e.message);
-    }
-}
+        // Update local class reference
+        const clsIndex = STANDARD_CLASSES.findIndex(c => c.className === className);
+        if (clsIndex !== -1) {
+            STANDARD_CLASSES[clsIndex].teacherName = teacherName;
+        }
 
-async function loadOperatorAuditLogs() {
-    const tbody = document.getElementById('operator-audit-table');
-    if (!tbody) return;
-
-    try {
-        const q = query(collection(db, "security_audit_logs"), orderBy("timestamp", "desc"));
-        const snap = await getDocs(q);
-
-        let html = '';
-        snap.forEach(d => {
-            const data = d.data();
-            const timeStr = data.timestamp ? (data.timestamp.toDate ? data.timestamp.toDate().toLocaleString('en-IN') : 'Recent') : 'Recent';
-            html += `
-                <tr>
-                    <td style="font-size:0.8rem; color:var(--portal-text-muted);">${timeStr}</td>
-                    <td><strong>${data.event || 'System Event'}</strong></td>
-                    <td style="color:var(--portal-accent-gold); font-family:monospace;">${data.targetName || data.targetUser || '--'}</td>
-                    <td>${data.modifiedBy || 'Operator'}</td>
-                    <td><span class="status-pill paid" style="font-size:0.75rem;">Verified</span></td>
-                </tr>
-            `;
+        await addDoc(collection(db, "security_audit_logs"), {
+            event: `[SUPREME ACTION] Faculty Reassigned: ${className}`,
+            targetUser: teacherEmail,
+            targetName: teacherName,
+            modifiedBy: "Narendra Saka Sir",
+            timestamp: new Date()
         });
 
-        if (html) {
-            tbody.innerHTML = html;
-        } else {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem; color: var(--portal-text-muted);">No security events logged yet.</td></tr>';
-        }
-    } catch (e) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem; color: var(--portal-text-muted);">Audit log offline.</td></tr>';
+        systemCredentialsCache = null;
+        closeReassignClassModal();
+        await loadOperatorDashboard();
+
+        if (window.burstConfetti) window.burstConfetti();
+        alert(`Class ${className} reassigned to ${teacherName} (${teacherEmail})!\nPassword: ${password}`);
+
+    } catch (err) {
+        alert("Failed to reassign class: " + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "💾 Save Class Assignment";
     }
 }
 
