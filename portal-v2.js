@@ -528,17 +528,17 @@ async function fetchTodayLiveAttendance(student) {
         console.warn("Error fetching today's attendance record:", e);
     }
 
-    if (status === 'P') {
+    if (status === 'P' || status === 'Present') {
         presenceStatusText.innerText = 'PRESENT ✅';
         presenceBadge.className = 'presence-status-badge present';
         presenceCard.className = 'presence-hero-card';
         timestampLabel.innerText = `Marked: Today by Class Teacher`;
-    } else if (status === 'A') {
+    } else if (status === 'A' || status === 'Absent') {
         presenceStatusText.innerText = 'ABSENT ❌';
         presenceBadge.className = 'presence-status-badge absent';
         presenceCard.className = 'presence-hero-card absent';
         timestampLabel.innerText = `Marked: Today (Absent)`;
-    } else if (status === 'L') {
+    } else if (status === 'L' || status === 'Late') {
         presenceStatusText.innerText = 'LATE ⚠️';
         presenceBadge.className = 'presence-status-badge late';
         presenceCard.className = 'presence-hero-card late';
