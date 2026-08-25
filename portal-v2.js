@@ -305,51 +305,71 @@ document.getElementById('auth-email-form')?.addEventListener('submit', async (e)
     }
 });
 
+// Master In-Memory & Cloud Student Resolver
+async function getAllStudentsMaster() {
+    if (allStudentsList && allStudentsList.length >= 263) {
+        return allStudentsList;
+    }
+
+    try {
+        const snap = await getDocs(collection(db, "students"));
+        if (!snap.empty) {
+            allStudentsList = [];
+            snap.forEach(d => {
+                allStudentsList.push({ id: d.id, ...d.data() });
+            });
+            if (allStudentsList.length > 0) return allStudentsList;
+        }
+    } catch (e) {
+        console.warn("Firestore SDK getDocs warning:", e);
+    }
+
+    // Fallback: Fetch official students json
+    try {
+        const res = await fetch('../students_master_2026_27.json');
+        if (res.ok) {
+            allStudentsList = await res.json();
+            return allStudentsList;
+        }
+    } catch (e) {
+        console.warn("Static json fallback warning:", e);
+    }
+
+    return allStudentsList || [];
+}
+
 // Real-time Identity lookup helper for Parents in Firestore (PEN, Roll No, Phone, Email)
 async function findStudentForParent(identifier) {
     try {
-        const studentsCol = collection(db, "students");
-        const cleanId = identifier.trim();
+        const cleanId = identifier.trim().toLowerCase();
+        const students = await getAllStudentsMaster();
 
         // 1. Match by Student PEN
-        let q = query(studentsCol, where("pen", "==", cleanId));
-        let snap = await getDocs(q);
-        if (!snap.empty) return { id: snap.docs[0].id, ...snap.docs[0].data() };
+        let matched = students.find(s => s.pen && s.pen.toString().trim().toLowerCase() === cleanId);
+        if (matched) return matched;
 
-        // 2. Match by Roll Number
-        q = query(studentsCol, where("rollNumber", "==", cleanId));
-        snap = await getDocs(q);
-        if (!snap.empty) return { id: snap.docs[0].id, ...snap.docs[0].data() };
+        // 2. Match by Roll Number or ID
+        matched = students.find(s => (s.rollNumber && s.rollNumber.toLowerCase() === cleanId) || (s.id && s.id.toLowerCase() === cleanId));
+        if (matched) return matched;
 
         // 3. Match by parentPhone
-        q = query(studentsCol, where("parentPhone", "==", cleanId));
-        snap = await getDocs(q);
-        if (!snap.empty) return { id: snap.docs[0].id, ...snap.docs[0].data() };
+        const digitsOnly = cleanId.replace(/[^0-9]/g, '');
+        if (digitsOnly.length >= 7) {
+            matched = students.find(s => s.parentPhone && s.parentPhone.replace(/[^0-9]/g, '').includes(digitsOnly));
+            if (matched) return matched;
+        }
 
-        // 4. Match by parentEmail
-        q = query(studentsCol, where("parentEmail", "==", cleanId));
-        snap = await getDocs(q);
-        if (!snap.empty) return { id: snap.docs[0].id, ...snap.docs[0].data() };
+        // 4. Match by parentEmail / studentEmail
+        matched = students.find(s => (s.parentEmail && s.parentEmail.toLowerCase() === cleanId) || (s.studentEmail && s.studentEmail.toLowerCase() === cleanId));
+        if (matched) return matched;
 
-        // 5. Match by studentEmail
-        q = query(studentsCol, where("studentEmail", "==", cleanId));
-        snap = await getDocs(q);
-        if (!snap.empty) return { id: snap.docs[0].id, ...snap.docs[0].data() };
+        // 5. Match by Student Name
+        matched = students.find(s => s.name && s.name.toLowerCase() === cleanId);
+        if (matched) return matched;
 
-        // 6. Match by Document ID
-        const docRef = await getDoc(doc(db, "students", cleanId));
-        if (docRef.exists()) return { id: docRef.id, ...docRef.data() };
-
-        // 7. Case-insensitive Name Match across all students
-        const allSnap = await getDocs(studentsCol);
-        let found = null;
-        allSnap.forEach(d => {
-            const data = d.data();
-            if (data.name && data.name.toLowerCase() === cleanId.toLowerCase()) {
-                found = { id: d.id, ...data };
-            }
-        });
-        if (found) return found;
+        // 6. Partial Name Match
+        matched = students.find(s => s.name && s.name.toLowerCase().includes(cleanId));
+        if (matched) return matched;
 
     } catch (e) {
         console.warn("Firestore parent lookup error:", e);
@@ -360,38 +380,28 @@ async function findStudentForParent(identifier) {
 // Real-time Identity lookup helper for Students in Firestore (PEN, Roll No, Email)
 async function findStudentByEmailOrRoll(identifier) {
     try {
-        const studentsCol = collection(db, "students");
-        const cleanId = identifier.trim();
+        const cleanId = identifier.trim().toLowerCase();
+        const students = await getAllStudentsMaster();
 
         // 1. Match by Student PEN
-        let q = query(studentsCol, where("pen", "==", cleanId));
-        let snap = await getDocs(q);
-        if (!snap.empty) return { id: snap.docs[0].id, ...snap.docs[0].data() };
+        let matched = students.find(s => s.pen && s.pen.toString().trim().toLowerCase() === cleanId);
+        if (matched) return matched;
 
-        // 2. By Roll Number
-        q = query(studentsCol, where("rollNumber", "==", cleanId));
-        snap = await getDocs(q);
-        if (!snap.empty) return { id: snap.docs[0].id, ...snap.docs[0].data() };
+        // 2. Match by Roll Number or ID
+        matched = students.find(s => (s.rollNumber && s.rollNumber.toLowerCase() === cleanId) || (s.id && s.id.toLowerCase() === cleanId));
+        if (matched) return matched;
 
-        // 3. By Student Email
-        q = query(studentsCol, where("studentEmail", "==", cleanId));
-        snap = await getDocs(q);
-        if (!snap.empty) return { id: snap.docs[0].id, ...snap.docs[0].data() };
+        // 3. Match by Student Email
+        matched = students.find(s => s.studentEmail && s.studentEmail.toLowerCase() === cleanId);
+        if (matched) return matched;
 
-        // 4. By Document ID
-        const docRef = await getDoc(doc(db, "students", cleanId));
-        if (docRef.exists()) return { id: docRef.id, ...docRef.data() };
+        // 4. Match by Student Name
+        matched = students.find(s => s.name && s.name.toLowerCase() === cleanId);
+        if (matched) return matched;
 
-        // 5. Case-insensitive Name Match
-        const allSnap = await getDocs(studentsCol);
-        let found = null;
-        allSnap.forEach(d => {
-            const data = d.data();
-            if (data.name && data.name.toLowerCase() === cleanId.toLowerCase()) {
-                found = { id: d.id, ...data };
-            }
-        });
-        if (found) return found;
+        // 5. Partial Name Match
+        matched = students.find(s => s.name && s.name.toLowerCase().includes(cleanId));
+        if (matched) return matched;
 
     } catch (e) {
         console.warn("Firestore student lookup error:", e);
