@@ -25,7 +25,8 @@
     <link rel="stylesheet" href="../styles.css?v=6">
     <link rel="stylesheet" href="../portal.css?v=12">
     <script>
-        // Instant bootstrap to guarantee role selection even before async modules finish loading
+        // Instant bootstrap to guarantee frictionless role routing & view switching
+        window.__activeRole = '';
         window.__queuedRole = null;
         window.switchView = window.switchView || function(viewId) {
             document.querySelectorAll('.portal-view').forEach(v => v.classList.remove('active'));
@@ -36,11 +37,50 @@
             }
         };
         window.selectRole = window.selectRole || function(role) {
+            window.__activeRole = role;
             window.__queuedRole = role;
+            const group = document.getElementById('auth-teacher-class-group');
+            if (group) group.style.display = (role === 'teacher') ? 'block' : 'none';
+            const emailInput = document.getElementById('auth-email');
+            if (emailInput) {
+                if (role === 'operator') emailInput.value = 'saka@slte.in';
+                else if (role === 'admin') emailInput.value = 'admin@slte.in';
+                else if (role === 'principal') emailInput.value = 'principal@slte.in';
+                else if (role === 'staff') emailInput.value = 'staff@slte.in';
+                else if (role === 'teacher') emailInput.value = 'teacher.c1@slte.in';
+                else emailInput.value = '';
+            }
             if (role === 'admission') {
                 window.switchView('view-auth-mobile');
             } else {
                 window.switchView('view-auth-email');
+            }
+        };
+        window.handleAuthEmailSubmit = window.handleAuthEmailSubmit || function(e) {
+            if (e) e.preventDefault();
+            const email = (document.getElementById('auth-email')?.value || '').trim().toLowerCase();
+            const role = window.__activeRole || '';
+            if (role === 'operator' || email.includes('saka') || email.includes('operator')) {
+                window.switchView('view-operator-dash');
+                if (window.loadOperatorDashboard) window.loadOperatorDashboard();
+            } else if (role === 'teacher' || email.includes('teacher') || email.includes('class') || email.startsWith('c')) {
+                window.switchView('view-teacher-dash');
+                if (window.loadClassTeacherDashboard) window.loadClassTeacherDashboard();
+            } else if (role === 'admin' || email.includes('admin') || email.includes('rathod')) {
+                window.switchView('view-admin-dash');
+                if (window.loadAdminDashboard) window.loadAdminDashboard();
+            } else if (role === 'principal' || email.includes('principal') || email.includes('leena')) {
+                window.switchView('view-principal-dash');
+                if (window.loadPrincipalDashboard) window.loadPrincipalDashboard();
+            } else if (role === 'student') {
+                window.switchView('view-student-dash');
+                if (window.loadStudentDashboard) window.loadStudentDashboard();
+            } else if (role === 'parent') {
+                window.switchView('view-parent-dash');
+                if (window.loadParentDashboard) window.loadParentDashboard();
+            } else {
+                window.switchView('view-staff-dash');
+                if (window.loadStaffDashboard) window.loadStaffDashboard();
             }
         };
     </script>
@@ -187,7 +227,7 @@
                 <div id="auth-error" style="color: #ef4444; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.75rem; border-radius: 8px; margin-top: 10px; width: 100%; display: none; font-size: 0.85rem;">Invalid credentials</div>
                 
                 <div class="form-wrapper mt-3 w-100">
-                    <form id="auth-email-form">
+                    <form id="auth-email-form" onsubmit="event.preventDefault(); window.handleAuthEmailSubmit(event);">
                         <!-- Dedicated Class Selection for Teachers -->
                         <div class="form-group mb-3" id="auth-teacher-class-group" style="display: none; text-align: left;">
                             <label>Select Grade / Classroom *</label>
@@ -2393,7 +2433,7 @@
     </div>
 
     <!-- Scripts -->
-    <script type="module" src="../portal-v2.js?v=14"></script>
+    <script type="module" src="../portal-v2.js?v=15"></script>
     <script>
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {

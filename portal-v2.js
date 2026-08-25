@@ -190,9 +190,12 @@ function switchView(viewId) {
 }
 
 function initPortal() {
+    const activeViews = document.querySelectorAll('.portal-view.active');
+    const hasActiveNonGateway = Array.from(activeViews).some(v => v.id && v.id !== 'view-gateway');
+
     if (window.__queuedRole) {
         selectRole(window.__queuedRole);
-    } else {
+    } else if (!hasActiveNonGateway) {
         switchView('view-gateway');
     }
 }
@@ -272,6 +275,8 @@ async function getSystemCredentialsMaster() {
 // Role Selection Handlers
 function selectRole(role) {
     currentRole = role;
+    window.__activeRole = role;
+    window.__queuedRole = role;
     
     const authRoleIcon = document.getElementById('auth-role-icon');
     const emailInput = document.getElementById('auth-email');
@@ -402,11 +407,14 @@ document.getElementById('auth-mobile-form')?.addEventListener('submit', (e) => {
     updateStepUI();
 });
 
-document.getElementById('auth-email-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
+// Unified Email / ID Authentication Handler
+async function handleAuthEmailSubmit(e) {
+    if (e) e.preventDefault();
     const emailOrId = (document.getElementById('auth-email')?.value || '').trim();
     const errorDiv = document.getElementById('auth-error');
     const submitBtn = document.getElementById('auth-submit-btn');
+
+    const activeR = currentRole || window.__activeRole || '';
 
     try {
         if (errorDiv) errorDiv.style.display = 'none';
@@ -419,7 +427,7 @@ document.getElementById('auth-email-form')?.addEventListener('submit', async (e)
         const cleanInput = emailOrId.toLowerCase();
 
         // 1. CLASS TEACHER PORTAL LOGIN (GUARANTEED TO OPEN TEACHER DASHBOARD)
-        if (currentRole === 'teacher' || cleanInput.includes('teacher') || cleanInput.includes('class') || cleanInput.startsWith('c') || cleanInput.includes('lkg') || cleanInput.includes('ukg') || cleanInput.includes('prekg')) {
+        if (activeR === 'teacher' || cleanInput.includes('teacher') || cleanInput.includes('class') || cleanInput.startsWith('c') || cleanInput.includes('lkg') || cleanInput.includes('ukg') || cleanInput.includes('prekg')) {
             const classSelect = document.getElementById('auth-teacher-class-select');
             let chosenClass = classSelect ? classSelect.value : 'Class 1';
 
@@ -458,7 +466,7 @@ document.getElementById('auth-email-form')?.addEventListener('submit', async (e)
         }
 
         // 2. COMPUTER OPERATOR (NARENDRA SAKA SIR)
-        if (currentRole === 'operator' || cleanInput.includes('saka') || cleanInput.includes('operator')) {
+        if (activeR === 'operator' || cleanInput.includes('saka') || cleanInput.includes('operator')) {
             switchView('view-operator-dash');
             await loadOperatorDashboard();
             if (window.burstConfetti) window.burstConfetti();
@@ -466,7 +474,7 @@ document.getElementById('auth-email-form')?.addEventListener('submit', async (e)
         }
 
         // 3. EXECUTIVE ADMIN (A.N. RATHOD SIR)
-        if (currentRole === 'admin' || cleanInput.includes('admin') || cleanInput.includes('rathod')) {
+        if (activeR === 'admin' || cleanInput.includes('admin') || cleanInput.includes('rathod')) {
             switchView('view-admin-dash');
             await loadAdminDashboard();
             if (window.burstConfetti) window.burstConfetti();
@@ -474,7 +482,7 @@ document.getElementById('auth-email-form')?.addEventListener('submit', async (e)
         }
 
         // 4. PRINCIPAL DESK (DR. K. SRINIVAS / LEENA J.)
-        if (currentRole === 'principal' || cleanInput.includes('principal') || cleanInput.includes('leenaj') || cleanInput.includes('srinivas')) {
+        if (activeR === 'principal' || cleanInput.includes('principal') || cleanInput.includes('leenaj') || cleanInput.includes('srinivas')) {
             switchView('view-principal-dash');
             await loadPrincipalDashboard();
             if (window.burstConfetti) window.burstConfetti();
@@ -482,7 +490,7 @@ document.getElementById('auth-email-form')?.addEventListener('submit', async (e)
         }
 
         // 5. PARENT PORTAL LOGIN
-        if (currentRole === 'parent') {
+        if (activeR === 'parent') {
             let matchedStudent = emailOrId ? await findStudentForParent(emailOrId) : null;
             if (!matchedStudent) {
                 const allStudents = await getAllStudentsMaster();
@@ -496,7 +504,7 @@ document.getElementById('auth-email-form')?.addEventListener('submit', async (e)
         }
 
         // 6. STUDENT PORTAL LOGIN
-        if (currentRole === 'student') {
+        if (activeR === 'student') {
             let matchedStudent = emailOrId ? await findStudentByEmailOrRoll(emailOrId) : null;
             if (!matchedStudent) {
                 const allStudents = await getAllStudentsMaster();
@@ -526,7 +534,10 @@ document.getElementById('auth-email-form')?.addEventListener('submit', async (e)
             submitBtn.disabled = false;
         }
     }
-});
+}
+
+window.handleAuthEmailSubmit = handleAuthEmailSubmit;
+document.getElementById('auth-email-form')?.addEventListener('submit', handleAuthEmailSubmit);
 
 // Master In-Memory & Cloud Student Resolver
 async function getAllStudentsMaster() {
