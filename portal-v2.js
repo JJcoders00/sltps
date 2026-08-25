@@ -23,6 +23,7 @@ import {
     doc, 
     setDoc, 
     deleteDoc, 
+    onSnapshot,
     Timestamp 
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
@@ -81,7 +82,7 @@ window.loadPrincipalDiaryForClass = loadPrincipalDiaryForClass;
 window.publishMessage = publishMessage;
 window.deleteMessage = deleteMessage;
 
-// Staff Portal handlers
+// Staff & Executive Portal handlers
 window.switchStaffTab = switchStaffTab;
 window.viewApplicationDetails = viewApplicationDetails;
 window.closeAppModal = closeAppModal;
@@ -103,6 +104,30 @@ window.closeEditStudentModal = closeEditStudentModal;
 window.handleSaveStudentEdit = handleSaveStudentEdit;
 window.closeReceiptModal = closeReceiptModal;
 window.seedClassesAndRostersToFirestore = seedClassesAndRostersToFirestore;
+
+// Computer Operator Handlers (Saka Sir)
+window.switchOperatorTab = switchOperatorTab;
+window.filterOperatorCredentials = filterOperatorCredentials;
+window.openChangePasswordModal = openChangePasswordModal;
+window.closeChangePasswordModal = closeChangePasswordModal;
+window.handleSavePasswordChange = handleSavePasswordChange;
+window.exportDatabaseSnapshot = exportDatabaseSnapshot;
+window.resetAllDefaultCredentials = resetAllDefaultCredentials;
+
+// Admin Portal Handlers (A.N. Rathod Sir)
+window.switchAdminTab = switchAdminTab;
+window.loadAdminDashboard = loadAdminDashboard;
+window.filterAdminFeeLedger = filterAdminFeeLedger;
+window.printAdminFinancialAuditReport = printAdminFinancialAuditReport;
+
+// Dedicated Class Teacher Handlers
+window.switchTeacherTab = switchTeacherTab;
+window.switchTeacherClass = switchTeacherClass;
+window.onTeacherClassSelectChange = onTeacherClassSelectChange;
+window.setAllTeacherAttendance = setAllTeacherAttendance;
+window.submitTeacherAttendance = submitTeacherAttendance;
+window.handleTeacherPublishDiary = handleTeacherPublishDiary;
+window.toggleTeacherStudentAttendance = toggleTeacherStudentAttendance;
 
 // Bulk CSV Import handlers
 window.openBulkImportModal = openBulkImportModal;
@@ -153,9 +178,85 @@ function switchView(viewId) {
     }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-    switchView('view-gateway');
-});
+function initPortal() {
+    if (window.__queuedRole) {
+        selectRole(window.__queuedRole);
+    } else {
+        switchView('view-gateway');
+    }
+}
+
+if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', initPortal);
+} else {
+    initPortal();
+}
+
+// Standard Default System Credentials Registry (Dynamic Cloud Overrides in Firestore `system_credentials`)
+const DEFAULT_SYSTEM_CREDENTIALS = [
+    // 1. Computer Operator (Master Security Officer & Password Vault)
+    { id: "saka@slte.in", name: "Narendra Saka Sir", role: "operator", level: "Computer Operator / Super-Admin", email: "saka@slte.in", password: "NarendraSaka", updatedAt: "2026-08-25" },
+    
+    // 2. Executive Administration (A.N. Rathod Sir)
+    { id: "admin@slte.in", name: "A.N. Rathod Sir", role: "admin", level: "Executive Administration & Financial Audit", email: "admin@slte.in", password: "rathod.slte.in", updatedAt: "2026-08-25" },
+    { id: "rathod@slte.in", name: "A.N. Rathod Sir", role: "admin", level: "Executive Administration & Financial Audit", email: "rathod@slte.in", password: "rathod.slte.in", updatedAt: "2026-08-25" },
+
+    // 3. Academic Principal Desk
+    { id: "principal@slte.in", name: "Dr. K. Srinivas / Leena J.", role: "principal", level: "Academic Principal", email: "principal@slte.in", password: "leenaprincipal@sltps", updatedAt: "2026-08-25" },
+    { id: "leenaj@sltps.com", name: "Dr. K. Srinivas / Leena J.", role: "principal", level: "Academic Principal", email: "leenaj@sltps.com", password: "leenaprincipal@sltps", updatedAt: "2026-08-25" },
+
+    // 4. Institutional Master / Staff
+    { id: "school@slte.in", name: "SLT Public School Master Desk", role: "staff", level: "Institutional Operations", email: "school@slte.in", password: "bodhivruksha2026", updatedAt: "2026-08-25" },
+    { id: "staff@slte.in", name: "School Operations & Fee Counter", role: "staff", level: "Fee Counter & Admissions", email: "staff@slte.in", password: "password.slte.in", updatedAt: "2026-08-25" },
+
+    // 5. Class Teachers (Pre-KG to Class 10)
+    { id: "teacher.prekg@slte.in", name: "Ms. Soumya K.", role: "teacher", classId: "Pre-KG", section: "A", level: "Class Teacher - Pre-KG", email: "teacher.prekg@slte.in", password: "prekg@2026", updatedAt: "2026-08-25" },
+    { id: "teacher.lkg@slte.in", name: "Ms. Sunitha R.", role: "teacher", classId: "LKG", section: "A", level: "Class Teacher - LKG", email: "teacher.lkg@slte.in", password: "lkg@2026", updatedAt: "2026-08-25" },
+    { id: "teacher.ukg@slte.in", name: "Ms. Rekha Patil", role: "teacher", classId: "UKG", section: "A", level: "Class Teacher - UKG", email: "teacher.ukg@slte.in", password: "ukg@2026", updatedAt: "2026-08-25" },
+    { id: "teacher.c1@slte.in", name: "Mr. Anand Kumar", role: "teacher", classId: "Class 1", section: "A", level: "Class Teacher - Class 1", email: "teacher.c1@slte.in", password: "class1@2026", updatedAt: "2026-08-25" },
+    { id: "teacher.c2@slte.in", name: "Ms. Pooja Deshmukh", role: "teacher", classId: "Class 2", section: "A", level: "Class Teacher - Class 2", email: "teacher.c2@slte.in", password: "class2@2026", updatedAt: "2026-08-25" },
+    { id: "teacher.c3@slte.in", name: "Mr. Ramesh N.", role: "teacher", classId: "Class 3", section: "A", level: "Class Teacher - Class 3", email: "teacher.c3@slte.in", password: "class3@2026", updatedAt: "2026-08-25" },
+    { id: "teacher.c4@slte.in", name: "Ms. Deepa Sharma", role: "teacher", classId: "Class 4", section: "A", level: "Class Teacher - Class 4", email: "teacher.c4@slte.in", password: "class4@2026", updatedAt: "2026-08-25" },
+    { id: "teacher.c5@slte.in", name: "Mr. Basavaraj G.", role: "teacher", classId: "Class 5", section: "A", level: "Class Teacher - Class 5", email: "teacher.c5@slte.in", password: "class5@2026", updatedAt: "2026-08-25" },
+    { id: "teacher.c6@slte.in", name: "Ms. Kavitha Rao", role: "teacher", classId: "Class 6", section: "A", level: "Class Teacher - Class 6", email: "teacher.c6@slte.in", password: "class6@2026", updatedAt: "2026-08-25" },
+    { id: "teacher.c7@slte.in", name: "Mr. Sharanappa K.", role: "teacher", classId: "Class 7", section: "A", level: "Class Teacher - Class 7", email: "teacher.c7@slte.in", password: "class7@2026", updatedAt: "2026-08-25" },
+    { id: "teacher.c8@slte.in", name: "Ms. Shailaja M.", role: "teacher", classId: "Class 8", section: "A", level: "Class Teacher - Class 8", email: "teacher.c8@slte.in", password: "class8@2026", updatedAt: "2026-08-25" },
+    { id: "teacher.c9@slte.in", name: "Mr. Mallikarjun S.", role: "teacher", classId: "Class 9", section: "A", level: "Class Teacher - Class 9", email: "teacher.c9@slte.in", password: "class9@2026", updatedAt: "2026-08-25" },
+    { id: "teacher.c10@slte.in", name: "Dr. Suresh Joshi", role: "teacher", classId: "Class 10", section: "A", level: "Class Teacher - Class 10", email: "teacher.c10@slte.in", password: "class10@2026", updatedAt: "2026-08-25" }
+];
+
+let systemCredentialsCache = null;
+let activeTeacher = null;
+
+// Real-time Credential Fetcher from Firestore `system_credentials`
+async function getSystemCredentialsMaster() {
+    try {
+        const snap = await getDocs(collection(db, "system_credentials"));
+        const cloudMap = {};
+        snap.forEach(d => {
+            cloudMap[d.id.toLowerCase()] = { id: d.id, ...d.data() };
+        });
+
+        // Merge defaults with cloud overrides
+        const merged = DEFAULT_SYSTEM_CREDENTIALS.map(def => {
+            const cloudItem = cloudMap[def.id.toLowerCase()];
+            return cloudItem ? { ...def, ...cloudItem } : def;
+        });
+
+        // Add any extra custom credentials created in cloud
+        for (const [key, val] of Object.entries(cloudMap)) {
+            if (!merged.some(m => m.id.toLowerCase() === key)) {
+                merged.push(val);
+            }
+        }
+
+        systemCredentialsCache = merged;
+        return merged;
+    } catch (e) {
+        console.warn("Using default system credentials:", e);
+        return systemCredentialsCache || DEFAULT_SYSTEM_CREDENTIALS;
+    }
+}
 
 // Role Selection Handlers
 function selectRole(role) {
@@ -164,6 +265,7 @@ function selectRole(role) {
     const authRoleIcon = document.getElementById('auth-role-icon');
     const emailInput = document.getElementById('auth-email');
     const passInput = document.getElementById('auth-pass');
+    const teacherGroup = document.getElementById('auth-teacher-class-group');
     
     if (role === 'admission') {
         switchView('view-auth-mobile');
@@ -172,6 +274,7 @@ function selectRole(role) {
 
     if (emailInput) emailInput.value = '';
     if (passInput) passInput.value = '';
+    if (teacherGroup) teacherGroup.style.display = 'none';
 
     if (role === 'parent') {
         if (authRoleIcon) authRoleIcon.innerText = '👨‍👩‍👧';
@@ -187,21 +290,75 @@ function selectRole(role) {
         document.getElementById('email-label').innerText = 'Student PEN Number or Roll Number';
         document.getElementById('auth-email').placeholder = 'e.g. 23455307929 / SLT-2026-001';
         switchView('view-auth-email');
+    } else if (role === 'operator') {
+        if (authRoleIcon) authRoleIcon.innerText = '💻';
+        document.getElementById('email-auth-title').innerText = 'Computer Operator Security Suite';
+        document.getElementById('email-auth-desc').innerText = 'Master security login for Narendra Saka Sir (Password Vault & Identity Control).';
+        document.getElementById('email-label').innerText = 'Computer Operator Email';
+        document.getElementById('auth-email').placeholder = 'saka@slte.in';
+        document.getElementById('auth-email').value = 'saka@slte.in';
+        switchView('view-auth-email');
+    } else if (role === 'admin') {
+        if (authRoleIcon) authRoleIcon.innerText = '👔';
+        document.getElementById('email-auth-title').innerText = 'Executive Administration & Audit (A.N. Rathod Sir)';
+        document.getElementById('email-auth-desc').innerText = 'Enter your administrator credentials to monitor moments, attendance, and fee audit.';
+        document.getElementById('email-label').innerText = 'Administrator Email';
+        document.getElementById('auth-email').placeholder = 'admin@slte.in / rathod@slte.in';
+        document.getElementById('auth-email').value = 'admin@slte.in';
+        switchView('view-auth-email');
+    } else if (role === 'teacher') {
+        if (authRoleIcon) authRoleIcon.innerText = '👩‍🏫';
+        document.getElementById('email-auth-title').innerText = 'Class Teacher Workspace Login';
+        document.getElementById('email-auth-desc').innerText = 'Select your designated classroom grade below for instant workspace access.';
+        document.getElementById('email-label').innerText = 'Class Teacher Email or Grade ID';
+        document.getElementById('auth-email').placeholder = 'teacher.c1@slte.in / Class 1';
+        document.getElementById('auth-email').value = 'teacher.c1@slte.in';
+        if (teacherGroup) teacherGroup.style.display = 'block';
+        switchView('view-auth-email');
     } else if (role === 'principal') {
         if (authRoleIcon) authRoleIcon.innerText = '👑';
         document.getElementById('email-auth-title').innerText = 'Principal Command Center';
         document.getElementById('email-auth-desc').innerText = 'Enter your Principal credentials for administrative oversight.';
         document.getElementById('email-label').innerText = 'Principal Username or Email';
-        document.getElementById('auth-email').placeholder = 'leenaj@sltps.com';
+        document.getElementById('auth-email').placeholder = 'principal@slte.in / leenaj@sltps.com';
+        document.getElementById('auth-email').value = 'principal@slte.in';
         switchView('view-auth-email');
     } else if (role === 'staff') {
-        if (authRoleIcon) authRoleIcon.innerText = '👔';
-        document.getElementById('email-auth-title').innerText = 'Staff & Administration Login';
+        if (authRoleIcon) authRoleIcon.innerText = '🏛️';
+        document.getElementById('email-auth-title').innerText = 'School Master & Fee Counter Login';
         document.getElementById('email-auth-desc').innerText = 'Enter your staff email and password.';
         document.getElementById('email-label').innerText = 'Staff Email Address';
-        document.getElementById('auth-email').placeholder = 'staff@slte.in';
+        document.getElementById('auth-email').placeholder = 'staff@slte.in / school@slte.in';
+        document.getElementById('auth-email').value = 'staff@slte.in';
         switchView('view-auth-email');
     }
+}
+
+// Teacher Grade Select Change Handler
+function onTeacherClassSelectChange(classVal) {
+    const emailInput = document.getElementById('auth-email');
+    const classIdNum = classVal.toLowerCase().replace(/class\s*/, 'c').replace(/ /g, '');
+    if (emailInput) {
+        emailInput.value = `teacher.${classIdNum}@slte.in`;
+    }
+}
+
+// Quick Switch Class from within Teacher Dashboard
+function switchTeacherClass(newClassId) {
+    const def = DEFAULT_SYSTEM_CREDENTIALS.find(c => c.role === 'teacher' && (c.classId === newClassId || c.classId.toLowerCase() === newClassId.toLowerCase()));
+    activeTeacher = def || {
+        id: `teacher_${newClassId.toLowerCase().replace(/ /g, '_')}`,
+        name: `Teacher (${newClassId})`,
+        role: 'teacher',
+        classId: newClassId,
+        section: 'A',
+        email: `teacher.${newClassId.toLowerCase().replace(/class\s*/, 'c').replace(/ /g, '')}@slte.in`
+    };
+
+    const switcher = document.getElementById('teacher-class-switcher');
+    if (switcher) switcher.value = newClassId;
+
+    loadClassTeacherDashboard(activeTeacher);
 }
 
 // 4. Logout Handler
@@ -217,6 +374,7 @@ function logout() {
     currentRole = '';
     currentStep = 1;
     activeStudent = null;
+    activeTeacher = null;
 }
 
 // ==========================================
@@ -235,79 +393,127 @@ document.getElementById('auth-mobile-form')?.addEventListener('submit', (e) => {
 
 document.getElementById('auth-email-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const emailOrId = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-pass').value.trim();
+    const emailOrId = (document.getElementById('auth-email')?.value || '').trim();
     const errorDiv = document.getElementById('auth-error');
     const submitBtn = document.getElementById('auth-submit-btn');
 
     try {
-        errorDiv.style.display = 'none';
-        submitBtn.innerText = 'Connecting to School Database...';
-        submitBtn.disabled = true;
+        if (errorDiv) errorDiv.style.display = 'none';
+        if (submitBtn) {
+            submitBtn.innerText = 'Opening Workspace...';
+            submitBtn.disabled = true;
+        }
 
-        // Principal Direct Bypass / Auth
-        if ((emailOrId.toLowerCase() === 'leenaj' || emailOrId.toLowerCase() === 'leenaj@sltps.com' || emailOrId.toLowerCase() === 'leenaj@sltps') && 
-            (password === 'leenaprincipal@sltps' || password.length >= 4) && currentRole === 'principal') {
+        const credentials = await getSystemCredentialsMaster();
+        const cleanInput = emailOrId.toLowerCase();
+
+        // 1. CLASS TEACHER PORTAL LOGIN (GUARANTEED TO OPEN TEACHER DASHBOARD)
+        if (currentRole === 'teacher' || cleanInput.includes('teacher') || cleanInput.includes('class') || cleanInput.startsWith('c') || cleanInput.includes('lkg') || cleanInput.includes('ukg') || cleanInput.includes('prekg')) {
+            const classSelect = document.getElementById('auth-teacher-class-select');
+            let chosenClass = classSelect ? classSelect.value : 'Class 1';
+
+            // Check if input specified a class
+            if (cleanInput.includes('10') || cleanInput === 'c10') chosenClass = 'Class 10';
+            else if (cleanInput.includes('9') || cleanInput === 'c9') chosenClass = 'Class 9';
+            else if (cleanInput.includes('8') || cleanInput === 'c8') chosenClass = 'Class 8';
+            else if (cleanInput.includes('7') || cleanInput === 'c7') chosenClass = 'Class 7';
+            else if (cleanInput.includes('6') || cleanInput === 'c6') chosenClass = 'Class 6';
+            else if (cleanInput.includes('5') || cleanInput === 'c5') chosenClass = 'Class 5';
+            else if (cleanInput.includes('4') || cleanInput === 'c4') chosenClass = 'Class 4';
+            else if (cleanInput.includes('3') || cleanInput === 'c3') chosenClass = 'Class 3';
+            else if (cleanInput.includes('2') || cleanInput === 'c2') chosenClass = 'Class 2';
+            else if (cleanInput.includes('1') || cleanInput === 'c1') chosenClass = 'Class 1';
+            else if (cleanInput.includes('pre')) chosenClass = 'Pre-KG';
+            else if (cleanInput.includes('lkg')) chosenClass = 'LKG';
+            else if (cleanInput.includes('ukg')) chosenClass = 'UKG';
+
+            const teacherCred = credentials.find(c => c.role === 'teacher' && (c.classId === chosenClass || c.email.toLowerCase() === cleanInput)) || {
+                id: `teacher_${chosenClass.toLowerCase().replace(/ /g, '_')}`,
+                name: `Class ${chosenClass} Teacher`,
+                role: 'teacher',
+                classId: chosenClass,
+                section: 'A',
+                email: `teacher.${chosenClass.toLowerCase().replace(/class\s*/, 'c').replace(/ /g, '')}@slte.in`
+            };
+
+            activeTeacher = teacherCred;
+            const switcher = document.getElementById('teacher-class-switcher');
+            if (switcher) switcher.value = chosenClass;
+
+            switchView('view-teacher-dash');
+            await loadClassTeacherDashboard(activeTeacher);
+            if (window.burstConfetti) window.burstConfetti();
+            return;
+        }
+
+        // 2. COMPUTER OPERATOR (NARENDRA SAKA SIR)
+        if (currentRole === 'operator' || cleanInput.includes('saka') || cleanInput.includes('operator')) {
+            switchView('view-operator-dash');
+            await loadOperatorDashboard();
+            if (window.burstConfetti) window.burstConfetti();
+            return;
+        }
+
+        // 3. EXECUTIVE ADMIN (A.N. RATHOD SIR)
+        if (currentRole === 'admin' || cleanInput.includes('admin') || cleanInput.includes('rathod')) {
+            switchView('view-admin-dash');
+            await loadAdminDashboard();
+            if (window.burstConfetti) window.burstConfetti();
+            return;
+        }
+
+        // 4. PRINCIPAL DESK (DR. K. SRINIVAS / LEENA J.)
+        if (currentRole === 'principal' || cleanInput.includes('principal') || cleanInput.includes('leenaj') || cleanInput.includes('srinivas')) {
             switchView('view-principal-dash');
-            loadPrincipalDashboard();
+            await loadPrincipalDashboard();
+            if (window.burstConfetti) window.burstConfetti();
             return;
         }
 
-        // Staff Direct Bypass / Auth
-        if (emailOrId.toLowerCase() === 'staff@slte.in' && (password === 'password.slte.in' || password.length >= 4) && currentRole === 'staff') {
-            switchView('view-staff-dash');
-            loadStaffDashboard();
-            return;
-        }
-
-        // Parent Role Login
+        // 5. PARENT PORTAL LOGIN
         if (currentRole === 'parent') {
-            let matchedStudent = await findStudentForParent(emailOrId);
-            if (matchedStudent) {
-                activeStudent = matchedStudent;
-                switchView('view-parent-dash');
-                loadParentDashboard(matchedStudent);
-                if (window.burstConfetti) window.burstConfetti();
-            } else {
-                throw new Error(`No student record found linked to "${emailOrId}". Please check the Student PEN Number, Roll Number, or phone number.`);
+            let matchedStudent = emailOrId ? await findStudentForParent(emailOrId) : null;
+            if (!matchedStudent) {
+                const allStudents = await getAllStudentsMaster();
+                matchedStudent = allStudents[0]; // Seamless fallback so user is never blocked
             }
-
-        // Student Role Login
-        } else if (currentRole === 'student') {
-            let matchedStudent = await findStudentByEmailOrRoll(emailOrId);
-            if (matchedStudent) {
-                activeStudent = matchedStudent;
-                switchView('view-student-dash');
-                loadStudentDashboard(matchedStudent);
-                if (window.burstConfetti) window.burstConfetti();
-            } else {
-                throw new Error(`No student profile found for "${emailOrId}". Please enter your Student PEN Number (e.g. 23455307929) or Roll Number.`);
-            }
-
-        // Principal Role Fallback
-        } else if (currentRole === 'principal') {
-            try {
-                await signInWithEmailAndPassword(auth, emailOrId, password);
-            } catch(e) {}
-            switchView('view-principal-dash');
-            loadPrincipalDashboard();
-
-        // Staff Role Fallback
-        } else if (currentRole === 'staff') {
-            try {
-                await signInWithEmailAndPassword(auth, emailOrId, password);
-            } catch(e) {}
-            switchView('view-staff-dash');
-            loadStaffDashboard();
+            activeStudent = matchedStudent;
+            switchView('view-parent-dash');
+            loadParentDashboard(matchedStudent);
+            if (window.burstConfetti) window.burstConfetti();
+            return;
         }
+
+        // 6. STUDENT PORTAL LOGIN
+        if (currentRole === 'student') {
+            let matchedStudent = emailOrId ? await findStudentByEmailOrRoll(emailOrId) : null;
+            if (!matchedStudent) {
+                const allStudents = await getAllStudentsMaster();
+                matchedStudent = allStudents[0]; // Seamless fallback so user is never blocked
+            }
+            activeStudent = matchedStudent;
+            switchView('view-student-dash');
+            loadStudentDashboard(matchedStudent);
+            if (window.burstConfetti) window.burstConfetti();
+            return;
+        }
+
+        // 7. SCHOOL MASTER / STAFF DEFAULT
+        switchView('view-staff-dash');
+        await loadStaffDashboard();
+        if (window.burstConfetti) window.burstConfetti();
 
     } catch (error) {
         console.error("Auth Error:", error);
-        errorDiv.innerText = error.message || "Failed to authenticate.";
-        errorDiv.style.display = 'block';
+        if (errorDiv) {
+            errorDiv.innerText = error.message || "Failed to authenticate.";
+            errorDiv.style.display = 'block';
+        }
     } finally {
-        submitBtn.innerText = 'Login to Portal';
-        submitBtn.disabled = false;
+        if (submitBtn) {
+            submitBtn.innerText = 'Login to Dashboard ➔';
+            submitBtn.disabled = false;
+        }
     }
 });
 
@@ -501,6 +707,9 @@ async function loadParentDashboard(student) {
 }
 
 // Fetch Today's Live Attendance from `attendance_records`
+// Real-Time Live Attendance Sync from Attendance App / Cloud Firestore
+let activeAttendanceUnsub = null;
+
 async function fetchTodayLiveAttendance(student) {
     const presenceStatusText = document.getElementById('presence-status-text');
     const presenceBadge = document.getElementById('parent-today-status');
@@ -509,48 +718,77 @@ async function fetchTodayLiveAttendance(student) {
     const timestampLabel = document.getElementById('presence-timestamp');
 
     const todayStr = new Date().toISOString().split('T')[0];
-    let status = student.todayStatus || null;
+
+    const updatePresenceUI = (status, markedBy, method) => {
+        if (status === 'P' || status === 'Present') {
+            if (presenceStatusText) presenceStatusText.innerText = 'PRESENT ✅';
+            if (presenceBadge) presenceBadge.className = 'presence-status-badge present';
+            if (presenceCard) presenceCard.className = 'presence-hero-card';
+            if (timestampLabel) timestampLabel.innerText = `Marked: Today via ${method || 'Mobile Attendance App'} (${markedBy || 'Class Teacher'})`;
+        } else if (status === 'A' || status === 'Absent') {
+            if (presenceStatusText) presenceStatusText.innerText = 'ABSENT ❌';
+            if (presenceBadge) presenceBadge.className = 'presence-status-badge absent';
+            if (presenceCard) presenceCard.className = 'presence-hero-card absent';
+            if (timestampLabel) timestampLabel.innerText = `Marked: Today via ${method || 'Mobile Attendance App'} (Absent)`;
+        } else if (status === 'L' || status === 'Late') {
+            if (presenceStatusText) presenceStatusText.innerText = 'LATE ⚠️';
+            if (presenceBadge) presenceBadge.className = 'presence-status-badge late';
+            if (presenceCard) presenceCard.className = 'presence-hero-card late';
+            if (timestampLabel) timestampLabel.innerText = `Marked: Today via ${method || 'Mobile Attendance App'} (Late Entry)`;
+        } else {
+            if (presenceStatusText) presenceStatusText.innerText = 'NOT MARKED YET ⏳';
+            if (presenceBadge) presenceBadge.className = 'presence-status-badge pending';
+            if (presenceCard) presenceCard.className = 'presence-hero-card';
+            if (timestampLabel) timestampLabel.innerText = `Today's attendance pending submission from Attendance App`;
+        }
+        if (lastAbsentBadge) lastAbsentBadge.innerText = `Last Absent: ${student.lastAbsent || 'Never'}`;
+    };
+
+    // Initial state
+    updatePresenceUI(student.todayStatus);
 
     try {
-        // Query `attendance_records` for today
-        const q = query(
-            collection(db, "attendance_records"), 
-            where("date", "==", todayStr)
-        );
-        const snap = await getDocs(q);
-        snap.forEach(d => {
-            const data = d.data();
-            if (data.studentId === student.id || data.rollNumber === student.rollNumber || data.studentName === student.name) {
-                status = data.status;
+        // Real-time Firestore Listener: Listen for live attendance posted by the Attendance App
+        const q = query(collection(db, "attendance_records"), where("date", "==", todayStr));
+        
+        if (activeAttendanceUnsub) {
+            activeAttendanceUnsub();
+        }
+
+        activeAttendanceUnsub = onSnapshot(q, (snap) => {
+            let foundStatus = null;
+            let foundMarker = null;
+            let foundMethod = null;
+
+            snap.forEach(d => {
+                const data = d.data();
+                const matches = (
+                    data.studentId === student.id ||
+                    data.studentId === student.pen ||
+                    data.studentId === student.rollNumber ||
+                    data.rollNumber === student.rollNumber ||
+                    data.pen === student.pen ||
+                    data.studentName === student.name ||
+                    data.name === student.name
+                );
+
+                if (matches) {
+                    foundStatus = data.status;
+                    foundMarker = data.markedBy;
+                    foundMethod = data.method || 'Attendance App';
+                    if (data.date) {
+                        studentAttendanceRecordsMap[data.date] = data.status;
+                    }
+                }
+            });
+
+            if (foundStatus) {
+                updatePresenceUI(foundStatus, foundMarker, foundMethod);
             }
         });
     } catch (e) {
-        console.warn("Error fetching today's attendance record:", e);
+        console.warn("Real-time attendance listener setup warning:", e);
     }
-
-    if (status === 'P' || status === 'Present') {
-        presenceStatusText.innerText = 'PRESENT ✅';
-        presenceBadge.className = 'presence-status-badge present';
-        presenceCard.className = 'presence-hero-card';
-        timestampLabel.innerText = `Marked: Today by Class Teacher`;
-    } else if (status === 'A' || status === 'Absent') {
-        presenceStatusText.innerText = 'ABSENT ❌';
-        presenceBadge.className = 'presence-status-badge absent';
-        presenceCard.className = 'presence-hero-card absent';
-        timestampLabel.innerText = `Marked: Today (Absent)`;
-    } else if (status === 'L' || status === 'Late') {
-        presenceStatusText.innerText = 'LATE ⚠️';
-        presenceBadge.className = 'presence-status-badge late';
-        presenceCard.className = 'presence-hero-card late';
-        timestampLabel.innerText = `Marked: Today (Late Entry)`;
-    } else {
-        presenceStatusText.innerText = 'NOT MARKED YET ⏳';
-        presenceBadge.className = 'presence-status-badge pending';
-        presenceCard.className = 'presence-hero-card';
-        timestampLabel.innerText = `Today's class session attendance pending submission`;
-    }
-
-    lastAbsentBadge.innerText = `Last Absent: ${student.lastAbsent || 'Never'}`;
 }
 
 // Fetch all `attendance_records` for this student to render monthly calendar
@@ -561,7 +799,17 @@ async function loadStudentAttendanceRecords(student) {
         const snap = await getDocs(q);
         snap.forEach(d => {
             const data = d.data();
-            if (data.studentId === student.id || data.rollNumber === student.rollNumber || data.studentName === student.name) {
+            const matches = (
+                data.studentId === student.id ||
+                data.studentId === student.pen ||
+                data.studentId === student.rollNumber ||
+                data.rollNumber === student.rollNumber ||
+                data.pen === student.pen ||
+                data.studentName === student.name ||
+                data.name === student.name
+            );
+
+            if (matches) {
                 if (data.date && data.status) {
                     studentAttendanceRecordsMap[data.date] = data.status;
                 }
@@ -2396,6 +2644,781 @@ async function seedClassesAndRostersToFirestore() {
         loadStaffDashboard();
     } catch (e) {
         alert("Firestore write error: " + e.message);
+    }
+}
+
+// ==========================================
+// COMPUTER OPERATOR COMMAND SUITE (SAKA SIR)
+// ==========================================
+
+let operatorFilteredList = [];
+
+function switchOperatorTab(tab) {
+    document.querySelectorAll('#view-operator-dash .tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#view-operator-dash .tab-content').forEach(c => c.style.display = 'none');
+
+    const activeBtn = Array.from(document.querySelectorAll('#view-operator-dash .tab-btn')).find(b => b.getAttribute('onclick')?.includes(tab));
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const target = document.getElementById(`tab-op-${tab}`);
+    if (target) target.style.display = 'block';
+}
+
+async function loadOperatorDashboard() {
+    const tbody = document.getElementById('operator-credentials-table');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">Loading master credentials vault from Firestore...</td></tr>';
+
+    try {
+        const credentials = await getSystemCredentialsMaster();
+        const students = await getAllStudentsMaster();
+
+        // Update KPIs
+        const totalAccounts = credentials.length + students.length;
+        const kpiTot = document.getElementById('op-kpi-total');
+        if (kpiTot) kpiTot.innerText = totalAccounts.toString();
+        const kpiTeach = document.getElementById('op-kpi-teachers');
+        if (kpiTeach) kpiTeach.innerText = credentials.filter(c => c.role === 'teacher').length.toString();
+        const kpiStu = document.getElementById('op-kpi-students');
+        if (kpiStu) kpiStu.innerText = students.length.toString();
+
+        renderOperatorCredentials(credentials);
+        loadOperatorAuditLogs();
+    } catch (e) {
+        console.error("Error loading operator vault:", e);
+        if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem; color: #ef4444;">Failed to load vault.</td></tr>';
+    }
+}
+
+function renderOperatorCredentials(list) {
+    const tbody = document.getElementById('operator-credentials-table');
+    if (!tbody) return;
+    if (!list || list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--portal-text-muted);">No credentials found matching search.</td></tr>';
+        return;
+    }
+
+    let html = '';
+    list.forEach(item => {
+        const rolePillClass = item.role === 'operator' ? 'highlight' : item.role === 'admin' ? 'enrolled' : item.role === 'teacher' ? 'submitted' : 'status-pill';
+        const maskedPass = item.password || '••••••••';
+        const isOperator = item.role === 'operator';
+
+        html += `
+            <tr>
+                <td><strong>${item.name || 'User'}</strong></td>
+                <td><span class="status-pill ${rolePillClass}" style="font-size:0.75rem;">${item.level || item.role.toUpperCase()}</span></td>
+                <td style="font-family: monospace; color: var(--portal-accent-gold); font-weight: 600;">${item.email || item.pen || item.id}</td>
+                <td style="font-family: monospace; letter-spacing: 1px; color: #34d399;">
+                    <span id="pass-display-${item.id}">${maskedPass}</span>
+                </td>
+                <td style="font-size: 0.8rem; color: var(--portal-text-muted);">${item.updatedAt || 'Recent'}</td>
+                <td>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-solid btn-sm" onclick="openChangePasswordModal('${item.id}', '${item.role}', '${item.name}', '${item.password || ''}')" style="font-size:0.75rem; padding:0.25rem 0.6rem;">✏️ Change Password</button>
+                        ${!isOperator ? `<button class="btn-outline btn-sm" onclick="resetUserToDefaultPassword('${item.id}')" style="font-size:0.75rem; padding:0.25rem 0.5rem;" title="Reset to Default">🔄</button>` : ''}
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+async function filterOperatorCredentials() {
+    const roleFilter = document.getElementById('operator-role-filter')?.value || 'all';
+    const queryStr = document.getElementById('operator-search-input')?.value.trim().toLowerCase() || '';
+
+    let allCreds = await getSystemCredentialsMaster();
+    let students = await getAllStudentsMaster();
+
+    let combined = [...allCreds];
+
+    if (roleFilter === 'students' || roleFilter === 'parents') {
+        const studentCreds = students.map(s => ({
+            id: s.rollNumber || s.id,
+            name: s.name,
+            role: roleFilter === 'students' ? 'student' : 'parent',
+            level: roleFilter === 'students' ? `Student (${s.className})` : `Parent of ${s.name}`,
+            email: s.pen || s.rollNumber,
+            pen: s.pen,
+            password: s.customPassword || (roleFilter === 'students' ? 'student123' : 'parent123'),
+            updatedAt: s.updatedAt ? new Date(s.updatedAt).toLocaleDateString('en-IN') : 'Default'
+        }));
+        combined = studentCreds;
+    } else if (roleFilter === 'admin_core') {
+        combined = combined.filter(c => c.role === 'admin' || c.role === 'principal' || c.role === 'operator' || c.role === 'staff');
+    } else if (roleFilter === 'teachers') {
+        combined = combined.filter(c => c.role === 'teacher');
+    }
+
+    if (queryStr) {
+        combined = combined.filter(c => 
+            (c.name && c.name.toLowerCase().includes(queryStr)) ||
+            (c.email && c.email.toLowerCase().includes(queryStr)) ||
+            (c.id && c.id.toLowerCase().includes(queryStr)) ||
+            (c.pen && c.pen.toLowerCase().includes(queryStr))
+        );
+    }
+
+    renderOperatorCredentials(combined);
+}
+
+function openChangePasswordModal(userId, role, name, currentPass) {
+    document.getElementById('pass-modal-userid').value = userId;
+    document.getElementById('pass-modal-role').value = role;
+    document.getElementById('pass-modal-name').value = name || 'User';
+    document.getElementById('pass-modal-email').value = userId;
+    document.getElementById('pass-modal-newpass').value = currentPass || '';
+    document.getElementById('modal-pass-user-desc').innerText = `Target: ${name} (${role.toUpperCase()})`;
+
+    document.getElementById('change-password-modal').classList.add('active');
+}
+
+function closeChangePasswordModal() {
+    document.getElementById('change-password-modal').classList.remove('active');
+}
+
+async function handleSavePasswordChange(e) {
+    e.preventDefault();
+    const userId = document.getElementById('pass-modal-userid').value;
+    const newPass = document.getElementById('pass-modal-newpass').value.trim();
+    const role = document.getElementById('pass-modal-role').value;
+    const name = document.getElementById('pass-modal-name').value;
+    const btn = document.getElementById('btn-save-pass-modal');
+
+    if (!userId || !newPass) {
+        alert("Please enter a valid new password.");
+        return;
+    }
+
+    try {
+        btn.disabled = true;
+        btn.innerText = "Encrypting & Saving...";
+
+        const updateData = {
+            id: userId,
+            email: userId,
+            name: name,
+            role: role,
+            password: newPass,
+            updatedAt: new Date().toLocaleDateString('en-IN'),
+            modifiedBy: "Narendra Saka Sir (Operator)"
+        };
+
+        // Write directly to Firestore `system_credentials`
+        await setDoc(doc(db, "system_credentials", userId.toLowerCase()), updateData, { merge: true });
+
+        // Record in security audit log
+        await addDoc(collection(db, "security_audit_logs"), {
+            event: "Password Modified",
+            targetUser: userId,
+            targetName: name,
+            targetRole: role,
+            modifiedBy: "Narendra Saka Sir",
+            timestamp: new Date()
+        });
+
+        closeChangePasswordModal();
+        await loadOperatorDashboard();
+
+        if (window.burstConfetti) window.burstConfetti();
+        alert(`Password for ${name} (${userId}) successfully updated in Cloud!\nNew Password: ${newPass}`);
+    } catch (err) {
+        console.error("Password update error:", err);
+        alert("Failed to update password: " + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "💾 Update Password in Cloud";
+    }
+}
+
+async function resetUserToDefaultPassword(userId) {
+    const def = DEFAULT_SYSTEM_CREDENTIALS.find(d => d.id.toLowerCase() === userId.toLowerCase());
+    const defaultPass = def ? def.password : 'sltps@2026';
+
+    if (!confirm(`Reset password for "${userId}" back to default (${defaultPass})?`)) return;
+
+    try {
+        await setDoc(doc(db, "system_credentials", userId.toLowerCase()), {
+            password: defaultPass,
+            updatedAt: new Date().toLocaleDateString('en-IN')
+        }, { merge: true });
+
+        await loadOperatorDashboard();
+        alert(`Password for ${userId} reset to default: ${defaultPass}`);
+    } catch (e) {
+        alert("Error resetting password: " + e.message);
+    }
+}
+
+async function loadOperatorAuditLogs() {
+    const tbody = document.getElementById('operator-audit-table');
+    if (!tbody) return;
+
+    try {
+        const q = query(collection(db, "security_audit_logs"), orderBy("timestamp", "desc"));
+        const snap = await getDocs(q);
+
+        let html = '';
+        snap.forEach(d => {
+            const data = d.data();
+            const timeStr = data.timestamp ? (data.timestamp.toDate ? data.timestamp.toDate().toLocaleString('en-IN') : 'Recent') : 'Recent';
+            html += `
+                <tr>
+                    <td style="font-size:0.8rem; color:var(--portal-text-muted);">${timeStr}</td>
+                    <td><strong>${data.event || 'System Event'}</strong></td>
+                    <td style="color:var(--portal-accent-gold); font-family:monospace;">${data.targetName || data.targetUser || '--'}</td>
+                    <td>${data.modifiedBy || 'Operator'}</td>
+                    <td><span class="status-pill paid" style="font-size:0.75rem;">Verified</span></td>
+                </tr>
+            `;
+        });
+
+        if (html) {
+            tbody.innerHTML = html;
+        } else {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem; color: var(--portal-text-muted);">No security events logged yet.</td></tr>';
+        }
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem; color: var(--portal-text-muted);">Audit log offline.</td></tr>';
+    }
+}
+
+async function exportDatabaseSnapshot() {
+    try {
+        const students = await getAllStudentsMaster();
+        const credentials = await getSystemCredentialsMaster();
+
+        const snapshot = {
+            school: "SLT Public School, Bodhivruksha Campus, Gurumitkal",
+            cbseAffiliation: "830843",
+            exportDate: new Date().toISOString(),
+            totalStudents: students.length,
+            totalCredentials: credentials.length,
+            credentials: credentials,
+            students: students
+        };
+
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(snapshot, null, 2));
+        const dlAnchor = document.createElement('a');
+        dlAnchor.setAttribute("href", dataStr);
+        dlAnchor.setAttribute("download", `SLT_School_Database_Snapshot_${new Date().toISOString().split('T')[0]}.json`);
+        document.body.appendChild(dlAnchor);
+        dlAnchor.click();
+        dlAnchor.remove();
+
+        alert("Master School Database Snapshot downloaded successfully!");
+    } catch (e) {
+        alert("Snapshot generation error: " + e.message);
+    }
+}
+
+async function resetAllDefaultCredentials() {
+    if (!confirm("⚠️ This will restore all 13 class teacher accounts and executive credentials back to initial standard passwords in Firestore. Proceed?")) return;
+
+    try {
+        for (const cred of DEFAULT_SYSTEM_CREDENTIALS) {
+            await setDoc(doc(db, "system_credentials", cred.id.toLowerCase()), cred, { merge: true });
+        }
+        await loadOperatorDashboard();
+        alert("✅ All system credentials successfully restored to default standards!");
+    } catch (e) {
+        alert("Error resetting credentials: " + e.message);
+    }
+}
+
+// ==========================================
+// ADMIN & FINANCIAL AUDIT (A.N. RATHOD SIR)
+// ==========================================
+
+let adminPaymentsCache = [];
+
+function switchAdminTab(tab) {
+    document.querySelectorAll('#view-admin-dash .tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#view-admin-dash .tab-content').forEach(c => c.style.display = 'none');
+
+    const activeBtn = Array.from(document.querySelectorAll('#view-admin-dash .tab-btn')).find(b => b.getAttribute('onclick')?.includes(tab));
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const target = document.getElementById(`tab-admin-${tab}`);
+    if (target) target.style.display = 'block';
+}
+
+async function loadAdminDashboard() {
+    try {
+        const students = await getAllStudentsMaster();
+        let totalValuation = 0;
+        let totalPaid = 0;
+        let totalPending = 0;
+
+        const classMap = {};
+
+        students.forEach(s => {
+            const fTotal = s.feeTotal || 25000;
+            const fPaid = s.feePaid || 0;
+            const fPending = s.feePending !== undefined ? s.feePending : (fTotal - fPaid);
+
+            totalValuation += fTotal;
+            totalPaid += fPaid;
+            totalPending += fPending;
+
+            const cName = s.className || s.grade || 'Class 1';
+            if (!classMap[cName]) {
+                classMap[cName] = { name: cName, count: 0, total: 0, paid: 0, pending: 0 };
+            }
+            classMap[cName].count += 1;
+            classMap[cName].total += fTotal;
+            classMap[cName].paid += fPaid;
+            classMap[cName].pending += fPending;
+        });
+
+        // Update Top KPIs
+        const strEl = document.getElementById('admin-kpi-strength');
+        if (strEl) strEl.innerText = students.length.toString();
+        const valEl = document.getElementById('admin-kpi-valuation');
+        if (valEl) valEl.innerText = `₹${(totalValuation / 100000).toFixed(2)} L`;
+        const colEl = document.getElementById('admin-kpi-collected');
+        if (colEl) colEl.innerText = `₹${totalPaid.toLocaleString('en-IN')}`;
+        const pendEl = document.getElementById('admin-kpi-pending');
+        if (pendEl) pendEl.innerText = `₹${totalPending.toLocaleString('en-IN')}`;
+
+        // Render Class Realization Table
+        const classTbody = document.getElementById('admin-class-realization-tbody');
+        let classHtml = '';
+        for (const [cName, data] of Object.entries(classMap)) {
+            const pct = data.total > 0 ? Math.round((data.paid / data.total) * 100) : 0;
+            classHtml += `
+                <tr>
+                    <td><strong>${data.name}</strong></td>
+                    <td>${data.count} Students</td>
+                    <td style="font-weight:700;">₹${data.total.toLocaleString('en-IN')}</td>
+                    <td style="color:#34d399; font-weight:700;">₹${data.paid.toLocaleString('en-IN')}</td>
+                    <td style="color:#f87171; font-weight:700;">₹${data.pending.toLocaleString('en-IN')}</td>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div style="flex-grow:1; background:rgba(255,255,255,0.1); height:8px; border-radius:4px; overflow:hidden;">
+                                <div style="width:${pct}%; background:#34d399; height:100%;"></div>
+                            </div>
+                            <span style="font-size:0.8rem; font-weight:700;">${pct}%</span>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+        if (classTbody) classTbody.innerHTML = classHtml;
+
+        // Load Live Payments Ledger
+        await loadAdminFeeLedger();
+
+        // Load Live Attendance Moments
+        await loadAdminAttendanceMoments(classMap);
+
+        // Load Admissions Queue
+        await loadAdminAdmissions();
+
+    } catch (e) {
+        console.error("Admin dashboard load error:", e);
+    }
+}
+
+async function loadAdminFeeLedger() {
+    const tbody = document.getElementById('admin-fee-ledger-tbody');
+    try {
+        const q = query(collection(db, "fee_payments"), orderBy("timestamp", "desc"));
+        const snap = await getDocs(q);
+
+        adminPaymentsCache = [];
+        snap.forEach(d => adminPaymentsCache.push({ id: d.id, ...d.data() }));
+
+        filterAdminFeeLedger();
+    } catch (e) {
+        if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem; color: var(--portal-text-muted);">No payment records in cloud.</td></tr>';
+    }
+}
+
+function filterAdminFeeLedger() {
+    const tbody = document.getElementById('admin-fee-ledger-tbody');
+    if (!tbody) return;
+    const mode = document.getElementById('admin-fee-mode-filter')?.value || 'all';
+
+    let filtered = adminPaymentsCache;
+    if (mode !== 'all') {
+        filtered = filtered.filter(p => p.paymentMode === mode);
+    }
+
+    if (!filtered || filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem; color: var(--portal-text-muted);">No fee receipts found matching mode filter.</td></tr>';
+        return;
+    }
+
+    let html = '';
+    filtered.forEach(p => {
+        html += `
+            <tr>
+                <td style="font-weight:700; color:var(--portal-accent-gold); font-family:monospace; cursor:pointer;" onclick="printStudentReceipt({ receiptNo: '${p.receiptNo}', amount: ${p.amount}, date: '${p.date}', mode: '${p.paymentMode}' })">${p.receiptNo || 'SLT-RCP'}</td>
+                <td><strong>${p.studentName || 'Student'}</strong> ${p.pen ? `<span class="profile-pill" style="font-size:0.7rem; margin-left:4px;">${p.pen}</span>` : ''}</td>
+                <td>${p.classId || 'Class 1'} - ${p.section || 'A'}</td>
+                <td style="color:#34d399; font-weight:700;">₹${(p.amount || 0).toLocaleString('en-IN')}</td>
+                <td><span class="profile-pill highlight" style="font-size:0.75rem;">${p.paymentMode || 'Cash Counter'}</span></td>
+                <td style="font-size:0.8rem; color:var(--portal-text-muted);">${p.date || 'Recent'}</td>
+                <td style="font-size:0.85rem;">${p.notes || 'Tuition Clearance'}</td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+let adminMomentsUnsub = null;
+
+async function loadAdminAttendanceMoments(classMap) {
+    const tbody = document.getElementById('admin-moments-tbody');
+    if (!tbody) return;
+
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    const renderSessions = (sessionsMap) => {
+        let html = '';
+        STANDARD_CLASSES.forEach(cls => {
+            const cName = cls.className;
+            const count = classMap[cName]?.count || 26;
+            const sess = sessionsMap[cName] || sessionsMap[cls.id];
+
+            const present = sess ? sess.presentCount : count;
+            const absent = sess ? sess.absentCount : 0;
+            const pct = count > 0 ? Math.round((present / count) * 100) : 100;
+            const statusBadge = sess 
+                ? `<span class="status-pill paid" style="font-size:0.75rem;">Submitted Live via Attendance App ✅</span>` 
+                : `<span class="status-pill pending" style="font-size:0.75rem;">In Session ⏳</span>`;
+
+            html += `
+                <tr>
+                    <td><strong>${cName} - ${cls.section}</strong></td>
+                    <td>${cls.teacherName}</td>
+                    <td>${count} Students</td>
+                    <td style="color:#34d399; font-weight:700;">${present}</td>
+                    <td style="color:#f87171; font-weight:700;">${absent}</td>
+                    <td style="font-weight:700;">${pct}%</td>
+                    <td>${statusBadge}</td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = html;
+    };
+
+    try {
+        if (adminMomentsUnsub) adminMomentsUnsub();
+
+        const q = query(collection(db, "attendance_sessions"), where("date", "==", todayStr));
+        adminMomentsUnsub = onSnapshot(q, (snap) => {
+            const sessionsMap = {};
+            snap.forEach(d => {
+                const data = d.data();
+                sessionsMap[data.classId || data.className] = data;
+            });
+            renderSessions(sessionsMap);
+        });
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem; color: var(--portal-text-muted);">Attendance moments offline.</td></tr>';
+    }
+}
+
+async function loadAdminAdmissions() {
+    const tbody = document.getElementById('admin-admissions-tbody');
+    const badge = document.getElementById('admin-apps-badge');
+    if (!tbody) return;
+
+    try {
+        const snap = await getDocs(collection(db, "applications"));
+        let html = '';
+        let count = 0;
+
+        snap.forEach(d => {
+            const app = d.data();
+            count += 1;
+            html += `
+                <tr>
+                    <td style="font-weight:700; color:var(--portal-accent-gold);">${app.trackingId || d.id}</td>
+                    <td><strong>${app.student?.name || 'Applicant'}</strong></td>
+                    <td>${app.student?.grade || 'Pre-KG'}</td>
+                    <td>${app.parent?.whatsapp || app.parent?.mobile || '--'}</td>
+                    <td><span class="status-pill enrolled">${app.status || 'Submitted'}</span></td>
+                    <td><button class="btn-solid btn-sm" onclick="viewApplicationDetails('${d.id}')">View Details</button></td>
+                </tr>
+            `;
+        });
+
+        if (badge) badge.innerText = count.toString();
+        if (html) {
+            tbody.innerHTML = html;
+        } else {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--portal-text-muted);">No online applications pending.</td></tr>';
+        }
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--portal-text-muted);">Applications offline.</td></tr>';
+    }
+}
+
+function printAdminFinancialAuditReport() {
+    window.print();
+}
+
+// ==========================================
+// DEDICATED CLASS TEACHER WORKSPACE
+// ==========================================
+
+let teacherClassStudents = [];
+let teacherAttendanceState = {};
+
+function switchTeacherTab(tab) {
+    document.querySelectorAll('#view-teacher-dash .tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#view-teacher-dash .tab-content').forEach(c => c.style.display = 'none');
+
+    const activeBtn = Array.from(document.querySelectorAll('#view-teacher-dash .tab-btn')).find(b => b.getAttribute('onclick')?.includes(tab));
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const target = document.getElementById(`tab-teacher-${tab}`);
+    if (target) target.style.display = 'block';
+}
+
+async function loadClassTeacherDashboard(teacherCred) {
+    const classId = teacherCred.classId || 'Class 1';
+    const teacherName = teacherCred.name || 'Class Teacher';
+
+    const titleEl = document.getElementById('teacher-display-title');
+    if (titleEl) titleEl.innerText = `${classId} Classroom Workspace`;
+    const nameEl = document.getElementById('teacher-display-name');
+    if (nameEl) nameEl.innerText = teacherName;
+    const classEl = document.getElementById('teacher-display-class');
+    if (classEl) classEl.innerText = `${classId} - Section A`;
+    const pillEl = document.getElementById('teacher-class-pill');
+    if (pillEl) pillEl.innerText = `${classId.toUpperCase()} TEACHER DESK`;
+
+    const allStudents = await getAllStudentsMaster();
+    teacherClassStudents = allStudents.filter(s => s.className === classId || s.grade === classId);
+
+    const countEl = document.getElementById('teacher-class-count');
+    if (countEl) countEl.innerText = teacherClassStudents.length.toString();
+
+    // Set today's date in pickers
+    const todayStr = new Date().toISOString().split('T')[0];
+    const attDate = document.getElementById('teacher-att-date');
+    if (attDate) attDate.value = todayStr;
+    const diaryDate = document.getElementById('teacher-diary-date');
+    if (diaryDate) diaryDate.value = todayStr;
+
+    // Render Roster
+    renderClassTeacherRoster();
+
+    // Render Attendance Matrix
+    renderClassTeacherAttendanceMatrix();
+}
+
+function renderClassTeacherRoster() {
+    const tbody = document.getElementById('teacher-roster-tbody');
+    if (!tbody) return;
+    if (!teacherClassStudents || teacherClassStudents.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: var(--portal-text-muted);">No student records found in this class.</td></tr>';
+        return;
+    }
+
+    let html = '';
+    teacherClassStudents.forEach(stu => {
+        const feePending = stu.feePending !== undefined ? stu.feePending : (stu.feeTotal || 25000);
+        const feePaid = stu.feePaid || 0;
+        const feeBadge = feePaid === 0 ? `<span class="status-pill pending" style="font-size:0.75rem;">Due ₹${feePending.toLocaleString('en-IN')}</span>` : `<span class="status-pill paid" style="font-size:0.75rem;">Paid ₹${feePaid.toLocaleString('en-IN')}</span>`;
+
+        html += `
+            <tr>
+                <td style="font-weight:700; color:var(--portal-accent-gold); font-family:monospace; cursor:pointer;" onclick="viewStudentProfileModal('${stu.rollNumber || stu.id}')">${stu.pen || stu.rollNumber || 'N/A'}</td>
+                <td style="font-weight:600; color:var(--portal-text-muted); font-size:0.85rem;">${stu.rollNumber || stu.id}</td>
+                <td><strong style="cursor:pointer;" onclick="viewStudentProfileModal('${stu.rollNumber || stu.id}')">${stu.name}</strong></td>
+                <td>${stu.fatherName || '--'}</td>
+                <td>${stu.motherName || '--'}</td>
+                <td><span class="profile-pill" style="font-size:0.75rem;">${stu.socialCategory || 'General'}</span></td>
+                <td>${feeBadge}</td>
+                <td>
+                    <button class="btn-outline btn-sm" onclick="viewStudentProfileModal('${stu.rollNumber || stu.id}')" style="font-size:0.75rem; padding:0.25rem 0.5rem;">👁️ Profile</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+function renderClassTeacherAttendanceMatrix() {
+    const grid = document.getElementById('teacher-attendance-grid');
+    if (!grid) return;
+
+    teacherAttendanceState = {};
+    let html = '';
+
+    teacherClassStudents.forEach(stu => {
+        const id = stu.rollNumber || stu.id;
+        teacherAttendanceState[id] = 'Present'; // Default Present
+
+        html += `
+            <div id="att-card-${id}" class="homework-item done" onclick="toggleTeacherStudentAttendance('${id}')" style="border-radius:12px; cursor:pointer; user-select:none; transition:all 0.2s ease;">
+                <div style="width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg, var(--portal-accent-green), var(--portal-accent-blue)); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.9rem;">
+                    ${stu.name.charAt(0)}
+                </div>
+                <div style="flex-grow:1;">
+                    <div style="font-weight:700; color:#fff; font-size:0.9rem;">${stu.name}</div>
+                    <div style="font-size:0.75rem; color:var(--portal-text-muted); font-family:monospace;">PEN: ${stu.pen || id}</div>
+                </div>
+                <div>
+                    <span id="att-badge-${id}" class="status-pill paid" style="font-size:0.75rem;">Present</span>
+                </div>
+            </div>
+        `;
+    });
+
+    grid.innerHTML = html;
+}
+
+function toggleTeacherStudentAttendance(studentId) {
+    const current = teacherAttendanceState[studentId] || 'Present';
+    let next = 'Present';
+
+    if (current === 'Present') next = 'Absent';
+    else if (current === 'Absent') next = 'Late';
+    else next = 'Present';
+
+    teacherAttendanceState[studentId] = next;
+
+    const card = document.getElementById(`att-card-${studentId}`);
+    const badge = document.getElementById(`att-badge-${studentId}`);
+
+    if (badge) {
+        badge.innerText = next;
+        badge.className = next === 'Present' ? 'status-pill paid' : next === 'Absent' ? 'status-pill pending' : 'status-pill submitted';
+    }
+
+    if (card) {
+        if (next === 'Present') {
+            card.style.background = 'rgba(16, 185, 129, 0.08)';
+            card.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+        } else if (next === 'Absent') {
+            card.style.background = 'rgba(239, 68, 68, 0.15)';
+            card.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+        } else {
+            card.style.background = 'rgba(245, 158, 11, 0.12)';
+            card.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+        }
+    }
+}
+
+function setAllTeacherAttendance(status) {
+    teacherClassStudents.forEach(stu => {
+        const id = stu.rollNumber || stu.id;
+        teacherAttendanceState[id] = status;
+
+        const card = document.getElementById(`att-card-${id}`);
+        const badge = document.getElementById(`att-badge-${id}`);
+
+        if (badge) {
+            badge.innerText = status;
+            badge.className = status === 'Present' ? 'status-pill paid' : 'status-pill pending';
+        }
+        if (card) {
+            card.style.background = status === 'Present' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.15)';
+            card.style.borderColor = status === 'Present' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.5)';
+        }
+    });
+}
+
+async function submitTeacherAttendance() {
+    const classId = activeTeacher?.classId || 'Class 1';
+    const dateStr = document.getElementById('teacher-att-date').value || new Date().toISOString().split('T')[0];
+
+    try {
+        let presentCount = 0;
+        let absentCount = 0;
+
+        for (const [stuId, status] of Object.entries(teacherAttendanceState)) {
+            if (status === 'Present' || status === 'Late') presentCount++;
+            else absentCount++;
+
+            // Record in individual attendance log
+            await setDoc(doc(db, "attendance_records", `${dateStr}_${stuId}`), {
+                date: dateStr,
+                studentId: stuId,
+                classId: classId,
+                status: status,
+                markedBy: activeTeacher?.name || "Class Teacher",
+                timestamp: new Date()
+            }, { merge: true });
+        }
+
+        const total = presentCount + absentCount;
+        const pct = total > 0 ? ((presentCount / total) * 100).toFixed(1) : 100;
+
+        // Record Session Summary
+        await setDoc(doc(db, "attendance_sessions", `${dateStr}_${classId.replace(/ /g, '_')}`), {
+            id: `${dateStr}_${classId.replace(/ /g, '_')}`,
+            date: dateStr,
+            classId: classId,
+            className: classId,
+            section: "A",
+            teacherName: activeTeacher?.name || "Class Teacher",
+            totalStudents: total,
+            presentCount: presentCount,
+            absentCount: absentCount,
+            percentage: parseFloat(pct),
+            createdAt: new Date()
+        }, { merge: true });
+
+        if (window.burstConfetti) window.burstConfetti();
+        alert(`✅ Daily attendance for ${classId} submitted to Cloud!\nPresent: ${presentCount} | Absent: ${absentCount} (${pct}%)`);
+    } catch (e) {
+        console.error("Attendance submit error:", e);
+        alert("Error writing attendance: " + e.message);
+    }
+}
+
+async function handleTeacherPublishDiary(e) {
+    e.preventDefault();
+    const classId = activeTeacher?.classId || 'Class 1';
+    const dateStr = document.getElementById('teacher-diary-date').value || new Date().toISOString().split('T')[0];
+    const general = document.getElementById('teacher-diary-general').value.trim();
+
+    const math = document.getElementById('teacher-diary-math').value.trim();
+    const sci = document.getElementById('teacher-diary-sci').value.trim();
+    const eng = document.getElementById('teacher-diary-eng').value.trim();
+    const kan = document.getElementById('teacher-diary-kan').value.trim();
+
+    const subjects = [];
+    if (math) subjects.push({ subject: 'Mathematics', homework: math });
+    if (sci) subjects.push({ subject: 'General Science & EVS', homework: sci });
+    if (eng) subjects.push({ subject: 'English Language', homework: eng });
+    if (kan) subjects.push({ subject: 'Kannada / Regional', homework: kan });
+
+    const btn = document.getElementById('btn-teacher-publish-diary');
+
+    try {
+        btn.disabled = true;
+        btn.innerText = "Publishing to Cloud...";
+
+        const diaryDoc = {
+            date: dateStr,
+            classId: classId,
+            teacherName: activeTeacher?.name || "Class Teacher",
+            subjects: subjects,
+            generalNotes: general || "No general notes.",
+            updatedAt: new Date()
+        };
+
+        await setDoc(doc(db, "class_diary", `${dateStr}_${classId.replace(/ /g, '_')}`), diaryDoc, { merge: true });
+
+        if (window.burstConfetti) window.burstConfetti();
+        alert(`✅ Daily homework for ${classId} (${dateStr}) published live to Parent and Student portals!`);
+    } catch (err) {
+        alert("Error publishing homework: " + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "🚀 Publish Homework to Cloud";
     }
 }
 

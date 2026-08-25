@@ -22,8 +22,28 @@
     <meta property="og:image" content="https://slte.in/logo.webp">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../styles.css?v=5">
-    <link rel="stylesheet" href="../portal.css?v=9">
+    <link rel="stylesheet" href="../styles.css?v=6">
+    <link rel="stylesheet" href="../portal.css?v=12">
+    <script>
+        // Instant bootstrap to guarantee role selection even before async modules finish loading
+        window.__queuedRole = null;
+        window.switchView = window.switchView || function(viewId) {
+            document.querySelectorAll('.portal-view').forEach(v => v.classList.remove('active'));
+            const target = document.getElementById(viewId);
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+        window.selectRole = window.selectRole || function(role) {
+            window.__queuedRole = role;
+            if (role === 'admission') {
+                window.switchView('view-auth-mobile');
+            } else {
+                window.switchView('view-auth-email');
+            }
+        };
+    </script>
 </head>
 <body class="portal-body">
 
@@ -68,36 +88,46 @@
                 <p class="large-text text-secondary" style="max-width: 680px; margin: 0 auto 2.5rem auto;">Select your role below for instant access to real-time attendance, digital homework diary, fee receipts, and school management.</p>
             </div>
             
-            <div class="grid-3 fade-up delay-1" style="max-width: 1100px; margin: 0 auto; gap: 1.5rem;">
+            <div class="grid-4 fade-up delay-1" style="max-width: 1200px; margin: 0 auto; gap: 1.25rem;">
                 <div class="role-card" onclick="selectRole('parent')">
                     <div class="icon float-anim">👨‍👩‍👧</div>
                     <h4>Parent Portal</h4>
-                    <p>Live attendance status, monthly calendar, daily class diary, fee receipts & notices.</p>
+                    <p>Live attendance status, monthly calendar, daily diary, fee receipts & notices.</p>
                 </div>
                 <div class="role-card" onclick="selectRole('student')">
                     <div class="icon float-anim">🎓</div>
                     <h4>Student Portal</h4>
                     <p>Daily homework assignments, task checklists, academic grades & report cards.</p>
                 </div>
+                <div class="role-card" onclick="selectRole('teacher')">
+                    <div class="icon float-anim">👩‍🏫</div>
+                    <h4>Class Teachers</h4>
+                    <p>Classwise separate login (Class 1 to 10), 1-tap attendance & daily homework.</p>
+                </div>
                 <div class="role-card" onclick="selectRole('principal')">
                     <div class="icon float-anim">👑</div>
-                    <h4>Principal Command Center</h4>
-                    <p>Live attendance KPIs, class submission monitor, diary overseer & circulars broadcast.</p>
+                    <h4>Principal Desk</h4>
+                    <p>Academic oversight, class submission monitor & circulars broadcast.</p>
+                </div>
+                <div class="role-card" onclick="selectRole('admin')">
+                    <div class="icon">👔</div>
+                    <h4>Admin & Audit (A.N. Rathod)</h4>
+                    <p>Live moments tracking, fee collections, counter receipts ledger & audit.</p>
+                </div>
+                <div class="role-card" onclick="selectRole('operator')">
+                    <div class="icon" style="color: var(--portal-accent-gold);">💻</div>
+                    <h4>Computer Operator (Saka Sir)</h4>
+                    <p>Master password vault, change/assign passwords for any portal or user.</p>
                 </div>
                 <div class="role-card" onclick="selectRole('staff')">
-                    <div class="icon">👔</div>
-                    <h4>Staff & Admin Portal</h4>
-                    <p>1-Click admissions enrollment, bulk student importer, rosters, and fee counter.</p>
+                    <div class="icon">🏛️</div>
+                    <h4>School Master / Staff</h4>
+                    <p>Fee Counter, student master directory, admissions queue & rosters.</p>
                 </div>
                 <div class="role-card" onclick="selectRole('admission')">
                     <div class="icon">📝</div>
                     <h4>New Admission 2026-27</h4>
-                    <p>Apply online for Pre-KG, LKG, UKG to Class X/XII at Bodhivruksha Campus.</p>
-                </div>
-                <div class="role-card" onclick="switchView('view-track')">
-                    <div class="icon">🔍</div>
-                    <h4>Track Application</h4>
-                    <p>Check real-time application processing and enrollment status with your ID.</p>
+                    <p>Apply online for Pre-KG to Class X/XII at Bodhivruksha Campus.</p>
                 </div>
             </div>
         </div>
@@ -158,15 +188,40 @@
                 
                 <div class="form-wrapper mt-3 w-100">
                     <form id="auth-email-form">
+                        <!-- Dedicated Class Selection for Teachers -->
+                        <div class="form-group mb-3" id="auth-teacher-class-group" style="display: none; text-align: left;">
+                            <label>Select Grade / Classroom *</label>
+                            <select id="auth-teacher-class-select" class="portal-select" onchange="onTeacherClassSelectChange(this.value)">
+                                <option value="Class 1" selected>Class 1 (Mr. Anand Kumar)</option>
+                                <option value="Class 2">Class 2 (Ms. Pooja Deshmukh)</option>
+                                <option value="Class 3">Class 3 (Mr. Ramesh N.)</option>
+                                <option value="Class 4">Class 4 (Ms. Deepa Sharma)</option>
+                                <option value="Class 5">Class 5 (Mr. Basavaraj G.)</option>
+                                <option value="Class 6">Class 6 (Ms. Kavitha Rao)</option>
+                                <option value="Class 7">Class 7 (Mr. Sharanappa K.)</option>
+                                <option value="Class 8">Class 8 (Ms. Shailaja M.)</option>
+                                <option value="Class 9">Class 9 (Mr. Mallikarjun S.)</option>
+                                <option value="Class 10">Class 10 (Dr. Suresh Joshi)</option>
+                                <option value="Pre-KG">Pre-KG (Ms. Soumya K.)</option>
+                                <option value="LKG">LKG (Ms. Sunitha R.)</option>
+                                <option value="UKG">UKG (Ms. Rekha Patil)</option>
+                            </select>
+                        </div>
+
                         <div class="form-group mb-3" style="text-align: left;">
                             <label id="email-label">Registered Email or Phone Number</label>
-                            <input type="text" id="auth-email" class="portal-input" required placeholder="name@example.com / 9888877777 / Roll No">
+                            <input type="text" id="auth-email" class="portal-input" placeholder="name@example.com / 9888877777 / Roll No">
                         </div>
+
                         <div class="form-group mb-3" style="text-align: left;">
-                            <label>Password</label>
-                            <input type="password" id="auth-pass" class="portal-input" required placeholder="••••••••">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <label style="margin:0;">Password</label>
+                                <span style="font-size: 0.75rem; color: #34d399; font-weight: 600;">Optional / Direct Login</span>
+                            </div>
+                            <input type="password" id="auth-pass" class="portal-input mt-1" placeholder="Leave empty for instant login or enter password">
                         </div>
-                        <button type="submit" class="btn-solid w-100" id="auth-submit-btn">Login to Portal</button>
+
+                        <button type="submit" class="btn-solid w-100" id="auth-submit-btn">Login to Dashboard ➔</button>
                         <button type="button" class="btn-outline mt-2 w-100" onclick="switchView('view-gateway')">Back to Gateway</button>
                     </form>
                 </div>
@@ -1136,6 +1191,437 @@
             </div>
         </div>
 
+        <!-- ==========================================
+             VIEW 7: COMPUTER OPERATOR COMMAND SUITE
+             ========================================== -->
+        <div id="view-operator-dash" class="portal-view">
+            <div class="glass-container">
+                <div class="dashboard-header">
+                    <div class="dashboard-title-group">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <span class="status-pill highlight">MASTER IDENTITY & SECURITY VAULT</span>
+                            <span style="font-size: 0.8rem; color: #34d399; font-weight: 700;">● Cloud Database Active</span>
+                        </div>
+                        <h2>Computer Operator Command Suite</h2>
+                        <p class="dashboard-subtitle">Master Security Officer: <strong>Narendra Saka Sir</strong> (<span style="color: var(--portal-accent-gold); font-family: monospace;">saka@slte.in</span>)</p>
+                    </div>
+                    <div class="dashboard-actions">
+                        <button class="btn-solid btn-sm" onclick="openChangePasswordModal('new', 'custom', 'New User', '')">➕ Assign Custom Password</button>
+                        <button class="btn-outline btn-sm" onclick="exportDatabaseSnapshot()">💾 Download Backup</button>
+                        <button class="btn-outline btn-sm" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+
+                <!-- Live Metrics Strip -->
+                <div class="kpi-grid mb-3">
+                    <div class="kpi-card">
+                        <div class="kpi-title">TOTAL REGISTERED ACCOUNTS</div>
+                        <div class="kpi-value" id="op-kpi-total">278</div>
+                        <div class="kpi-subtitle">Across All 10 Grades + Staff</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">CLASS TEACHER ACCOUNTS</div>
+                        <div class="kpi-value" id="op-kpi-teachers" style="color: #60a5fa;">13</div>
+                        <div class="kpi-subtitle">Pre-KG, LKG, UKG, Class 1-10</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">STUDENT & PARENT IDENTITIES</div>
+                        <div class="kpi-value" id="op-kpi-students" style="color: #34d399;">263</div>
+                        <div class="kpi-subtitle">PEN-Linked Verified Records</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">SECURITY LEVEL</div>
+                        <div class="kpi-value" style="color: var(--portal-accent-gold);">TIER-1</div>
+                        <div class="kpi-subtitle">Dynamic Firestore Encryption</div>
+                    </div>
+                </div>
+
+                <!-- Operator Tabs -->
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="switchOperatorTab('vault')">🔐 Master Password Vault</button>
+                    <button class="tab-btn" onclick="switchOperatorTab('audit')">🛡️ Security & Session Audit Logs</button>
+                    <button class="tab-btn" onclick="switchOperatorTab('backup')">💾 Database Snapshot & Utilities</button>
+                </div>
+
+                <!-- TAB 1: Master Password Vault -->
+                <div id="tab-op-vault" class="tab-content active">
+                    <div class="widget">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 1.25rem;">
+                            <div class="widget-title" style="margin-bottom:0;">Live User Directory & Password Manager</div>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <select id="operator-role-filter" class="portal-select" style="width: auto; padding: 0.4rem 1rem;" onchange="filterOperatorCredentials()">
+                                    <option value="all">All Roles (Admin, Principal, Teachers, Students)</option>
+                                    <option value="admin_core">Administration & Principal</option>
+                                    <option value="teachers">Class Teachers (Class 1 - 10)</option>
+                                    <option value="students">Students (263 Roster)</option>
+                                    <option value="parents">Parents (PEN Linked)</option>
+                                </select>
+                                <input type="text" id="operator-search-input" class="portal-input" style="max-width: 250px; padding: 0.4rem 1rem;" placeholder="Search Name, Email, PEN..." oninput="filterOperatorCredentials()">
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Identity / User Name</th>
+                                        <th>Role / System Level</th>
+                                        <th>Email / Registered PEN</th>
+                                        <th>Active Password (Live)</th>
+                                        <th>Last Updated</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="operator-credentials-table">
+                                    <tr><td colspan="6" style="text-align:center; padding: 2rem;">Loading credentials vault from Firestore...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: Security & Session Audit Logs -->
+                <div id="tab-op-audit" class="tab-content" style="display:none;">
+                    <div class="widget">
+                        <div class="widget-title">Live Security & Identity Audit Trail</div>
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Action / Event</th>
+                                        <th>Target Identity</th>
+                                        <th>Modified By</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="operator-audit-table">
+                                    <tr><td colspan="5" style="text-align:center; padding: 2rem;">Loading system audit trail...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: Database Snapshot & Utilities -->
+                <div id="tab-op-backup" class="tab-content" style="display:none;">
+                    <div class="grid-2">
+                        <div class="widget">
+                            <div class="widget-title">Database Roster Snapshot</div>
+                            <p class="text-secondary small mb-3">Download a real-time JSON snapshot containing all 263 student records, fee dues, and credentials for disaster recovery.</p>
+                            <button class="btn-solid btn-sm" onclick="exportDatabaseSnapshot()">📥 Download Master JSON Snapshot</button>
+                        </div>
+                        <div class="widget">
+                            <div class="widget-title">Master Credentials Reset</div>
+                            <p class="text-secondary small mb-3">Restore default standard credentials across all 13 class teacher accounts and executive portals.</p>
+                            <button class="btn-outline btn-sm" style="color:#ef4444; border-color:rgba(239,68,68,0.4);" onclick="resetAllDefaultCredentials()">⚠️ Restore All Default Passwords</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 8: ADMIN & FINANCIAL AUDIT (A.N. RATHOD SIR)
+             ========================================== -->
+        <div id="view-admin-dash" class="portal-view">
+            <div class="glass-container">
+                <div class="dashboard-header">
+                    <div class="dashboard-title-group">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <span class="status-pill highlight">EXECUTIVE FINANCIAL & OPERATIONAL AUDIT</span>
+                            <span style="font-size: 0.8rem; color: #34d399; font-weight: 700;">● Live Cloud Monitoring</span>
+                        </div>
+                        <h2>Executive Administration & Audit Desk</h2>
+                        <p class="dashboard-subtitle">Administrator: <strong>A.N. Rathod Sir</strong> | School Management & Finance Oversight</p>
+                    </div>
+                    <div class="dashboard-actions">
+                        <button class="btn-solid btn-sm" onclick="printAdminFinancialAuditReport()">🖨️ Print Financial Audit Report</button>
+                        <button class="btn-outline btn-sm" onclick="loadAdminDashboard()">🔄 Refresh Live Data</button>
+                        <button class="btn-outline btn-sm" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+
+                <!-- Top Financial & Operational KPIs -->
+                <div class="kpi-grid mb-3">
+                    <div class="kpi-card">
+                        <div class="kpi-title">TOTAL STUDENT STRENGTH</div>
+                        <div class="kpi-value" id="admin-kpi-strength">263</div>
+                        <div class="kpi-subtitle">Across 10 Enrolled Grades</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">ANNUAL FEE VALUATION</div>
+                        <div class="kpi-value" id="admin-kpi-valuation">₹65.75 L</div>
+                        <div class="kpi-subtitle">Total Expected Revenue 2026-27</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">TOTAL FEES REALIZED (PAID)</div>
+                        <div class="kpi-value" id="admin-kpi-collected" style="color: #34d399;">₹0</div>
+                        <div class="kpi-subtitle">Counter & Online Collections</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">OUTSTANDING FEE DUES</div>
+                        <div class="kpi-value" id="admin-kpi-pending" style="color: #f87171;">₹65.75 L</div>
+                        <div class="kpi-subtitle">Remaining Balance to Collect</div>
+                    </div>
+                </div>
+
+                <!-- Admin Tabs -->
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="switchAdminTab('finance')">💵 Financial Fee Audit Ledger</button>
+                    <button class="tab-btn" onclick="switchAdminTab('moments')">🕒 Live School Moments & Attendance</button>
+                    <button class="tab-btn" onclick="switchAdminTab('classes')">🏫 Class-wise Realization Matrix</button>
+                    <button class="tab-btn" onclick="switchAdminTab('admissions')">📝 Admissions Queue (<span id="admin-apps-badge">0</span>)</button>
+                </div>
+
+                <!-- TAB 1: Financial Fee Audit Ledger -->
+                <div id="tab-admin-finance" class="tab-content active">
+                    <div class="widget">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:1.25rem;">
+                            <div class="widget-title" style="margin-bottom:0;">Live Fee Counter Receipts & Bank Ledger</div>
+                            <div style="display:flex; gap:8px;">
+                                <select id="admin-fee-mode-filter" class="portal-select" style="width:auto; padding:0.4rem 1rem;" onchange="filterAdminFeeLedger()">
+                                    <option value="all">All Payment Modes</option>
+                                    <option value="Cash Counter">Cash Counter</option>
+                                    <option value="UPI / QR">UPI / QR</option>
+                                    <option value="Bank Transfer">Bank Transfer / NEFT</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Official Receipt No</th>
+                                        <th>Student Name (PEN)</th>
+                                        <th>Class & Section</th>
+                                        <th>Amount (INR)</th>
+                                        <th>Payment Mode</th>
+                                        <th>Date & Timestamp</th>
+                                        <th>Particulars / Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-fee-ledger-tbody">
+                                    <tr><td colspan="7" style="text-align:center; padding: 2rem;">Loading financial ledger from Firestore...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: Live School Moments & Attendance -->
+                <div id="tab-admin-moments" class="tab-content" style="display:none;">
+                    <div class="widget">
+                        <div class="widget-title">Today's Class-by-Class Attendance Moments</div>
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Class & Section</th>
+                                        <th>Class Teacher</th>
+                                        <th>Total Strength</th>
+                                        <th>Present Today</th>
+                                        <th>Absent Today</th>
+                                        <th>Attendance Rate</th>
+                                        <th>Submission Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-moments-tbody">
+                                    <tr><td colspan="7" style="text-align:center; padding: 2rem;">Loading live class moments...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: Class-wise Fee Realization Matrix -->
+                <div id="tab-admin-classes" class="tab-content" style="display:none;">
+                    <div class="widget">
+                        <div class="widget-title">Grade-wise Fee Realization Summary (2026-27)</div>
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Class</th>
+                                        <th>Enrolled Strength</th>
+                                        <th>Total Expected (₹)</th>
+                                        <th>Total Collected (₹)</th>
+                                        <th>Pending Dues (₹)</th>
+                                        <th>Collection %</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-class-realization-tbody">
+                                    <tr><td colspan="6" style="text-align:center; padding: 2rem;">Loading class financial matrix...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: Admissions Queue -->
+                <div id="tab-admin-admissions" class="tab-content" style="display:none;">
+                    <div class="widget">
+                        <div class="widget-title">Online Admission Queue & 1-Click Verification</div>
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tracking ID</th>
+                                        <th>Applicant Name</th>
+                                        <th>Grade</th>
+                                        <th>Parent Phone</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-admissions-tbody">
+                                    <tr><td colspan="6" style="text-align:center; padding: 2rem;">No pending applications.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 9: DEDICATED CLASS TEACHER WORKSPACE
+             ========================================== -->
+        <div id="view-teacher-dash" class="portal-view">
+            <div class="glass-container">
+                <div class="dashboard-header">
+                    <div class="dashboard-title-group">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <span class="status-pill highlight" id="teacher-class-pill">CLASS TEACHER WORKSPACE</span>
+                            <span style="font-size: 0.8rem; color: #34d399; font-weight: 700;">● Live Class Roster</span>
+                        </div>
+                        <h2 id="teacher-display-title">Class Teacher Desk</h2>
+                        <p class="dashboard-subtitle">Class Teacher: <strong id="teacher-display-name">Teacher Name</strong> | <span id="teacher-display-class" style="color: var(--portal-accent-gold); font-weight: 700;">Class 1 - Section A</span></p>
+                    </div>
+                    <div class="dashboard-actions" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 0.8rem; color: var(--portal-text-muted);">Switch Class:</span>
+                            <select id="teacher-class-switcher" class="portal-select" style="width: auto; padding: 0.35rem 0.75rem; font-weight: 700; color: var(--portal-accent-gold);" onchange="switchTeacherClass(this.value)">
+                                <option value="Class 1" selected>Class 1</option>
+                                <option value="Class 2">Class 2</option>
+                                <option value="Class 3">Class 3</option>
+                                <option value="Class 4">Class 4</option>
+                                <option value="Class 5">Class 5</option>
+                                <option value="Class 6">Class 6</option>
+                                <option value="Class 7">Class 7</option>
+                                <option value="Class 8">Class 8</option>
+                                <option value="Class 9">Class 9</option>
+                                <option value="Class 10">Class 10</option>
+                                <option value="Pre-KG">Pre-KG</option>
+                                <option value="LKG">LKG</option>
+                                <option value="UKG">UKG</option>
+                            </select>
+                        </div>
+                        <button class="btn-outline btn-sm" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+
+                <!-- Teacher Tabs -->
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="switchTeacherTab('roster')">👥 Class Student Roster (<span id="teacher-class-count">0</span>)</button>
+                    <button class="tab-btn" onclick="switchTeacherTab('attendance')">📝 1-Tap Daily Attendance</button>
+                    <button class="tab-btn" onclick="switchTeacherTab('diary')">📖 Class Homework & Diary</button>
+                </div>
+
+                <!-- TAB 1: Class Roster -->
+                <div id="tab-teacher-roster" class="tab-content active">
+                    <div class="widget">
+                        <div class="widget-title">Class Student Roster & Academic Details</div>
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student PEN</th>
+                                        <th>Roll No</th>
+                                        <th>Student Name</th>
+                                        <th>Father's Name</th>
+                                        <th>Mother's Name</th>
+                                        <th>Category</th>
+                                        <th>Fee Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="teacher-roster-tbody">
+                                    <tr><td colspan="8" style="text-align:center; padding: 2rem;">Loading class students...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: 1-Tap Daily Attendance -->
+                <div id="tab-teacher-attendance" class="tab-content" style="display:none;">
+                    <div class="widget">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:1.25rem;">
+                            <div>
+                                <div class="widget-title" style="margin-bottom:0;">1-Tap Class Attendance Marker</div>
+                                <div class="text-secondary small">Tap any student card to toggle: Present (Green) ➡️ Absent (Red) ➡️ Late (Amber)</div>
+                            </div>
+                            <div style="display:flex; gap:8px; align-items:center;">
+                                <input type="date" id="teacher-att-date" class="portal-input" style="width:auto; padding:0.4rem 1rem;">
+                                <button type="button" class="btn-outline btn-sm" onclick="setAllTeacherAttendance('Present')">Mark All Present</button>
+                                <button type="button" class="btn-solid btn-success btn-sm" onclick="submitTeacherAttendance()">🚀 Submit Attendance to Cloud</button>
+                            </div>
+                        </div>
+
+                        <div id="teacher-attendance-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-top: 1rem;">
+                            <!-- Dynamically generated student attendance cards -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: Class Homework & Diary -->
+                <div id="tab-teacher-diary" class="tab-content" style="display:none;">
+                    <div class="widget">
+                        <div class="widget-title">Publish Daily Class Homework & Assignments</div>
+                        <form onsubmit="handleTeacherPublishDiary(event)">
+                            <div class="grid-2 mb-2">
+                                <div class="form-group">
+                                    <label>Assignment Date *</label>
+                                    <input type="date" id="teacher-diary-date" class="portal-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>General Class Notice / Note</label>
+                                    <input type="text" id="teacher-diary-general" class="portal-input" placeholder="e.g. Bring scrapbook and color pencils tomorrow">
+                                </div>
+                            </div>
+
+                            <div class="grid-2 mb-2">
+                                <div class="form-group">
+                                    <label>📐 Mathematics</label>
+                                    <input type="text" id="teacher-diary-math" class="portal-input" placeholder="e.g. Exercise 4.1 Questions 1 to 5">
+                                </div>
+                                <div class="form-group">
+                                    <label>🔬 General Science / EVS</label>
+                                    <input type="text" id="teacher-diary-sci" class="portal-input" placeholder="e.g. Read Chapter 3 and draw plant cell diagram">
+                                </div>
+                            </div>
+
+                            <div class="grid-2 mb-3">
+                                <div class="form-group">
+                                    <label>📖 English Language</label>
+                                    <input type="text" id="teacher-diary-eng" class="portal-input" placeholder="e.g. Unit 2 workbook page 14-16">
+                                </div>
+                                <div class="form-group">
+                                    <label>✍️ Kannada / Regional Language</label>
+                                    <input type="text" id="teacher-diary-kan" class="portal-input" placeholder="e.g. Lesson 2 poem recitation practice">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-solid btn-success w-100" id="btn-teacher-publish-diary">🚀 Publish Homework to Cloud</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- ==========================================
@@ -1547,6 +2033,48 @@
         </div>
     </div>
 
+    <!-- Master Password Assignment Modal for Computer Operator -->
+    <div id="change-password-modal" class="portal-modal-overlay">
+        <div class="modal-content-card" style="max-width: 520px;">
+            <button class="modal-close-btn" onclick="closeChangePasswordModal()">&times;</button>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem;">
+                <div style="font-size: 2rem;">🔐</div>
+                <div>
+                    <h3 style="margin: 0; color: var(--portal-accent-gold);">Change / Assign User Password</h3>
+                    <div style="font-size: 0.85rem; color: var(--portal-text-muted);" id="modal-pass-user-desc">Target User Identity</div>
+                </div>
+            </div>
+
+            <form id="change-password-form" onsubmit="handleSavePasswordChange(event)">
+                <input type="hidden" id="pass-modal-userid">
+                <input type="hidden" id="pass-modal-role">
+
+                <div class="form-group mb-3">
+                    <label>Target Identity / User Name</label>
+                    <input type="text" id="pass-modal-name" class="portal-input" readonly style="background: rgba(255,255,255,0.05); color: #fff; font-weight: 700;">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Email Address or Student PEN / Roll No</label>
+                    <input type="text" id="pass-modal-email" class="portal-input" readonly style="background: rgba(255,255,255,0.05); color: var(--portal-accent-gold); font-family: monospace;">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>New Assigned Password *</label>
+                    <div style="position: relative;">
+                        <input type="text" id="pass-modal-newpass" class="portal-input" required placeholder="Enter new password" style="font-weight: 700; letter-spacing: 0.5px;">
+                    </div>
+                    <div class="text-secondary small mt-1">This new password will immediately be updated in live Firestore and required for portal login.</div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 1.5rem;">
+                    <button type="button" class="btn-outline btn-sm" onclick="closeChangePasswordModal()">Cancel</button>
+                    <button type="submit" class="btn-solid btn-success btn-sm" id="btn-save-pass-modal">💾 Update Password in Cloud</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Switch / Link Child Modal for Parents -->
     <div id="link-child-modal" class="portal-modal-overlay">
         <div class="modal-content-card" style="max-width: 500px;">
@@ -1586,7 +2114,7 @@
     </div>
 
     <!-- Scripts -->
-    <script type="module" src="../portal-v2.js?v=10"></script>
+    <script type="module" src="../portal-v2.js?v=13"></script>
     <script>
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
