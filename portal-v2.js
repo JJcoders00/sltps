@@ -95,6 +95,12 @@ window.onFeeStudentSelect = onFeeStudentSelect;
 window.recordCounterPayment = recordCounterPayment;
 window.handleStaffPublishDiary = handleStaffPublishDiary;
 window.loadStaffDiaryPreview = loadStaffDiaryPreview;
+window.setFeeAmountPreset = setFeeAmountPreset;
+window.viewStudentProfileModal = viewStudentProfileModal;
+window.closeStudentProfileModal = closeStudentProfileModal;
+window.openEditStudentModal = openEditStudentModal;
+window.closeEditStudentModal = closeEditStudentModal;
+window.handleSaveStudentEdit = handleSaveStudentEdit;
 window.closeReceiptModal = closeReceiptModal;
 window.seedClassesAndRostersToFirestore = seedClassesAndRostersToFirestore;
 
@@ -465,8 +471,8 @@ async function loadParentDashboard(student) {
 
     // 4. Fee Summary from Student Document & Payments Collection
     const feeTotal = student.feeTotal || 25000;
-    const feePending = student.feePending !== undefined ? student.feePending : 0;
-    const feePaid = student.feePaid !== undefined ? student.feePaid : (feeTotal - feePending);
+    const feePending = student.feePending !== undefined ? student.feePending : feeTotal;
+    const feePaid = student.feePaid || (feeTotal - feePending);
     const tuitionFee = Math.round(feeTotal * 0.8);
     const labFee = Math.round(feeTotal * 0.2);
 
@@ -736,18 +742,20 @@ async function loadParentPaymentHistory(student) {
 
 // Official Digital Fee Receipt Generator Modal
 function printStudentReceipt(customData) {
-    const student = activeStudent || { name: 'Student', className: 'Class 5', section: 'A', rollNumber: 'SLT-2026-001', parentName: 'Parent' };
-    const receiptNo = customData?.receiptNo || 'SLT-RCP-2026-1042';
-    const amount = customData?.amount || 28000;
+    const student = customData?.student || activeStudent || { name: 'Student', className: 'Class 1', section: 'A', rollNumber: 'SLT-2026-001', pen: '23455307929', parentName: 'Parent' };
+    const receiptNo = customData?.receiptNo || `SLT/2026-27/RCP-${Math.floor(1000 + Math.random() * 9000)}`;
+    const amount = customData?.amount || (student.feeTotal || 25000);
     const dateStr = customData?.date || new Date().toLocaleDateString('en-IN');
     const mode = customData?.mode || 'Cash Counter';
 
     document.getElementById('receipt-no-display').innerText = `Receipt No: ${receiptNo}`;
     document.getElementById('receipt-student-name').innerText = student.name || 'Student Name';
-    document.getElementById('receipt-student-class').innerText = `${student.className || student.grade || 'Class 5'} - ${student.section || 'A'}`;
+    const recPenEl = document.getElementById('receipt-student-pen');
+    if (recPenEl) recPenEl.innerText = student.pen || student.rollNumber || 'N/A';
+    document.getElementById('receipt-student-class').innerText = `${student.className || student.grade || 'Class 1'} - ${student.section || 'A'}`;
     document.getElementById('receipt-student-roll').innerText = student.rollNumber || student.id || 'N/A';
     document.getElementById('receipt-date').innerText = dateStr;
-    document.getElementById('receipt-parent-name').innerText = student.parentName || 'Parent / Guardian';
+    document.getElementById('receipt-parent-name').innerText = student.parentName || student.fatherName || 'Parent / Guardian';
     document.getElementById('receipt-mode').innerText = mode;
 
     document.getElementById('receipt-amount-display').innerText = `₹${amount.toLocaleString('en-IN')}.00`;
@@ -762,11 +770,23 @@ function closeReceiptModal() {
 }
 
 function numberToWords(num) {
-    if (num === 38000) return 'Thirty-Eight Thousand Rupees';
-    if (num === 28000) return 'Twenty-Eight Thousand Rupees';
-    if (num === 10000) return 'Ten Thousand Rupees';
-    if (num === 5000) return 'Five Thousand Rupees';
-    return `${num} Rupees`;
+    if (!num || isNaN(num)) return 'Zero Rupees';
+    const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 
+               'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+    function inWords(n) {
+        if (n === 0) return '';
+        if (n < 20) return a[n] + ' ';
+        if (n < 100) return b[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + a[n % 10] : '') + ' ';
+        if (n < 1000) return a[Math.floor(n / 100)] + ' Hundred ' + inWords(n % 100);
+        if (n < 100000) return inWords(Math.floor(n / 1000)) + 'Thousand ' + inWords(n % 1000);
+        if (n < 10000000) return inWords(Math.floor(n / 100000)) + 'Lakh ' + inWords(n % 100000);
+        return inWords(Math.floor(n / 10000000)) + 'Crore ' + inWords(n % 10000000);
+    }
+
+    const words = inWords(Math.floor(num)).trim();
+    return `${words} Rupees`;
 }
 
 // Link Child Handlers
@@ -1789,22 +1809,37 @@ function renderFilteredStaffRoster(list) {
     let html = '';
     list.forEach(stu => {
         const feeTotal = stu.feeTotal || 25000;
+        const feePending = stu.feePending !== undefined ? stu.feePending : feeTotal;
+        const feePaid = stu.feePaid || (feeTotal - feePending);
         const father = stu.fatherName || '--';
         const mother = stu.motherName || '--';
         const cat = stu.socialCategory || 'General';
 
+        let feeStatusBadge = '';
+        if (feePaid === 0) {
+            feeStatusBadge = `<span class="status-pill pending" style="font-size:0.75rem;">Due ₹${feeTotal.toLocaleString('en-IN')}</span>`;
+        } else if (feePending > 0) {
+            feeStatusBadge = `<span class="status-pill submitted" style="font-size:0.75rem;">Paid ₹${feePaid.toLocaleString('en-IN')} (Due ₹${feePending.toLocaleString('en-IN')})</span>`;
+        } else {
+            feeStatusBadge = `<span class="status-pill paid" style="font-size:0.75rem;">Cleared (₹${feeTotal.toLocaleString('en-IN')})</span>`;
+        }
+
         html += `
             <tr>
-                <td style="font-weight:700; color:var(--portal-accent-gold); font-family: monospace; letter-spacing:0.5px;">${stu.pen || stu.rollNumber || 'N/A'}</td>
+                <td style="font-weight:700; color:var(--portal-accent-gold); font-family: monospace; letter-spacing:0.5px; cursor:pointer;" onclick="viewStudentProfileModal('${stu.rollNumber || stu.id}')">${stu.pen || stu.rollNumber || 'N/A'}</td>
                 <td style="font-weight:600; color:var(--portal-text-muted); font-size:0.85rem;">${stu.rollNumber || stu.id}</td>
-                <td><strong>${stu.name}</strong></td>
+                <td><strong style="cursor:pointer;" onclick="viewStudentProfileModal('${stu.rollNumber || stu.id}')">${stu.name}</strong></td>
                 <td><span class="profile-pill highlight" style="font-size:0.75rem;">${stu.className || stu.grade || 'Class 1'} - ${stu.section || 'A'}</span></td>
                 <td>${father}</td>
                 <td>${mother}</td>
                 <td><span class="profile-pill" style="font-size:0.75rem;">${cat}</span></td>
-                <td style="color:#34d399; font-weight:700;">₹${feeTotal.toLocaleString('en-IN')}</td>
+                <td>${feeStatusBadge}</td>
                 <td>
-                    <button class="btn-outline btn-sm" onclick="quickSelectStudentForFee('${stu.rollNumber || stu.id}')">Collect Fee</button>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-solid btn-sm" onclick="quickSelectStudentForFee('${stu.rollNumber || stu.id}')" style="font-size:0.75rem; padding:0.25rem 0.6rem;">💳 Collect</button>
+                        <button class="btn-outline btn-sm" onclick="openEditStudentModal('${stu.rollNumber || stu.id}')" style="font-size:0.75rem; padding:0.25rem 0.5rem;" title="Edit Student Record">✏️ Edit</button>
+                        <button class="btn-outline btn-sm" onclick="viewStudentProfileModal('${stu.rollNumber || stu.id}')" style="font-size:0.75rem; padding:0.25rem 0.5rem;" title="View Student Profile">👁️</button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -2036,8 +2071,8 @@ function onFeeStudentSelect(rollOrId) {
     }
 
     const feeTotal = student.feeTotal || 25000;
-    const feePending = student.feePending !== undefined ? student.feePending : 0;
-    const feePaid = student.feePaid !== undefined ? student.feePaid : (feeTotal - feePending);
+    const feePending = student.feePending !== undefined ? student.feePending : feeTotal;
+    const feePaid = student.feePaid || (feeTotal - feePending);
 
     document.getElementById('fee-preview-name').innerText = student.name || 'Student';
     document.getElementById('fee-preview-pen').innerText = student.pen || student.rollNumber || 'N/A';
@@ -2048,6 +2083,182 @@ function onFeeStudentSelect(rollOrId) {
     preview.style.display = 'block';
 }
 
+function setFeeAmountPreset(fraction) {
+    const rollOrId = document.getElementById('fee-student-select').value;
+    if (!rollOrId) {
+        alert("Please select a student first from the dropdown.");
+        return;
+    }
+    const student = allStudentsList.find(s => (s.rollNumber === rollOrId || s.id === rollOrId));
+    if (!student) return;
+
+    const feeTotal = student.feeTotal || 25000;
+    const feePending = student.feePending !== undefined ? student.feePending : feeTotal;
+    const baseAmount = feePending > 0 ? feePending : feeTotal;
+    const calculatedAmount = Math.round(baseAmount * fraction);
+    document.getElementById('fee-amount-input').value = calculatedAmount;
+}
+
+// Student Profile Dossier Modal Handlers
+function viewStudentProfileModal(rollOrId) {
+    const student = allStudentsList.find(s => (s.rollNumber === rollOrId || s.id === rollOrId));
+    if (!student) return;
+
+    document.getElementById('card-student-name').innerText = student.name || 'Student';
+    document.getElementById('card-student-pen').innerText = `PEN: ${student.pen || student.rollNumber || 'N/A'}`;
+    document.getElementById('card-student-class').innerText = `${student.className || 'Class 1'} - ${student.section || 'A'}`;
+    document.getElementById('card-student-roll').innerText = `Roll: ${student.rollNumber || student.id || 'N/A'}`;
+
+    document.getElementById('card-father-name').innerText = student.fatherName || '--';
+    document.getElementById('card-mother-name').innerText = student.motherName || '--';
+    document.getElementById('card-gender').innerText = student.gender || 'Male';
+    document.getElementById('card-social-cat').innerText = student.socialCategory || 'General';
+    document.getElementById('card-minority').innerText = student.minorityGroup || 'None';
+    document.getElementById('card-parent-phone').innerText = student.parentPhone || '--';
+
+    const feeTotal = student.feeTotal || 25000;
+    const feePending = student.feePending !== undefined ? student.feePending : feeTotal;
+    const feePaid = student.feePaid || (feeTotal - feePending);
+
+    document.getElementById('card-fee-total').innerText = `₹${feeTotal.toLocaleString('en-IN')}`;
+    document.getElementById('card-fee-paid').innerText = `₹${feePaid.toLocaleString('en-IN')}`;
+    document.getElementById('card-fee-pending').innerText = `₹${feePending.toLocaleString('en-IN')}`;
+
+    const collectBtn = document.getElementById('card-btn-collect');
+    if (collectBtn) {
+        collectBtn.onclick = () => {
+            closeStudentProfileModal();
+            quickSelectStudentForFee(student.rollNumber || student.id);
+        };
+    }
+
+    const editBtn = document.getElementById('card-btn-edit');
+    if (editBtn) {
+        editBtn.onclick = () => {
+            closeStudentProfileModal();
+            openEditStudentModal(student.rollNumber || student.id);
+        };
+    }
+
+    document.getElementById('student-profile-modal').classList.add('active');
+}
+
+function closeStudentProfileModal() {
+    document.getElementById('student-profile-modal').classList.remove('active');
+}
+
+function openEditStudentModal(rollOrId) {
+    const student = allStudentsList.find(s => (s.rollNumber === rollOrId || s.id === rollOrId));
+    if (!student) {
+        alert("Student record not found.");
+        return;
+    }
+
+    document.getElementById('edit-stu-id').value = student.id || student.rollNumber;
+    document.getElementById('edit-stu-name').value = student.name || '';
+    document.getElementById('edit-stu-pen').value = student.pen || '';
+    document.getElementById('edit-stu-roll').value = student.rollNumber || '';
+    document.getElementById('edit-stu-class').value = student.className || student.grade || 'Class 1';
+    document.getElementById('edit-stu-section').value = student.section || 'A';
+    document.getElementById('edit-stu-gender').value = student.gender || 'Male';
+    document.getElementById('edit-stu-category').value = student.socialCategory || 'General';
+    document.getElementById('edit-stu-minority').value = student.minorityGroup || 'None';
+    document.getElementById('edit-stu-fee').value = student.feeTotal || 25000;
+    document.getElementById('edit-stu-father').value = student.fatherName || '';
+    document.getElementById('edit-stu-mother').value = student.motherName || '';
+    document.getElementById('edit-stu-phone').value = student.parentPhone || '9888877777';
+    document.getElementById('edit-stu-email').value = student.parentEmail || '';
+    document.getElementById('edit-stu-address').value = student.address || 'Bodhivruksha Campus, Gurumitkal, Yadgir';
+    document.getElementById('edit-stu-roll-badge').innerText = `Roll: ${student.rollNumber || student.id}`;
+
+    document.getElementById('edit-student-modal').classList.add('active');
+}
+
+function closeEditStudentModal() {
+    document.getElementById('edit-student-modal').classList.remove('active');
+}
+
+async function handleSaveStudentEdit(e) {
+    e.preventDefault();
+    const docId = document.getElementById('edit-stu-id').value;
+    if (!docId) return;
+
+    const student = allStudentsList.find(s => (s.rollNumber === docId || s.id === docId));
+    const btn = document.getElementById('btn-save-edit-stu');
+
+    try {
+        btn.disabled = true;
+        btn.innerText = "Updating Cloud Database...";
+
+        const updatedName = document.getElementById('edit-stu-name').value.trim();
+        const updatedPen = document.getElementById('edit-stu-pen').value.trim();
+        const updatedRoll = document.getElementById('edit-stu-roll').value.trim();
+        const updatedClass = document.getElementById('edit-stu-class').value;
+        const updatedSection = document.getElementById('edit-stu-section').value;
+        const updatedGender = document.getElementById('edit-stu-gender').value;
+        const updatedCat = document.getElementById('edit-stu-category').value;
+        const updatedMinority = document.getElementById('edit-stu-minority').value.trim() || 'None';
+        const updatedFee = parseInt(document.getElementById('edit-stu-fee').value) || 25000;
+        const updatedFather = document.getElementById('edit-stu-father').value.trim();
+        const updatedMother = document.getElementById('edit-stu-mother').value.trim();
+        const updatedPhone = document.getElementById('edit-stu-phone').value.trim();
+        const updatedEmail = document.getElementById('edit-stu-email').value.trim();
+        const updatedAddress = document.getElementById('edit-stu-address').value.trim();
+
+        const currentPaid = student?.feePaid || 0;
+        const newPending = Math.max(0, updatedFee - currentPaid);
+        const parentDisplay = updatedFather || updatedMother || student?.parentName || 'Parent';
+
+        const updatedData = {
+            name: updatedName,
+            pen: updatedPen,
+            rollNumber: updatedRoll,
+            className: updatedClass,
+            section: updatedSection,
+            gender: updatedGender,
+            socialCategory: updatedCat,
+            minorityGroup: updatedMinority,
+            feeTotal: updatedFee,
+            feePaid: currentPaid,
+            feePending: newPending,
+            fatherName: updatedFather,
+            motherName: updatedMother,
+            parentName: parentDisplay,
+            parentPhone: updatedPhone,
+            parentEmail: updatedEmail,
+            address: updatedAddress,
+            updatedAt: new Date()
+        };
+
+        // Write directly to Firestore
+        await updateDoc(doc(db, "students", docId), updatedData);
+
+        // Update local cache
+        if (student) {
+            Object.assign(student, updatedData);
+        }
+
+        closeEditStudentModal();
+        renderFilteredStaffRoster(allStudentsList);
+
+        // Update KPI metrics
+        let totalFees = 0;
+        allStudentsList.forEach(s => totalFees += (s.feeTotal || 25000));
+        const kpiFees = document.getElementById('staff-kpi-fees');
+        if (kpiFees) kpiFees.innerText = `₹${(totalFees / 100000).toFixed(2)} L`;
+
+        if (window.burstConfetti) window.burstConfetti();
+        alert(`Student profile for "${updatedName}" (PEN: ${updatedPen}) updated successfully in Firestore!`);
+
+    } catch (err) {
+        console.error("Save edit error:", err);
+        alert("Failed to update student: " + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "💾 Save & Update Cloud Record";
+    }
+}
+
 async function recordCounterPayment(e) {
     e.preventDefault();
     const rollOrId = document.getElementById('fee-student-select').value;
@@ -2055,37 +2266,49 @@ async function recordCounterPayment(e) {
     const mode = document.getElementById('fee-mode-select').value;
     const notes = document.getElementById('fee-notes-input').value.trim();
 
-    if (!rollOrId || !amount) {
+    if (!rollOrId || !amount || amount <= 0) {
         alert("Please select a student and enter a valid amount.");
         return;
     }
 
     const student = allStudentsList.find(s => (s.rollNumber === rollOrId || s.id === rollOrId));
-    const receiptNo = `SLT-RCP-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const receiptNo = `SLT/2026-27/RCP-${Math.floor(1000 + Math.random() * 9000)}`;
     const now = new Date();
 
     try {
+        const btn = document.getElementById('btn-collect-fee');
+        btn.disabled = true;
+        btn.innerText = 'Recording Transaction...';
+
         // Record payment in Firestore `fee_payments` collection
         await addDoc(collection(db, "fee_payments"), {
             receiptNo,
             studentId: student?.id || rollOrId,
             studentName: student?.name || 'Student',
+            pen: student?.pen || student?.rollNumber || 'N/A',
             classId: student?.className || 'Class 1',
+            section: student?.section || 'A',
+            parentName: student?.parentName || student?.fatherName || 'Parent',
+            parentPhone: student?.parentPhone || '--',
             amount: amount,
             date: now.toLocaleDateString('en-IN'),
             paymentMode: mode,
-            notes: notes || 'Counter Tuition Clearance',
+            notes: notes || 'Annual Tuition Clearance 2026-27',
             timestamp: now
         });
 
         // Update student pending balance in Firestore
         if (student && student.id) {
+            const currentTotal = student.feeTotal || 25000;
+            const currentPaid = (student.feePaid || 0) + amount;
+            const currentPending = Math.max(0, currentTotal - currentPaid);
+
             await updateDoc(doc(db, "students", student.id), {
-                feePaid: (student.feePaid || 0) + amount,
-                feePending: Math.max(0, (student.feePending || 38000) - amount)
+                feePaid: currentPaid,
+                feePending: currentPending
             });
-            student.feePaid = (student.feePaid || 0) + amount;
-            student.feePending = Math.max(0, (student.feePending || 38000) - amount);
+            student.feePaid = currentPaid;
+            student.feePending = currentPending;
         }
 
         document.getElementById('fee-counter-form').reset();
@@ -2094,9 +2317,10 @@ async function recordCounterPayment(e) {
         loadStaffStudentsRoster();
 
         if (window.burstConfetti) window.burstConfetti();
-        alert(`Payment of ₹${amount.toLocaleString('en-IN')} recorded successfully in Firestore!\nReceipt No: ${receiptNo}`);
+        alert(`Payment of ₹${amount.toLocaleString('en-IN')} recorded successfully!\nReceipt No: ${receiptNo}`);
 
         printStudentReceipt({
+            student: student,
             receiptNo: receiptNo,
             amount: amount,
             date: now.toLocaleDateString('en-IN'),
@@ -2106,6 +2330,12 @@ async function recordCounterPayment(e) {
     } catch (err) {
         console.error("Payment recording error:", err);
         alert("Error writing fee payment: " + err.message);
+    } finally {
+        const btn = document.getElementById('btn-collect-fee');
+        if (btn) {
+            btn.disabled = false;
+            btn.innerText = 'Record Payment & Generate Receipt';
+        }
     }
 }
 
