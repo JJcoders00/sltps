@@ -249,6 +249,120 @@ document.addEventListener('DOMContentLoaded', () => {
     
     attachEffects();
     
+    // Inject "Built by JJ Coders" premium badge dynamically
+    const injectJJBadge = () => {
+        // Create style tag for styles
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .jj-badge {
+                position: fixed;
+                bottom: 20px;
+                right: -300px;
+                z-index: 10000;
+                background: rgba(10, 15, 30, 0.85);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+                border-radius: 12px;
+                padding: 10px 16px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: right 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.6s ease;
+                opacity: 0;
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            }
+            .jj-badge.visible {
+                right: 20px;
+                opacity: 1;
+            }
+            .jj-badge-close {
+                position: absolute;
+                top: -6px;
+                right: -6px;
+                width: 18px;
+                height: 18px;
+                background: rgba(255, 255, 255, 0.2);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: #fff;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                cursor: pointer;
+                line-height: 1;
+                transition: all 0.2s ease;
+            }
+            .jj-badge-close:hover {
+                background: rgba(239, 68, 68, 0.8);
+                transform: scale(1.1);
+                color: #fff;
+            }
+            .jj-badge-link {
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                color: #fff;
+            }
+            .jj-badge-text {
+                font-size: 10px;
+                color: rgba(255, 255, 255, 0.6);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-weight: 500;
+            }
+            .jj-badge-brand {
+                font-size: 13px;
+                font-weight: 700;
+                background: linear-gradient(135deg, #60a5fa, #3b82f6);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .jj-badge-arrow {
+                color: #60a5fa;
+                transition: transform 0.2s ease;
+            }
+            .jj-badge-link:hover .jj-badge-arrow {
+                transform: translateX(3px);
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Create Badge
+        const badge = document.createElement('div');
+        badge.id = 'jjcoders-badge';
+        badge.className = 'jj-badge';
+        badge.innerHTML = `
+            <button class="jj-badge-close" aria-label="Close badge">&times;</button>
+            <a href="https://jjcoders.web.app" target="_blank" class="jj-badge-link">
+                <span class="jj-badge-text">Built by</span>
+                <span class="jj-badge-brand">JJ Coders</span>
+                <svg class="jj-badge-arrow" viewBox="0 0 24 24" width="14" height="14">
+                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        `;
+        
+        document.body.appendChild(badge);
+
+        // Bind close event
+        badge.querySelector('.jj-badge-close').addEventListener('click', (e) => {
+            e.stopPropagation();
+            badge.classList.remove('visible');
+            setTimeout(() => badge.remove(), 600);
+        });
+
+        // Entrance animation with a 1.2 second delay
+        setTimeout(() => {
+            badge.classList.add('visible');
+        }, 1200);
+    };
+
+    injectJJBadge();
+    
     const observer = new MutationObserver((mutations) => {
         let shouldAttach = false;
         mutations.forEach(m => { if (m.addedNodes.length > 0) shouldAttach = true; });

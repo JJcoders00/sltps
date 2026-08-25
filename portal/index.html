@@ -3,50 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unified Portal | SLT Public School</title>
+    <title>Unified School OS & Connected Portals | SLT Public School</title>
     <link rel="icon" href="../logo.webp" type="image/webp">
     <link rel="canonical" href="https://slte.in/portal/" />
     
     <!-- Primary Meta Tags -->
-    <meta name="title" content="Unified Portal | SLT Public School">
-    <meta name="description" content="Access the SLT Public School Unified Portal. Manage new admissions, track application status, view attendance, pay fees, and access the student/parent dashboard.">
-    <meta name="keywords" content="SLT Public School Portal, SLT Public School Admissions, Gurumitkal School Admissions, Parent Portal, Student Portal, Track Admission Application">
+    <meta name="title" content="Unified School OS & Portals | SLT Public School">
+    <meta name="description" content="Access SLT Public School's Unified Operating System. Connected portals for Parents, Students, Principal, and Staff with live attendance from the Mobile Suite, homework diary, admissions, and fee receipts.">
+    <meta name="keywords" content="SLT Public School Portal, Parent Portal, Student Portal, Principal Portal, Staff Portal, School OS, Attendance Tracker, Class Diary, Fee Receipts, Gurumitkal CBSE">
     <meta name="author" content="SLT Public School">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://slte.in/portal/">
-    <meta property="og:title" content="Unified Portal | SLT Public School">
-    <meta property="og:description" content="Access the unified portal for students, parents, and staff. Manage admissions and track applications securely.">
+    <meta property="og:title" content="Unified School OS | SLT Public School">
+    <meta property="og:description" content="Real-time connected portals for Parents, Students, Principal, and Staff at SLT Public School.">
     <meta property="og:image" content="https://slte.in/logo.webp">
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://slte.in/portal/">
-    <meta property="twitter:title" content="Unified Portal | SLT Public School">
-    <meta property="twitter:description" content="Access the unified portal for students, parents, and staff. Manage admissions and track applications securely.">
-    <meta property="twitter:image" content="https://slte.in/logo.webp">
-    
-    <!-- Schema.org JSON-LD -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "SLT Public School Unified Portal",
-      "description": "Unified online portal for school admissions, parent tracking, and student grades at SLT Public School, Gurumitkal.",
-      "url": "https://slte.in/portal/",
-      "publisher": {
-        "@type": "School",
-        "name": "SLT Public School",
-        "logo": "https://slte.in/logo.webp"
-      }
-    }
-    </script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../styles.css?v=4">
-    <link rel="stylesheet" href="../portal.css?v=5">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css?v=5">
+    <link rel="stylesheet" href="../portal.css?v=9">
 </head>
 <body class="portal-body">
 
@@ -60,7 +37,10 @@
                 </div>
             </a>
             <div class="nav-links">
-                <a href="../">Back to Home</a>
+                <a href="../">Home</a>
+                <a href="javascript:void(0)" onclick="switchView('view-gateway')">Portal Hub</a>
+                <a href="../#admissions">Admissions</a>
+                <a href="../#contact">Contact</a>
             </div>
             <div class="hamburger" onclick="toggleMenu()">
                 <span></span>
@@ -70,126 +50,140 @@
         </div>
     </nav>
 
-    <!-- Portal Background -->
-    <div class="bg-layer portal-bg" style="background-image: url('../bg-hero.webp'); filter: blur(8px) brightness(0.3);"></div>
+    <!-- Portal Background Layer -->
+    <div class="bg-layer portal-bg" style="background-image: url('../bg-hero.webp'); filter: blur(8px) brightness(0.25);"></div>
     
     <div class="portal-wrapper">
         
-        <!-- View 0: The Gateway (Role Selection) -->
+        <!-- ==========================================
+             VIEW 0: THE GATEWAY (ROLE SELECTION)
+             ========================================== -->
         <div id="view-gateway" class="portal-view active">
             <div class="center-align mb-4 fade-up">
-                <h1 class="fade-up gradient-text">SLT Public School Gateway</h1>
-                <p class="fade-up delay-1 large-text" style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 3rem auto;">Select your role below to access the unified portal services.</p>
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); padding: 0.35rem 1rem; border-radius: 30px; margin-bottom: 1rem;">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
+                    <span style="font-size: 0.8rem; font-weight: 700; color: #93c5fd; letter-spacing: 0.5px;">SLT SCHOOL OPERATING SYSTEM 2026-27</span>
+                </div>
+                <h1 class="gradient-text" style="font-size: clamp(2.2rem, 5vw, 3.5rem); margin-bottom: 0.75rem;">Unified School OS</h1>
+                <p class="large-text text-secondary" style="max-width: 680px; margin: 0 auto 2.5rem auto;">Select your role below for instant access to real-time attendance, digital homework diary, fee receipts, and school management.</p>
             </div>
             
-            <div class="grid-4 fade-up delay-1" style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;">
-                <div class="role-card" onclick="selectRole('admission')">
-                    <div class="icon float-anim">📝</div>
-                    <h4>New Admission</h4>
-                    <p>Apply for the 2026-27 academic session (LKG - Class XII).</p>
-                </div>
+            <div class="grid-3 fade-up delay-1" style="max-width: 1100px; margin: 0 auto; gap: 1.5rem;">
                 <div class="role-card" onclick="selectRole('parent')">
                     <div class="icon float-anim">👨‍👩‍👧</div>
                     <h4>Parent Portal</h4>
-                    <p>Check attendance, pay fees, and view notices.</p>
+                    <p>Live attendance status, monthly calendar, daily class diary, fee receipts & notices.</p>
                 </div>
                 <div class="role-card" onclick="selectRole('student')">
                     <div class="icon float-anim">🎓</div>
                     <h4>Student Portal</h4>
-                    <p>Access homework, timetable, and exam grades.</p>
+                    <p>Daily homework assignments, task checklists, academic grades & report cards.</p>
                 </div>
                 <div class="role-card" onclick="selectRole('principal')">
                     <div class="icon float-anim">👑</div>
-                    <h4>Principal Portal</h4>
-                    <p>Publish messages and manage announcements.</p>
+                    <h4>Principal Command Center</h4>
+                    <p>Live attendance KPIs, class submission monitor, diary overseer & circulars broadcast.</p>
                 </div>
                 <div class="role-card" onclick="selectRole('staff')">
                     <div class="icon">👔</div>
-                    <h4>Staff Portal</h4>
-                    <p>Manage applications and student records.</p>
+                    <h4>Staff & Admin Portal</h4>
+                    <p>1-Click admissions enrollment, bulk student importer, rosters, and fee counter.</p>
+                </div>
+                <div class="role-card" onclick="selectRole('admission')">
+                    <div class="icon">📝</div>
+                    <h4>New Admission 2026-27</h4>
+                    <p>Apply online for Pre-KG, LKG, UKG to Class X/XII at Bodhivruksha Campus.</p>
                 </div>
                 <div class="role-card" onclick="switchView('view-track')">
                     <div class="icon">🔍</div>
                     <h4>Track Application</h4>
-                    <p>Check the status of your submitted application.</p>
+                    <p>Check real-time application processing and enrollment status with your ID.</p>
                 </div>
             </div>
         </div>
-
-        <!-- View: Track Application -->
-        <div id="view-track" class="portal-view">
-            <div class="glass-container center-align" style="max-width: 500px; margin: 0 auto;">
-                <h2>Track Application</h2>
-                <p class="text-secondary mb-2">Enter your Tracking ID to see your status.</p>
-                <form id="track-form" onsubmit="trackApplication(event)">
-                    <div class="form-group mb-2" style="text-align: left;">
-                        <input type="text" id="track-id-input" placeholder="e.g. ADM-2026-1234" required style="width: 100%;">
-                    </div>
-                    <button type="submit" class="btn-solid w-100" id="btn-track">Check Status</button>
-                    <div id="track-result" class="mt-4" style="display: none; padding: 1.5rem; border-radius: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); text-align: left;"></div>
-                    <div id="track-error" class="alert-text mt-2" style="display: none;"></div>
-                </form>
-                <button class="btn-outline mt-4" onclick="switchView('view-gateway')">Back</button>
-            </div>
-        </div>
-
-        <!-- View 1: Auth (Mobile OTP for Admissions only) -->
-        <div id="view-auth-mobile" class="portal-view">
-            <div class="glass-container center-align">
-                <h2 id="auth-title">Login</h2>
-                <p>Please enter your registered mobile number.</p>
-                <div class="form-wrapper mt-2">
-                    <form id="auth-mobile-form" class="glass-form">
-                        <div class="form-group">
-                            <label>Mobile Number</label>
-                            <input type="tel" id="mobile-input" required placeholder="+91 00000 00000" pattern="[0-9+ ]+">
-                        </div>
-                        <button type="submit" class="btn-solid submit-btn">Start Application</button>
-                        <button type="button" class="btn-outline mt-2 w-100" onclick="switchView('view-gateway')">Back</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- View 1B: Auth (Email & Password for Parents/Students) -->
-        <div id="view-auth-email" class="portal-view">
-            <div class="glass-container center-align">
-                <h2 id="email-auth-title">Login</h2>
-                <p id="email-auth-desc">Enter your email and password.</p>
-                <div id="auth-error" style="color: #ef4444; margin-top: 10px; display: none;">Invalid credentials</div>
-                <div class="form-wrapper mt-2">
-                    <form id="auth-email-form" class="glass-form">
-                        <div class="form-group">
-                            <label id="email-label">Email Address</label>
-                            <input type="email" id="auth-email" required placeholder="name@example.com">
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="auth-pass" required placeholder="••••••••">
-                        </div>
-                        <button type="submit" class="btn-solid submit-btn" id="auth-submit-btn">Login to Portal</button>
-                        <button type="button" class="btn-outline mt-2 w-100" onclick="switchView('view-gateway')">Back</button>
-                        <p class="small text-secondary mt-2 center-align">
-                            <span id="auth-toggle-text">Don't have an account?</span> 
-                            <a href="#" onclick="toggleAuthMode(event)" style="color: var(--primary-accent);">Sign Up</a>
-                        </p>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
 
         <!-- ==========================================
-             ADMISSIONS DASHBOARD & FORM
+             VIEW: TRACK APPLICATION
              ========================================== -->
-        
-        <!-- View 3: Admissions Application Form -->
+        <div id="view-track" class="portal-view">
+            <div class="glass-container center-align" style="max-width: 550px; margin: 0 auto;">
+                <div class="icon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔍</div>
+                <h2>Track Application Status</h2>
+                <p class="text-secondary mb-3">Enter your unique Tracking ID (e.g., ADM-2026-1086) to check verification and enrollment status.</p>
+                
+                <form id="track-form" onsubmit="trackApplication(event)" style="width: 100%;">
+                    <div class="form-group mb-3" style="text-align: left;">
+                        <label>Application Tracking ID</label>
+                        <input type="text" id="track-id-input" class="portal-input" placeholder="e.g. ADM-2026-1086" required>
+                    </div>
+                    <button type="submit" class="btn-solid w-100" id="btn-track">Check Status</button>
+                    <div id="track-result" class="mt-3" style="display: none; padding: 1.5rem; border-radius: 12px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); text-align: left;"></div>
+                    <div id="track-error" class="alert-text mt-2" style="display: none; color: #ef4444;"></div>
+                </form>
+                <button class="btn-outline mt-3 w-100" onclick="switchView('view-gateway')">Back to Gateway</button>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 1: AUTH (Mobile OTP for Admissions)
+             ========================================== -->
+        <div id="view-auth-mobile" class="portal-view">
+            <div class="glass-container center-align" style="max-width: 500px; margin: 0 auto;">
+                <div class="icon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">📝</div>
+                <h2 id="auth-title">New Admission 2026-27</h2>
+                <p class="text-secondary">Please enter your contact mobile number to start the online application.</p>
+                <div class="form-wrapper mt-2 w-100">
+                    <form id="auth-mobile-form">
+                        <div class="form-group mb-3" style="text-align: left;">
+                            <label>Parent WhatsApp / Mobile Number</label>
+                            <input type="tel" id="mobile-input" class="portal-input" required placeholder="+91 98888 77777" pattern="[0-9+ ]+">
+                        </div>
+                        <button type="submit" class="btn-solid w-100">Start Application</button>
+                        <button type="button" class="btn-outline mt-2 w-100" onclick="switchView('view-gateway')">Back</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 1B: UNIFIED AUTH (Email / Phone & Pass)
+             ========================================== -->
+        <div id="view-auth-email" class="portal-view">
+            <div class="glass-container center-align" style="max-width: 520px; margin: 0 auto;">
+                <div class="icon" style="font-size: 2.5rem; margin-bottom: 0.5rem;" id="auth-role-icon">🔐</div>
+                <h2 id="email-auth-title">Portal Login</h2>
+                <p id="email-auth-desc" class="text-secondary">Enter your registered credentials to access your dashboard.</p>
+                
+                <div id="auth-error" style="color: #ef4444; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.75rem; border-radius: 8px; margin-top: 10px; width: 100%; display: none; font-size: 0.85rem;">Invalid credentials</div>
+                
+                <div class="form-wrapper mt-3 w-100">
+                    <form id="auth-email-form">
+                        <div class="form-group mb-3" style="text-align: left;">
+                            <label id="email-label">Registered Email or Phone Number</label>
+                            <input type="text" id="auth-email" class="portal-input" required placeholder="name@example.com / 9888877777 / Roll No">
+                        </div>
+                        <div class="form-group mb-3" style="text-align: left;">
+                            <label>Password</label>
+                            <input type="password" id="auth-pass" class="portal-input" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn-solid w-100" id="auth-submit-btn">Login to Portal</button>
+                        <button type="button" class="btn-outline mt-2 w-100" onclick="switchView('view-gateway')">Back to Gateway</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW 3: ADMISSIONS APPLICATION FORM
+             ========================================== -->
         <div id="view-application" class="portal-view">
-            <div class="glass-container form-container">
-                <div class="dashboard-header mb-4">
-                    <h2>New Application</h2>
-                    <button class="btn-outline" onclick="logout()">Cancel</button>
+            <div class="glass-container">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>New Student Admission Application</h2>
+                        <p class="dashboard-subtitle">Academic Session 2026-27 | Bodhivruksha Campus</p>
+                    </div>
+                    <button class="btn-outline btn-sm" onclick="logout()">Cancel</button>
                 </div>
                 
                 <!-- Progress Bar -->
@@ -203,20 +197,19 @@
                     </div>
                 </div>
 
-                <h3 id="step-title" class="mb-2">Step 1: Student Information</h3>
+                <h3 id="step-title" class="mb-3" style="font-size: 1.25rem;">Step 1: Student Information</h3>
 
                 <form id="application-form">
-                    
                     <!-- Step 1: Student Info -->
                     <div class="form-step active" id="step-1">
                         <div class="grid-2">
                             <div class="form-group">
                                 <label>Student Full Name *</label>
-                                <input type="text" id="stu-name" required>
+                                <input type="text" id="stu-name" class="portal-input" required placeholder="e.g. Aarav Sharma">
                             </div>
                             <div class="form-group">
                                 <label>Date of Birth *</label>
-                                <input type="date" id="stu-dob" required>
+                                <input type="date" id="stu-dob" class="portal-input" required>
                             </div>
                             <div class="form-group">
                                 <label>Gender *</label>
@@ -230,18 +223,20 @@
                                 <label>Applying For Grade *</label>
                                 <select id="stu-grade" required class="portal-select">
                                     <option value="">Select Grade</option>
-                                    <option>LKG</option><option>UKG</option>
-                                    <option>Class I</option><option>Class V</option>
-                                    <option>Class X</option><option>Class XII</option>
+                                    <option>Pre-KG</option><option>LKG</option><option>UKG</option>
+                                    <option>Class 1</option><option>Class 2</option><option>Class 3</option>
+                                    <option>Class 4</option><option>Class 5</option><option>Class 6</option>
+                                    <option>Class 7</option><option>Class 8</option><option>Class 9</option>
+                                    <option>Class 10</option><option>Class 11</option><option>Class 12</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>Aadhaar / ID Number *</label>
-                                <input type="text" id="stu-aadhaar" required>
+                                <input type="text" id="stu-aadhaar" class="portal-input" required placeholder="12-digit Aadhaar Number">
                             </div>
                             <div class="form-group">
-                                <label>Student WhatsApp (If applicable)</label>
-                                <input type="tel" id="stu-whatsapp" placeholder="+91 00000 00000">
+                                <label>Student Email (Optional)</label>
+                                <input type="email" id="stu-email" class="portal-input" placeholder="student@sltps.com">
                             </div>
                         </div>
                     </div>
@@ -251,23 +246,23 @@
                         <div class="grid-2">
                             <div class="form-group">
                                 <label>Father / Guardian Name *</label>
-                                <input type="text" id="par-father" required>
+                                <input type="text" id="par-father" class="portal-input" required placeholder="Father's Full Name">
                             </div>
                             <div class="form-group">
                                 <label>Mother Name *</label>
-                                <input type="text" id="par-mother" required>
+                                <input type="text" id="par-mother" class="portal-input" required placeholder="Mother's Full Name">
                             </div>
                             <div class="form-group">
-                                <label>Email Address *</label>
-                                <input type="email" id="par-email" required>
+                                <label>Parent Email Address *</label>
+                                <input type="email" id="par-email" class="portal-input" required placeholder="parent@example.com">
                             </div>
-                            <div class="form-group full-width">
-                                <label>Parent WhatsApp Number *</label>
-                                <input type="tel" id="par-whatsapp" required placeholder="+91 00000 00000">
+                            <div class="form-group">
+                                <label>Parent WhatsApp / Mobile *</label>
+                                <input type="tel" id="par-whatsapp" class="portal-input" required placeholder="+91 98888 77777">
                             </div>
                             <div class="form-group full-width">
                                 <label>Residential Address *</label>
-                                <textarea id="par-address" rows="3" required></textarea>
+                                <textarea id="par-address" class="portal-input" rows="3" required placeholder="Street address, City, District, PIN Code"></textarea>
                             </div>
                         </div>
                     </div>
@@ -277,15 +272,15 @@
                         <div class="grid-2">
                             <div class="form-group full-width">
                                 <label>Previous School Name (If applicable)</label>
-                                <input type="text" id="acad-school">
+                                <input type="text" id="acad-school" class="portal-input" placeholder="Name of previous school">
                             </div>
                             <div class="form-group">
                                 <label>Last Grade Completed</label>
-                                <input type="text" id="acad-grade">
+                                <input type="text" id="acad-grade" class="portal-input" placeholder="e.g. Class 4">
                             </div>
                             <div class="form-group">
-                                <label>Percentage / Grade Obtained</label>
-                                <input type="text" id="acad-marks">
+                                <label>Percentage / Marks Obtained</label>
+                                <input type="text" id="acad-marks" class="portal-input" placeholder="e.g. 92% / A+">
                             </div>
                         </div>
                     </div>
@@ -293,268 +288,1123 @@
                     <!-- Step 4: Review & Submit -->
                     <div class="form-step" id="step-4">
                         <div class="review-box">
-                            <h4>Review Application</h4>
-                            <p class="text-secondary small mb-2">Note: Certificates and ID proofs will be requested via WhatsApp upon initial approval.</p>
+                            <h4 style="color: var(--portal-accent-gold); margin-bottom: 0.75rem;">Application Summary Review</h4>
+                            <p class="text-secondary small mb-3">Please review your information carefully before submitting. Certificates will be verified during counter admission.</p>
                             <div id="review-content"></div>
                         </div>
-                        <div class="mt-2">
-                            <input type="checkbox" id="agree" required>
-                            <label for="agree">I declare that the information provided is true and correct.</label>
+                        <div class="mt-3" style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="agree" required style="width: 18px; height: 18px; cursor: pointer;">
+                            <label for="agree" style="margin: 0; cursor: pointer; font-size: 0.85rem;">I declare that all details provided are accurate and true to the best of my knowledge.</label>
                         </div>
                     </div>
 
-                    <!-- Form Controls -->
+                    <!-- Controls -->
                     <div class="form-controls mt-4">
                         <button type="button" class="btn-outline" id="btn-prev" onclick="changeStep(-1)" style="display:none;">Previous</button>
                         <button type="button" class="btn-outline" id="btn-save" onclick="saveDraft()">Save Draft</button>
                         <button type="button" class="btn-solid" id="btn-next" onclick="changeStep(1)">Next Step</button>
-                        <button type="submit" class="btn-solid" id="btn-submit" style="display:none;">Pay & Submit</button>
+                        <button type="submit" class="btn-solid btn-success" id="btn-submit" style="display:none;">Submit Application</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- View 3B: Admission Success -->
+        <!-- ==========================================
+             VIEW 3B: ADMISSION SUCCESS
+             ========================================== -->
         <div id="view-success" class="portal-view">
-            <div class="glass-container center-align">
-                <h2 style="color: #4CAF50;">Application Submitted!</h2>
-                <p>Your application fee has been processed.</p>
-                <div class="success-box mt-2">
-                    <h3>Tracking ID: <span id="tracking-id" style="color:var(--primary-accent);">ADM-2026-0000</span></h3>
-                    <p class="mt-2 text-secondary">Please save this tracking ID. We will contact you soon.</p>
+            <div class="glass-container center-align" style="max-width: 600px; margin: 0 auto;">
+                <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🎉</div>
+                <h2 style="color: var(--portal-accent-green); margin-bottom: 0.5rem;">Application Submitted!</h2>
+                <p class="text-secondary">Your application has been received into the SLT Admissions Pipeline.</p>
+                <div class="success-box mt-3 w-100">
+                    <p style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--portal-text-muted); margin-bottom: 0.25rem;">Your Unique Application Tracking ID</p>
+                    <h2 style="color: var(--portal-accent-gold); font-size: 2rem; margin: 0;"><span id="tracking-id">ADM-2026-0000</span></h2>
+                    <p class="mt-2 text-secondary small" style="margin-bottom: 0;">Please keep this tracking ID for checking status and admission fee clearance.</p>
                 </div>
                 <button class="btn-solid mt-4" onclick="logout()">Return to Gateway</button>
             </div>
         </div>
 
         <!-- ==========================================
-             PARENT DASHBOARD
+             PORTAL 1: PARENT PORTAL
              ========================================== -->
         <div id="view-parent-dash" class="portal-view">
             <div class="glass-container">
                 <div class="dashboard-header">
-                    <h2>Parent Dashboard</h2>
-                    <button class="btn-outline" onclick="logout()">Logout</button>
+                    <div class="dashboard-title-group">
+                        <h2>👨‍👩‍👧 Parent Dashboard</h2>
+                        <p class="dashboard-subtitle">SLT Smart Connected Campus • Real-time Attendance & Diary Sync</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-outline btn-sm" onclick="showLinkChildModal()">🔗 Link / Switch Child</button>
+                        <button class="btn-outline btn-sm" onclick="logout()">Logout</button>
+                    </div>
                 </div>
-                
-                <div class="grid-3 mt-4" style="grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                    
-                    <!-- Profile Widget -->
-                    <div class="widget full-width" style="display: flex; gap: 2rem; align-items: center;">
-                        <div class="avatar">👦</div>
+
+                <!-- Child Profile & Campus ID Strip -->
+                <div class="user-profile-strip">
+                    <div class="profile-main-info">
+                        <div class="profile-avatar">👦</div>
                         <div>
-                            <h3>Rahul Sharma</h3>
-                            <p class="text-secondary">Class: X - A | Roll No: 42</p>
+                            <h3 id="parent-student-name" style="margin: 0; font-size: 1.35rem; font-weight: 800;">Loading student...</h3>
+                            <div class="profile-badges">
+                                <span class="profile-pill highlight" id="parent-student-pen" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4); font-weight: 700;">PEN: --</span>
+                                <span class="profile-pill" id="parent-student-class">Class: --</span>
+                                <span class="profile-pill" id="parent-student-roll">Roll No: --</span>
+                                <span class="profile-pill" id="parent-student-campus">Bodhivruksha Campus</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 0.75rem; color: var(--portal-text-muted); text-transform: uppercase;">Parent Information</span>
+                        <div id="parent-contact-info" style="font-weight: 600; font-size: 0.9rem;">--</div>
+                    </div>
+                </div>
+
+                <!-- Top Quick Presence & Gauge Strip -->
+                <div class="grid-3 mb-3">
+                    <!-- Live Presence Card -->
+                    <div class="presence-hero-card" id="parent-presence-card">
+                        <div>
+                            <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--portal-text-muted); letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Today's Live Attendance (Mobile Sync)</span>
+                            <div class="presence-status-badge present" id="parent-today-status">
+                                <span id="presence-dot">●</span> <span id="presence-status-text">PRESENT ✅</span>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--portal-text-muted); margin-top: 6px;" id="presence-timestamp">Updated: Today</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="profile-pill" id="parent-last-absent-badge" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5;">Last Absent: Never</span>
                         </div>
                     </div>
 
-                    <!-- Attendance Widget -->
-                    <div class="widget center-align">
-                        <h1 style="color: #4CAF50; margin:0;">95%</h1>
-                        <h4>Attendance</h4>
-                        <p class="small text-secondary mt-2">Last absent: 12 May 2026</p>
-                    </div>
-
-                    <!-- Fees Widget -->
-                    <div class="widget center-align">
-                        <h3 style="color: #ef4444; margin:0;">₹15,000</h3>
-                        <h4>Pending Fees</h4>
-                        <button class="btn-solid mt-2" onclick="alert('Payment Gateway Integration Pending for V2')">Pay Now</button>
-                    </div>
-
-                    <!-- Notices Widget -->
-                    <div class="widget full-width">
-                        <h4>School Notices</h4>
-                        <div class="review-row mt-2">
-                            <span>15 May 2026</span><span>Parent-Teacher Meeting scheduled for 20th May.</span>
+                    <!-- Attendance Gauge Card -->
+                    <div class="widget" style="display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem;">
+                        <div>
+                            <div class="kpi-label">Cumulative Rate</div>
+                            <div class="kpi-val" id="parent-attendance-pct" style="color: var(--portal-accent-green); margin: 0.25rem 0;">--%</div>
+                            <div class="kpi-sub" id="parent-attendance-days">-- / -- Days Present</div>
                         </div>
-                        <div class="review-row">
-                            <span>10 May 2026</span><span>Summer vacation begins from 1st June.</span>
+                        <div class="gauge-wrapper">
+                            <svg class="gauge-svg" viewBox="0 0 100 100">
+                                <circle class="gauge-bg" cx="50" cy="50" r="40"></circle>
+                                <circle class="gauge-progress" id="parent-gauge-circle" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="25.12"></circle>
+                            </svg>
+                            <div class="gauge-text">
+                                <span class="gauge-number" id="parent-gauge-pct">--</span>
+                                <span class="gauge-unit">Score</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fee Summary Card -->
+                    <div class="widget" style="padding: 1.25rem 1.5rem;">
+                        <div class="kpi-label">Fee Status</div>
+                        <div class="kpi-val" id="parent-fee-pending" style="color: var(--portal-accent-red); margin: 0.25rem 0;">₹--</div>
+                        <div class="kpi-sub" id="parent-fee-paid">Paid: ₹--</div>
+                        <div class="mt-2" style="display: flex; gap: 8px;">
+                            <button class="btn-solid btn-sm" onclick="openPaymentModal()" style="flex: 1;">Pay Now</button>
+                            <button class="btn-outline btn-sm" onclick="printStudentReceipt()" style="flex: 1;">📄 Receipt</button>
                         </div>
                     </div>
                 </div>
+
+                <!-- Sub-Navigation Tabs -->
+                <div class="portal-tabs">
+                    <button class="tab-btn active" onclick="switchParentTab('attendance')">📅 Attendance Calendar</button>
+                    <button class="tab-btn" onclick="switchParentTab('diary')">📖 Daily Class Diary & Homework</button>
+                    <button class="tab-btn" onclick="switchParentTab('fees')">💳 Fees & Official Receipts</button>
+                    <button class="tab-btn" onclick="switchParentTab('notices')">📢 School Notices</button>
+                </div>
+
+                <!-- TAB 1: ATTENDANCE CALENDAR -->
+                <div id="parent-tab-attendance" class="tab-content active">
+                    <div class="grid-2" style="align-items: start;">
+                        <!-- Calendar Widget -->
+                        <div class="calendar-widget">
+                            <div class="calendar-nav-bar">
+                                <button class="cal-btn" onclick="changeMonth(-1)">◀</button>
+                                <span class="calendar-month-title" id="cal-month-title">August 2026</span>
+                                <button class="cal-btn" onclick="changeMonth(1)">▶</button>
+                            </div>
+                            <div class="calendar-grid" id="calendar-grid">
+                                <!-- Calendar dynamically rendered by JS -->
+                            </div>
+                            <div class="cal-legend">
+                                <div class="legend-item"><span class="legend-dot" style="background:#10b981;"></span> Present (P)</div>
+                                <div class="legend-item"><span class="legend-dot" style="background:#ef4444;"></span> Absent (A)</div>
+                                <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> Late (L)</div>
+                                <div class="legend-item"><span class="legend-dot" style="background:#8b5cf6;"></span> Leave (V)</div>
+                            </div>
+                        </div>
+
+                        <!-- Monthly Attendance KPIs & History -->
+                        <div class="widget">
+                            <div class="widget-title">
+                                <span>Monthly Stats Summary</span>
+                                <span class="profile-pill" id="cal-summary-month">August 2026</span>
+                            </div>
+                            <div class="grid-2 mb-3">
+                                <div class="kpi-card green">
+                                    <div class="kpi-label">Days Present</div>
+                                    <div class="kpi-val" id="month-days-present">--</div>
+                                    <div class="kpi-sub">Attended classes</div>
+                                </div>
+                                <div class="kpi-card red">
+                                    <div class="kpi-label">Days Absent</div>
+                                    <div class="kpi-val" id="month-days-absent">--</div>
+                                    <div class="kpi-sub">Missed classes</div>
+                                </div>
+                            </div>
+                            <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem;">Attendance Insight</h4>
+                            <div id="attendance-insight-box" style="font-size: 0.85rem; color: var(--portal-text-muted); background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 10px; border-left: 3px solid #10b981;">
+                                Real-time attendance synced with the SLT Smart Attendance App.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: CLASS DIARY & HOMEWORK -->
+                <div id="parent-tab-diary" class="tab-content">
+                    <div class="widget">
+                        <div class="widget-title">
+                            <span>Teacher Class Diary & Homework</span>
+                            <input type="date" id="parent-diary-date-picker" class="portal-input" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.85rem;" onchange="loadParentDiaryForDate(this.value)">
+                        </div>
+                        <p class="text-secondary small mb-3">Real-time daily homework assignments published by the class teacher for your child's grade.</p>
+                        
+                        <div id="parent-diary-container" class="diary-grid">
+                            <!-- Injected by JS -->
+                            <div class="diary-card"><span class="text-secondary">Loading today's class diary...</span></div>
+                        </div>
+
+                        <div class="mt-3 p-3" style="background: rgba(0,0,0,0.3); border-radius: 10px; border-left: 3px solid var(--portal-accent-gold);" id="parent-general-notes-box">
+                            <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--portal-accent-gold); font-weight: 700;">General Teacher Notes:</span>
+                            <p id="parent-general-notes-text" style="font-size: 0.9rem; margin: 4px 0 0 0; color: rgba(255,255,255,0.9);">No general notes recorded for this date.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: FEES & OFFICIAL RECEIPTS -->
+                <div id="parent-tab-fees" class="tab-content">
+                    <div class="grid-2">
+                        <div class="widget">
+                            <div class="widget-title">Fee Breakdown (2026-27)</div>
+                            <div class="review-row"><span>Tuition Fee</span><span id="fee-item-tuition">₹28,000</span></div>
+                            <div class="review-row"><span>Development & Campus</span><span id="fee-item-dev">₹6,000</span></div>
+                            <div class="review-row"><span>Lab & Digital Suite</span><span id="fee-item-lab">₹4,000</span></div>
+                            <div class="review-row" style="border-top: 1px solid rgba(255,255,255,0.2); font-weight: 800; padding-top: 0.75rem;">
+                                <span>Total Fee</span><span id="fee-item-total">₹38,000</span>
+                            </div>
+                            <div class="review-row" style="color: #4ade80;"><span>Total Paid</span><span id="fee-item-paid">₹38,000</span></div>
+                            <div class="review-row" style="color: #f87171;"><span>Pending Dues</span><span id="fee-item-pending">₹0</span></div>
+
+                            <div class="mt-3">
+                                <button class="btn-solid w-100" onclick="printStudentReceipt()">📄 Download / Print Official Digital Receipt</button>
+                            </div>
+                        </div>
+
+                        <div class="widget">
+                            <div class="widget-title">Payment History</div>
+                            <div class="table-responsive">
+                                <table class="portal-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Receipt No</th>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                            <th>Mode</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="parent-payment-history-table">
+                                        <!-- Injected by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: NOTICES -->
+                <div id="parent-tab-notices" class="tab-content">
+                    <div class="widget">
+                        <div class="widget-title">Principal Broadcasts & Circulars</div>
+                        <div id="parent-notices-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <!-- ==========================================
-             STUDENT DASHBOARD
+             PORTAL 2: STUDENT PORTAL (Homework, Grades, Attendance, Notices)
              ========================================== -->
         <div id="view-student-dash" class="portal-view">
             <div class="glass-container">
                 <div class="dashboard-header">
-                    <h2>Student Portal</h2>
-                    <button class="btn-outline" onclick="logout()">Logout</button>
-                </div>
-                
-                <div class="grid-3 mt-4" style="grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                    
-                    <!-- Timetable Widget -->
-                    <div class="widget">
-                        <h4>Today's Timetable</h4>
-                        <div class="review-row mt-2"><span>09:00 AM</span><span>Mathematics</span></div>
-                        <div class="review-row"><span>10:00 AM</span><span>Science (Lab)</span></div>
-                        <div class="review-row"><span>11:30 AM</span><span>English Lit</span></div>
+                    <div class="dashboard-title-group">
+                        <h2>🎓 Student Learning Portal</h2>
+                        <p class="dashboard-subtitle">SLT Classroom Suite • Daily Homework, Term Grades & Attendance</p>
                     </div>
+                    <div class="header-actions">
+                        <button class="btn-outline btn-sm" onclick="logout()">Logout</button>
+                    </div>
+                </div>
 
-                    <!-- Homework Widget -->
-                    <div class="widget">
-                        <h4>Pending Homework</h4>
-                        <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:1rem;">
-                            <label><input type="checkbox"> Complete Math Excercise 4B</label>
-                            <label><input type="checkbox"> Read Chapter 3 History</label>
-                            <label><input type="checkbox"> Submit Science Project Outline</label>
+                <!-- Student Profile Banner -->
+                <div class="user-profile-strip">
+                    <div class="profile-main-info">
+                        <div class="profile-avatar" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(16, 185, 129, 0.3));">🎓</div>
+                        <div>
+                            <h3 id="student-name-display" style="margin: 0; font-size: 1.35rem; font-weight: 800;">Loading student...</h3>
+                            <div class="profile-badges">
+                                <span class="profile-pill highlight" id="student-pen-display" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4); font-weight: 700;">PEN: --</span>
+                                <span class="profile-pill" id="student-class-display">Class: --</span>
+                                <span class="profile-pill" id="student-roll-display">Roll No: --</span>
+                                <span class="profile-pill" id="student-section-display">Section: A</span>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Grades Widget -->
-                    <div class="widget full-width">
-                        <h4>Recent Exam Grades (Unit Test 1)</h4>
-                        <div class="review-row mt-2"><span>Mathematics</span><span style="color:#4CAF50;">92/100 (A+)</span></div>
-                        <div class="review-row"><span>Science</span><span style="color:#4CAF50;">88/100 (A)</span></div>
-                        <div class="review-row"><span>English</span><span style="color:#4CAF50;">85/100 (A)</span></div>
+                    <div style="text-align: right;">
+                        <div class="profile-pill" style="background: rgba(16, 185, 129, 0.2); color: #34d399; font-weight: 700;" id="student-attendance-pill">Attendance: --%</div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- ==========================================
-             PRINCIPAL DASHBOARD
-             ========================================== -->
-        <div id="view-principal-dash" class="portal-view">
-            <div class="glass-container" style="max-width: 1200px;">
-                <div class="dashboard-header">
-                    <h2>Principal Portal</h2>
-                    <button class="btn-outline" onclick="logout()">Logout</button>
+                <!-- Tabs Navigation (Timetable removed as requested) -->
+                <div class="portal-tabs">
+                    <button class="tab-btn active" onclick="switchStudentTab('homework')">📖 Daily Homework & Class Diary</button>
+                    <button class="tab-btn" onclick="switchStudentTab('academics')">📊 Term Grades & Performance</button>
+                    <button class="tab-btn" onclick="switchStudentTab('attendance')">📅 My Attendance Record</button>
+                    <button class="tab-btn" onclick="switchStudentTab('notices')">📢 School Circulars</button>
                 </div>
-                <p class="text-secondary mt-2">Publish Messages & Announcements</p>
-                
-                <div class="grid-3 mt-4" style="grid-template-columns: 1fr 2fr; gap: 2rem;">
-                    
-                    <!-- Compose Message Widget -->
-                    <div class="widget full-width" style="grid-column: 1;">
-                        <h4 style="margin-bottom: 1rem;">New Message</h4>
-                        <form id="compose-message-form" class="glass-form" style="padding: 1.5rem;" onsubmit="publishMessage(event)">
-                            <div class="form-group mb-2">
-                                <label>Title</label>
-                                <input type="text" id="msg-title" required placeholder="e.g. Summer Vacation Rules">
-                            </div>
-                            <div class="form-group mb-2">
-                                <label>Type</label>
-                                <select id="msg-type" class="portal-select" required style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.8rem; border-radius: 10px;">
-                                    <option value="Announcement">Announcement</option>
-                                    <option value="Message">Message</option>
-                                    <option value="Rule">Rule</option>
-                                    <option value="Event">Event</option>
-                                    <option value="Article">Article</option>
-                                </select>
-                            </div>
-                            <div class="form-group mb-2">
-                                <label>Content</label>
-                                <textarea id="msg-content" rows="6" required placeholder="Write your message here..."></textarea>
-                            </div>
-                            <div class="form-group mb-2" style="display: flex; align-items: center; gap: 10px; background: rgba(239, 68, 68, 0.1); padding: 1rem; border-radius: 10px; border: 1px solid rgba(239, 68, 68, 0.2);">
-                                <input type="checkbox" id="msg-urgent" style="width: 20px; height: 20px; cursor: pointer;">
-                                <label for="msg-urgent" style="margin: 0; cursor: pointer; color: #fca5a5;">Mark as Urgent / Pin to Top</label>
-                            </div>
-                            <div class="form-group mb-4">
-                                <label>Expiration (Duration)</label>
-                                <select id="msg-expiration" class="portal-select" required style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.8rem; border-radius: 10px;">
-                                    <option value="1">1 Day</option>
-                                    <option value="3">3 Days</option>
-                                    <option value="7">1 Week</option>
-                                    <option value="30">1 Month</option>
-                                    <option value="365">1 Year</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn-solid w-100" id="btn-publish">Publish Message</button>
-                            <div id="publish-result" class="mt-2" style="font-size: 0.9rem; text-align: center;"></div>
-                        </form>
-                    </div>
 
-                    <!-- Manage Messages Widget -->
-                    <div class="widget full-width" style="grid-column: 2;">
-                        <h4>Manage Active Messages</h4>
-                        <div style="overflow-x: auto; margin-top: 1rem;">
-                            <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                <!-- TAB 1: INTERACTIVE HOMEWORK CHECKLIST -->
+                <div id="student-tab-homework" class="tab-content active">
+                    <div class="widget">
+                        <div class="widget-title">
+                            <span>Today's Assigned Homework (From Class Teacher Diary)</span>
+                            <span class="profile-pill highlight" id="homework-counter">0 Tasks</span>
+                        </div>
+                        <p class="text-secondary small mb-3">Assignments fetched directly from your class teacher's published diary. Check off tasks as you complete them.</p>
+                        <div class="homework-checklist" id="student-homework-checklist">
+                            <!-- Injected by JS from class_diary -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: ACADEMIC REPORT & GRADES -->
+                <div id="student-tab-academics" class="tab-content">
+                    <div class="widget">
+                        <div class="widget-title">Term Examinations & Academic Performance</div>
+                        <div class="table-responsive">
+                            <table class="portal-table">
                                 <thead>
-                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                        <th style="padding: 1rem;">Title</th>
-                                        <th style="padding: 1rem;">Type</th>
-                                        <th style="padding: 1rem;">Expires On</th>
-                                        <th style="padding: 1rem;">Action</th>
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>FA-1 (25)</th>
+                                        <th>Mid-Term (80)</th>
+                                        <th>FA-2 (25)</th>
+                                        <th>Grade</th>
+                                        <th>Teacher Remarks</th>
                                     </tr>
                                 </thead>
-                                <tbody id="principal-messages-table">
-                                    <tr><td colspan="4" style="text-align:center; padding: 2rem;">Loading...</td></tr>
+                                <tbody id="student-grades-table">
+                                    <!-- Injected by JS -->
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+
+                <!-- TAB 3: ATTENDANCE RECORD -->
+                <div id="student-tab-attendance" class="tab-content">
+                    <div class="grid-3 mb-3">
+                        <div class="kpi-card green">
+                            <div class="kpi-header"><span class="kpi-label">Attendance Rate</span><span class="kpi-icon">📊</span></div>
+                            <div class="kpi-val" id="student-att-rate">--%</div>
+                            <div class="kpi-sub">Overall Presence</div>
+                        </div>
+                        <div class="kpi-card gold">
+                            <div class="kpi-header"><span class="kpi-label">Days Attended</span><span class="kpi-icon">✅</span></div>
+                            <div class="kpi-val" id="student-att-present">--</div>
+                            <div class="kpi-sub">Classes present</div>
+                        </div>
+                        <div class="kpi-card red">
+                            <div class="kpi-header"><span class="kpi-label">Days Missed</span><span class="kpi-icon">❌</span></div>
+                            <div class="kpi-val" id="student-att-absent">--</div>
+                            <div class="kpi-sub">Classes absent</div>
+                        </div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-title">Recent Attendance Log (Mobile App Stream)</div>
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Session / Class</th>
+                                        <th>Marked Status</th>
+                                        <th>Recorded By</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-attendance-log-table">
+                                    <!-- Injected by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: NOTICES -->
+                <div id="student-tab-notices" class="tab-content">
+                    <div class="widget">
+                        <div class="widget-title">Principal Broadcasts & Important Circulars</div>
+                        <div id="student-notices-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==========================================
+             PORTAL 3: PRINCIPAL COMMAND CENTER
+             ========================================== -->
+        <div id="view-principal-dash" class="portal-view">
+            <div class="glass-container" style="max-width: 1240px;">
+                <div class="dashboard-header">
+                    <div class="dashboard-title-group">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h2>👑 Principal Command Center</h2>
+                            <span class="status-pill submitted">LIVE APP SYNC</span>
+                        </div>
+                        <p class="dashboard-subtitle">SLT Public School Management OS • Bodhivruksha Campus</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-solid btn-sm" onclick="exportSchoolAttendanceCSV()">📥 Download Today's Attendance CSV</button>
+                        <button class="btn-outline btn-sm" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+
+                <!-- School-wide KPIs -->
+                <div class="kpi-grid">
+                    <div class="kpi-card gold">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Total Enrollment</span>
+                            <span class="kpi-icon">🎒</span>
+                        </div>
+                        <div class="kpi-val" id="principal-kpi-enrollment">--</div>
+                        <div class="kpi-sub">Students in database</div>
+                    </div>
+                    <div class="kpi-card green">
+                        <div class="kpi-header">
+                            <span class="kpi-label">School Presence Rate</span>
+                            <span class="kpi-icon">📊</span>
+                        </div>
+                        <div class="kpi-val" id="principal-kpi-presence">--%</div>
+                        <div class="kpi-sub">Overall student attendance today</div>
+                    </div>
+                    <div class="kpi-card red">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Absentees Today</span>
+                            <span class="kpi-icon">⚠️</span>
+                        </div>
+                        <div class="kpi-val" id="principal-kpi-absent">--</div>
+                        <div class="kpi-sub">Students marked absent</div>
+                    </div>
+                    <div class="kpi-card purple">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Classes Submitted</span>
+                            <span class="kpi-icon">✅</span>
+                        </div>
+                        <div class="kpi-val" id="principal-kpi-submissions">-- / --</div>
+                        <div class="kpi-sub">Mobile registers submitted today</div>
+                    </div>
+                </div>
+
+                <!-- Tabs Navigation -->
+                <div class="portal-tabs">
+                    <button class="tab-btn active" onclick="switchPrincipalTab('attendance')">📋 Class-by-Class Attendance Monitor</button>
+                    <button class="tab-btn" onclick="switchPrincipalTab('diary')">📖 School-wide Diary Overseer</button>
+                    <button class="tab-btn" onclick="switchPrincipalTab('broadcast')">📢 Urgent Broadcast Center</button>
+                </div>
+
+                <!-- TAB 1: CLASS-BY-CLASS SUBMISSION TRACKER -->
+                <div id="principal-tab-attendance" class="tab-content active">
+                    <div class="widget">
+                        <div class="widget-title">
+                            <span>Today's Grade-wise Attendance Submissions (Mobile App Stream)</span>
+                            <span class="profile-pill highlight" id="principal-today-date-label">Today</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Grade / Class</th>
+                                        <th>Class Teacher</th>
+                                        <th>Submission Status</th>
+                                        <th>Present</th>
+                                        <th>Absent</th>
+                                        <th>Attendance %</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="principal-classes-table">
+                                    <tr><td colspan="6" style="text-align:center; padding: 2rem;">Loading live mobile attendance stream...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: CLASS DIARY OVERSEER -->
+                <div id="principal-tab-diary" class="tab-content">
+                    <div class="widget">
+                        <div class="widget-title">
+                            <span>Daily Academic Diary & Homework Overseer</span>
+                            <select id="principal-diary-class-filter" class="portal-select" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.85rem;" onchange="loadPrincipalDiaryForClass(this.value)">
+                                <option value="all">All Grades</option>
+                                <option value="Pre-KG">Pre-KG</option>
+                                <option value="LKG">LKG</option>
+                                <option value="UKG">UKG</option>
+                                <option value="Class 1">Class 1</option>
+                                <option value="Class 2">Class 2</option>
+                                <option value="Class 3">Class 3</option>
+                                <option value="Class 4">Class 4</option>
+                                <option value="Class 5">Class 5</option>
+                                <option value="Class 6">Class 6</option>
+                                <option value="Class 7">Class 7</option>
+                                <option value="Class 8">Class 8</option>
+                                <option value="Class 9">Class 9</option>
+                                <option value="Class 10">Class 10</option>
+                            </select>
+                        </div>
+                        <div id="principal-diary-stream" class="diary-grid mt-3">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: BROADCAST & CIRCULARS PUBLISHING -->
+                <div id="principal-tab-broadcast" class="tab-content">
+                    <div class="grid-3" style="grid-template-columns: 1fr 2fr; gap: 2rem;">
+                        <!-- Compose Widget -->
+                        <div class="widget">
+                            <h4 style="margin-bottom: 1rem;">Publish New Circular</h4>
+                            <form id="compose-message-form" onsubmit="publishMessage(event)">
+                                <div class="form-group mb-2">
+                                    <label>Title *</label>
+                                    <input type="text" id="msg-title" class="portal-input" required placeholder="e.g. Independence Day Dress Code">
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Category *</label>
+                                    <select id="msg-type" class="portal-select" required>
+                                        <option value="Announcement">Announcement</option>
+                                        <option value="Event">Event</option>
+                                        <option value="Rule">Rule / Discipline</option>
+                                        <option value="Message">Principal Note</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Message Content *</label>
+                                    <textarea id="msg-content" class="portal-input" rows="5" required placeholder="Write the circular message text here..."></textarea>
+                                </div>
+                                <div class="form-group mb-2" style="display: flex; align-items: center; gap: 8px; background: rgba(239, 68, 68, 0.1); padding: 0.85rem; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.25);">
+                                    <input type="checkbox" id="msg-urgent" style="width: 18px; height: 18px; cursor: pointer;">
+                                    <label for="msg-urgent" style="margin: 0; cursor: pointer; color: #fca5a5; font-size: 0.85rem;">Mark as Urgent / Pin to Top</label>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Active Duration</label>
+                                    <select id="msg-expiration" class="portal-select" required>
+                                        <option value="1">1 Day</option>
+                                        <option value="3">3 Days</option>
+                                        <option value="7" selected>1 Week</option>
+                                        <option value="30">1 Month</option>
+                                        <option value="365">1 Year</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn-solid w-100" id="btn-publish">Broadcast Circular</button>
+                                <div id="publish-result" class="mt-2" style="font-size: 0.85rem; text-align: center;"></div>
+                            </form>
+                        </div>
+
+                        <!-- Active Messages Table -->
+                        <div class="widget">
+                            <div class="widget-title">Active Broadcasts</div>
+                            <div class="table-responsive">
+                                <table class="portal-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Type</th>
+                                            <th>Expires On</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="principal-messages-table">
+                                        <tr><td colspan="4" style="text-align:center; padding: 2rem;">Loading active notices...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==========================================
+             PORTAL 4: STAFF & ADMINISTRATION PORTAL
+             ========================================== -->
+        <div id="view-staff-dash" class="portal-view">
+            <div class="glass-container" style="max-width: 1280px;">
+                <div class="dashboard-header">
+                    <div class="dashboard-title-group">
+                        <div style="display:flex; align-items:center; gap: 8px;">
+                            <h2>👔 Staff & Academic Administration Hub</h2>
+                            <span class="status-pill submitted" style="font-size:0.75rem;">LIVE DATABASE</span>
+                        </div>
+                        <p class="dashboard-subtitle">SLT Public School Management OS • Bodhivruksha Campus, Gurumitkal</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-solid btn-sm" onclick="openAddStudentModal()">➕ Add Student</button>
+                        <button class="btn-outline btn-sm" onclick="openBulkImportModal()">📤 Bulk Import CSV</button>
+                        <button class="btn-outline btn-sm" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+
+                <!-- School Metrics KPI Bar -->
+                <div class="kpi-grid mb-4">
+                    <div class="kpi-card gold">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Active Student Registry</span>
+                            <span class="kpi-icon">🎓</span>
+                        </div>
+                        <div class="kpi-val" id="staff-kpi-students">263</div>
+                        <div class="kpi-sub">Official enrolled students in database</div>
+                    </div>
+                    <div class="kpi-card green">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Active Class Rosters</span>
+                            <span class="kpi-icon">🏫</span>
+                        </div>
+                        <div class="kpi-val" id="staff-kpi-classes">10 Grades</div>
+                        <div class="kpi-sub">Pre-KG, LKG, UKG to Class 10</div>
+                    </div>
+                    <div class="kpi-card purple">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Total Fee Valuation</span>
+                            <span class="kpi-icon">💰</span>
+                        </div>
+                        <div class="kpi-val" id="staff-kpi-fees">₹65.75 L</div>
+                        <div class="kpi-sub">Annual fee schedule 2026-27</div>
+                    </div>
+                    <div class="kpi-card red">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Pending Inquiries</span>
+                            <span class="kpi-icon">📝</span>
+                        </div>
+                        <div class="kpi-val" id="staff-kpi-inquiries">5</div>
+                        <div class="kpi-sub">Online admission applications</div>
+                    </div>
+                </div>
+
+                <!-- Tabs Navigation -->
+                <div class="portal-tabs">
+                    <button class="tab-btn active" onclick="switchStaffTab('rosters')">👥 Student Master Directory (263)</button>
+                    <button class="tab-btn" onclick="switchStaffTab('diarypub')">📖 Publish Class Diary & Homework</button>
+                    <button class="tab-btn" onclick="switchStaffTab('feecounter')">💵 Fee Counter & Receipt Center</button>
+                    <button class="tab-btn" onclick="switchStaffTab('admissions')">📝 Online Admissions Queue</button>
+                </div>
+
+                <!-- TAB 1: STUDENT DIRECTORY & ROSTERS (DEFAULT) -->
+                <div id="staff-tab-rosters" class="tab-content active">
+                    <div class="widget">
+                        <div class="widget-title">
+                            <span>Student Master Directory</span>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <select id="staff-roster-grade-filter" class="portal-select" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.85rem;" onchange="filterStaffRoster()">
+                                    <option value="all">All Grades (Class 1 to 10)</option>
+                                    <option value="Class 1">Class 1</option>
+                                    <option value="Class 2">Class 2</option>
+                                    <option value="Class 3">Class 3</option>
+                                    <option value="Class 4">Class 4</option>
+                                    <option value="Class 5">Class 5</option>
+                                    <option value="Class 6">Class 6</option>
+                                    <option value="Class 7">Class 7</option>
+                                    <option value="Class 8">Class 8</option>
+                                    <option value="Class 9">Class 9</option>
+                                    <option value="Class 10">Class 10</option>
+                                    <option value="Pre-KG">Pre-KG</option>
+                                    <option value="LKG">LKG</option>
+                                    <option value="UKG">UKG</option>
+                                </select>
+                                <input type="text" id="staff-roster-search" class="portal-input" placeholder="Search by PEN, Name, Father..." style="width: 240px; padding: 0.4rem 0.8rem; font-size: 0.85rem;" oninput="filterStaffRoster()">
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student PEN</th>
+                                        <th>Roll No</th>
+                                        <th>Student Name</th>
+                                        <th>Class & Div</th>
+                                        <th>Father Name</th>
+                                        <th>Mother Name</th>
+                                        <th>Category</th>
+                                        <th>Annual Fee</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="staff-students-table">
+                                    <tr><td colspan="9" style="text-align:center; padding: 2rem;">Loading student database...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: PUBLISH CLASS DIARY & HOMEWORK -->
+                <div id="staff-tab-diarypub" class="tab-content">
+                    <div class="grid-2">
+                        <div class="widget">
+                            <div class="widget-title">Post Daily Homework to Classroom Suite</div>
+                            <p class="text-secondary small mb-3">Homework published here immediately synchronizes with the Android Mobile App, Parent Portal, and Student Checklists.</p>
+                            
+                            <form id="staff-diary-form" onsubmit="handleStaffPublishDiary(event)">
+                                <div class="grid-2 mb-2">
+                                    <div class="form-group">
+                                        <label>Select Grade / Class *</label>
+                                        <select id="diary-pub-class" class="portal-select" required onchange="loadStaffDiaryPreview()">
+                                            <option value="Class 1">Class 1 (Section A)</option>
+                                            <option value="Class 2">Class 2 (Section A)</option>
+                                            <option value="Class 3">Class 3 (Section A)</option>
+                                            <option value="Class 4">Class 4 (Section A)</option>
+                                            <option value="Class 5" selected>Class 5 (Section A)</option>
+                                            <option value="Class 6">Class 6 (Section A)</option>
+                                            <option value="Class 7">Class 7 (Section A)</option>
+                                            <option value="Class 8">Class 8 (Section A)</option>
+                                            <option value="Class 9">Class 9 (Section A)</option>
+                                            <option value="Class 10">Class 10 (Section A)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Date *</label>
+                                        <input type="date" id="diary-pub-date" class="portal-input" required onchange="loadStaffDiaryPreview()">
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-2">
+                                    <label>Mathematics Homework</label>
+                                    <input type="text" id="diary-hw-math" class="portal-input" placeholder="e.g. Complete Exercise 3.2 Questions 1 to 5">
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Science / EVS Homework</label>
+                                    <input type="text" id="diary-hw-sci" class="portal-input" placeholder="e.g. Read Chapter 4 and draw diagram on Page 38">
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>English Homework</label>
+                                    <input type="text" id="diary-hw-eng" class="portal-input" placeholder="e.g. Write 5 vocabulary sentences in fair book">
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Kannada / Regional Language</label>
+                                    <input type="text" id="diary-hw-kan" class="portal-input" placeholder="e.g. Practice Chapter 2 poem recitation">
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Social Studies / General Notes</label>
+                                    <input type="text" id="diary-hw-soc" class="portal-input" placeholder="e.g. Bring activity scrapbook on Monday">
+                                </div>
+
+                                <button type="submit" class="btn-solid btn-success w-100 mt-2" id="btn-save-diary">🚀 Publish Homework to Cloud & Mobile Suite</button>
+                                <div id="diary-save-status" class="mt-2 text-center" style="font-size:0.85rem;"></div>
+                            </form>
+                        </div>
+
+                        <!-- Live Published Preview -->
+                        <div class="widget">
+                            <div class="widget-title">
+                                <span>Current Published Diary</span>
+                                <span class="profile-pill highlight" id="diary-preview-tag">Class 5 - Today</span>
+                            </div>
+                            <div id="staff-diary-live-preview" style="min-height: 250px;">
+                                <!-- Injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: FEE COUNTER & RECEIPTS -->
+                <div id="staff-tab-feecounter" class="tab-content">
+                    <div class="grid-2">
+                        <!-- Collect Fee Form -->
+                        <div class="widget">
+                            <div class="widget-title">Record Student Fee Payment</div>
+                            <form id="fee-counter-form" onsubmit="recordCounterPayment(event)">
+                                <div class="form-group mb-2">
+                                    <label>Select / Search Student (PEN / Name / Roll) *</label>
+                                    <select id="fee-student-select" class="portal-select" required onchange="onFeeStudentSelect(this.value)">
+                                        <option value="">-- Choose Student --</option>
+                                    </select>
+                                </div>
+                                <div id="fee-student-preview" class="mb-3 p-3" style="display: none; background: rgba(0,0,0,0.3); border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--portal-accent-gold);">
+                                    <div style="font-size:1rem; font-weight:800; color:#fff; margin-bottom: 4px;" id="fee-preview-name">Student Name</div>
+                                    <div><strong>PEN:</strong> <span id="fee-preview-pen" style="color:var(--portal-accent-gold); font-family:monospace;">--</span> | <strong>Class:</strong> <span id="fee-preview-class">--</span></div>
+                                    <div class="mt-1"><strong>Total Annual Fee:</strong> <span id="fee-preview-total" style="color:#34d399; font-weight:700;">₹25,000</span></div>
+                                    <div><strong>Pending Balance:</strong> <span id="fee-preview-pending" style="color:#f87171; font-weight:700;">₹0</span></div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Amount to Collect (₹) *</label>
+                                    <input type="number" id="fee-amount-input" class="portal-input" required min="100" placeholder="e.g. 25000">
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Payment Mode *</label>
+                                    <select id="fee-mode-select" class="portal-select" required>
+                                        <option value="Cash Counter">Cash Counter</option>
+                                        <option value="UPI / QR">UPI / QR</option>
+                                        <option value="Bank Transfer">Bank Transfer / NEFT</option>
+                                        <option value="Cheque">Cheque</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Notes / Particulars</label>
+                                    <input type="text" id="fee-notes-input" class="portal-input" placeholder="Annual Tuition Fee Clearance 2026-27">
+                                </div>
+                                <button type="submit" class="btn-solid btn-success w-100" id="btn-collect-fee">Record Payment & Generate Receipt</button>
+                            </form>
+                        </div>
+
+                        <!-- Recent Counter Transactions -->
+                        <div class="widget">
+                            <div class="widget-title">Recent Fee Receipts</div>
+                            <div class="table-responsive">
+                                <table class="portal-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Receipt No</th>
+                                            <th>Student</th>
+                                            <th>Amount</th>
+                                            <th>Mode</th>
+                                            <th>Print</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="staff-fee-history-table">
+                                        <!-- Injected by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: ADMISSIONS QUEUE -->
+                <div id="staff-tab-admissions" class="tab-content">
+                    <div class="widget">
+                        <div class="widget-title">
+                            <span>Online Admission Inquiries (2026-27)</span>
+                            <span class="profile-pill highlight" id="staff-app-count">0 Applications</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="portal-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tracking ID</th>
+                                        <th>Student Name</th>
+                                        <th>Grade</th>
+                                        <th>Parent Contact</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="staff-applications-table">
+                                    <tr><td colspan="7" style="text-align:center; padding: 2rem;">Loading applications...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
     </div>
 
-        <!-- ==========================================
-             STAFF DASHBOARD
-             ========================================== -->
-        <div id="view-staff-dash" class="portal-view">
-            <div class="glass-container" style="max-width: 1200px; position: relative;">
-                <div class="dashboard-header">
-                    <h2>Staff / Admin Portal</h2>
-                    <button class="btn-outline" onclick="logout()">Logout</button>
+    <!-- ==========================================
+         MODALS & OVERLAYS
+         ========================================== -->
+
+    <!-- Bulk Import Students CSV Modal -->
+    <div id="bulk-import-modal" class="portal-modal-overlay">
+        <div class="modal-content-card" style="max-width: 800px;">
+            <button class="modal-close-btn" onclick="closeBulkImportModal()">&times;</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem;">
+                <h3 style="color: var(--portal-accent-gold); margin:0;">Bulk Import Students (CSV / Excel)</h3>
+                <a href="../SLT_Student_Database_Template.csv" download class="btn-outline btn-sm">📥 Download Template</a>
+            </div>
+            <p class="text-secondary small mb-3">Upload the filled school student spreadsheet (.csv) to import all students directly into the live Firebase database.</p>
+
+            <div class="drag-drop-zone mb-3" onclick="document.getElementById('csv-file-input').click()" style="padding: 2rem; border: 2px dashed rgba(255,255,255,0.25); border-radius: 12px; text-align:center; background: rgba(0,0,0,0.3); cursor:pointer;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📄</div>
+                <div style="font-weight: 700; color: #fff;">Click to Select or Drag & Drop Student CSV File</div>
+                <div style="font-size: 0.8rem; color: var(--portal-text-muted); margin-top: 4px;">Supports standard CSV formatted with RollNumber, StudentName, Class, ParentPhone, etc.</div>
+                <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleCSVFileSelect(event)">
+            </div>
+
+            <div id="csv-preview-section" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+                    <span style="font-weight: 700; font-size: 0.9rem;" id="csv-preview-count">Parsed 0 Students:</span>
+                    <button class="btn-solid btn-success btn-sm" id="btn-execute-import" onclick="executeBulkImport()">⚡ Upload All Students to Firestore</button>
                 </div>
-                <p class="text-secondary mt-2">Recent Admission Applications</p>
-                <div class="widget full-width mt-4" style="overflow-x: auto;">
-                    <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                    <table class="portal-table" style="font-size: 0.8rem;">
                         <thead>
-                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                <th style="padding: 1rem;">Tracking ID</th>
-                                <th style="padding: 1rem;">Student Name</th>
-                                <th style="padding: 1rem;">Grade</th>
-                                <th style="padding: 1rem;">Date</th>
-                                <th style="padding: 1rem;">Documents</th>
+                            <tr>
+                                <th>Roll No</th>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Parent</th>
+                                <th>Phone</th>
+                                <th>Fee Total</th>
                             </tr>
                         </thead>
-                        <tbody id="staff-applications-table">
-                            <!-- Applications injected by JS -->
-                            <tr><td colspan="5" style="text-align:center; padding: 2rem;">Loading...</td></tr>
-                        </tbody>
+                        <tbody id="csv-preview-tbody"></tbody>
                     </table>
                 </div>
+            </div>
 
-                <!-- Staff Application Details Modal (Hidden by default) -->
-                <div id="app-details-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; padding: 1rem;">
-                    <div class="glass-container" style="max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; padding: 2rem;">
-                        <button onclick="closeAppModal()" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
-                        <h3 id="modal-tracking-id" style="color: var(--primary-accent); margin-bottom: 0.5rem;">Tracking ID</h3>
-                        <div style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-                            <span style="color: var(--text-secondary); font-size: 0.9rem;">Status:</span>
-                            <select id="modal-status-select" style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 0.5rem; border-radius: 5px;">
-                                <option value="Submitted">Submitted</option>
-                                <option value="Viewed">Viewed</option>
-                                <option value="Processing">Processing</option>
-                                <option value="Approved">Approved</option>
-                                <option value="Whatsapped">Whatsapped</option>
-                            </select>
-                            <button class="btn-outline" style="padding: 0.5rem 1rem;" onclick="updateApplicationStatus()">Save Status</button>
-                            <span id="status-save-msg" style="color: #4ade80; font-size: 0.85rem; display: none;">Saved!</span>
-                        </div>
-                        
-                        <div class="grid-2" id="modal-details-grid">
-                            <!-- Details injected by JS -->
-                        </div>
-                        
-                        <div class="mt-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.1); text-align: right;">
-                            <button class="btn-solid" onclick="closeAppModal()">Close</button>
-                        </div>
+            <div class="mt-3 text-right" style="display:flex; justify-content: flex-end; gap:8px;">
+                <button class="btn-outline btn-sm" onclick="closeBulkImportModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Details & 1-Click Enroll Modal -->
+    <div id="app-details-modal" class="portal-modal-overlay">
+        <div class="modal-content-card">
+            <button class="modal-close-btn" onclick="closeAppModal()">&times;</button>
+            <h3 id="modal-tracking-id" style="color: var(--portal-accent-gold); margin-bottom: 0.5rem;">Tracking ID</h3>
+            
+            <div style="margin-bottom: 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <span style="color: var(--portal-text-muted); font-size: 0.85rem;">Status:</span>
+                <select id="modal-status-select" class="portal-select" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                    <option value="Submitted">Submitted</option>
+                    <option value="Viewed">Viewed</option>
+                    <option value="Processing">Processing</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Enrolled">Enrolled</option>
+                </select>
+                <button class="btn-outline btn-sm" onclick="updateApplicationStatus()">Update Status</button>
+                <button class="btn-solid btn-success btn-sm" onclick="enrollCurrentApplication()">⚡ 1-Click Approve & Enroll</button>
+                <span id="status-save-msg" style="color: #4ade80; font-size: 0.85rem; display: none;">Saved!</span>
+            </div>
+            
+            <div class="grid-2" id="modal-details-grid">
+                <!-- Details injected by JS -->
+            </div>
+            
+            <div class="mt-4 pt-3" style="border-top: 1px solid rgba(255,255,255,0.1); text-align: right;">
+                <button class="btn-outline btn-sm" onclick="closeAppModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div id="add-student-modal" class="portal-modal-overlay">
+        <div class="modal-content-card">
+            <button class="modal-close-btn" onclick="closeAddStudentModal()">&times;</button>
+            <h3 style="color: var(--portal-accent-blue); margin-bottom: 1rem;">Register New Student</h3>
+            <form id="add-student-form" onsubmit="handleManualAddStudent(event)">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Student Full Name *</label>
+                        <input type="text" id="new-stu-name" class="portal-input" required placeholder="e.g. Rohith Kumar">
+                    </div>
+                    <div class="form-group">
+                        <label>Class / Grade *</label>
+                        <select id="new-stu-grade" class="portal-select" required>
+                            <option value="Pre-KG">Pre-KG</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10">Class 10</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Section *</label>
+                        <select id="new-stu-section" class="portal-select" required>
+                            <option value="A">Section A</option>
+                            <option value="B">Section B</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Roll Number *</label>
+                        <input type="text" id="new-stu-roll" class="portal-input" required placeholder="e.g. SLT-2026-045">
+                    </div>
+                    <div class="form-group">
+                        <label>Parent Name *</label>
+                        <input type="text" id="new-stu-parent" class="portal-input" required placeholder="Parent Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Parent WhatsApp / Phone *</label>
+                        <input type="tel" id="new-stu-phone" class="portal-input" required placeholder="+91 98888 77777">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Parent Email Address</label>
+                        <input type="email" id="new-stu-email" class="portal-input" placeholder="parent@sltps.com">
+                    </div>
+                </div>
+                <div class="mt-3" style="text-align: right; display: flex; gap: 8px; justify-content: flex-end;">
+                    <button type="button" class="btn-outline btn-sm" onclick="closeAddStudentModal()">Cancel</button>
+                    <button type="submit" class="btn-solid btn-success btn-sm">Enroll Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Official Printable Fee Receipt Modal -->
+    <div id="receipt-modal" class="portal-modal-overlay">
+        <div class="modal-content-card" style="max-width: 720px; background: #ffffff; padding: 0;">
+            <button class="modal-close-btn no-print" onclick="closeReceiptModal()" style="background: rgba(0,0,0,0.1); color: #000;">&times;</button>
+            
+            <div id="printable-receipt-content" class="official-receipt">
+                <div class="receipt-header">
+                    <img src="../logo.webp" alt="SLT Logo" class="receipt-logo">
+                    <div class="receipt-header-text">
+                        <h3>SLT PUBLIC SCHOOL</h3>
+                        <p>Affiliated to CBSE, New Delhi | Affiliation No: 830843</p>
+                        <p>Bodhivruksha Campus, Chandriki Road, Gurumitkal, Dist. Yadgir - 585214</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <span class="receipt-badge-title">OFFICIAL FEE RECEIPT</span>
+                    <span style="font-size: 0.85rem; font-weight: 700; color: #475569;" id="receipt-no-display">Receipt No: SLT-RCP-2026-0000</span>
+                </div>
+
+                <div class="receipt-meta-grid">
+                    <div class="receipt-meta-item">
+                        <span>Student Name</span>
+                        <span id="receipt-student-name">--</span>
+                    </div>
+                    <div class="receipt-meta-item">
+                        <span>Class & Section</span>
+                        <span id="receipt-student-class">--</span>
+                    </div>
+                    <div class="receipt-meta-item">
+                        <span>Roll Number / ID</span>
+                        <span id="receipt-student-roll">--</span>
+                    </div>
+                    <div class="receipt-meta-item">
+                        <span>Payment Date</span>
+                        <span id="receipt-date">--</span>
+                    </div>
+                    <div class="receipt-meta-item">
+                        <span>Parent / Guardian</span>
+                        <span id="receipt-parent-name">--</span>
+                    </div>
+                    <div class="receipt-meta-item">
+                        <span>Payment Mode</span>
+                        <span id="receipt-mode">Cash Counter</span>
+                    </div>
+                </div>
+
+                <table class="receipt-table">
+                    <thead>
+                        <tr>
+                            <th>Particulars / Description</th>
+                            <th style="text-align: right;">Amount (INR)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receipt-items-tbody">
+                        <tr>
+                            <td>Tuition & Classroom Suite Fee (Academic Year 2026-27)</td>
+                            <td style="text-align: right;" id="receipt-amount-display">₹28,000.00</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="receipt-total-row">
+                            <td style="padding: 0.85rem;">TOTAL AMOUNT RECEIVED</td>
+                            <td style="padding: 0.85rem; text-align: right; color: #16a34a;" id="receipt-total-display">₹28,000.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">
+                    Amount in words: <strong id="receipt-words-display">Twenty-Eight Thousand Rupees Only</strong>
+                </div>
+
+                <div class="receipt-footer">
+                    <div class="receipt-seal">
+                        <span>OFFICIAL</span>
+                        <span>SEAL</span>
+                        <span>SLTPS</span>
+                    </div>
+                    <div class="receipt-signature">
+                        <div class="signature-line"></div>
+                        <div class="signature-label">Authorized Signatory / Cashier</div>
                     </div>
                 </div>
             </div>
-        </div>
 
-    <script type="module" src="../portal-v2.js?v=6"></script>
+            <div class="no-print" style="padding: 1rem 2rem 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 8px; background: #f8fafc; border-top: 1px solid #e2e8f0; border-radius: 0 0 18px 18px;">
+                <button class="btn-outline btn-sm" onclick="closeReceiptModal()" style="color: #0f172a; border-color: #cbd5e1;">Close</button>
+                <button class="btn-solid btn-sm" onclick="window.print()">🖨️ Print Receipt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Switch / Link Child Modal for Parents -->
+    <div id="link-child-modal" class="portal-modal-overlay">
+        <div class="modal-content-card" style="max-width: 500px;">
+            <button class="modal-close-btn" onclick="closeLinkChildModal()">&times;</button>
+            <h3 style="color: var(--portal-accent-blue); margin-bottom: 0.75rem;">Link Student Account</h3>
+            <p class="text-secondary small mb-3">Enter your child's Roll Number or Registered Student Email to link them to your parent portal.</p>
+            <form onsubmit="handleLinkChild(event)">
+                <div class="form-group mb-3">
+                    <label>Student Roll Number or Email</label>
+                    <input type="text" id="link-child-input" class="portal-input" required placeholder="e.g. SLT-2026-001 or aarav@sltps.com">
+                </div>
+                <button type="submit" class="btn-solid w-100">Link Child</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Gateway Simulation Modal -->
+    <div id="pay-modal" class="portal-modal-overlay">
+        <div class="modal-content-card center-align" style="max-width: 450px; text-align: center;">
+            <button class="modal-close-btn" onclick="closePayModal()">&times;</button>
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💳</div>
+            <h3>Online Fee Clearance</h3>
+            <p class="text-secondary small">Scan the official SLT UPI QR or select Instant Counter Payment</p>
+            
+            <div style="background: #ffffff; padding: 1.25rem; border-radius: 12px; display: inline-block; margin: 1rem 0;">
+                <div style="width: 160px; height: 160px; background: #0f172a; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.75rem; text-align: center; padding: 1rem;">
+                    [ UPI QR CODE ]<br>sltpublicschool@upi
+                </div>
+            </div>
+
+            <div style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #34d399;">
+                Amount: <span id="pay-modal-amount">₹38,000</span>
+            </div>
+
+            <button class="btn-solid btn-success w-100" onclick="simulatePaymentSuccess()">Simulate Successful Payment</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../portal-v2.js?v=10"></script>
     <script>
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -567,7 +1417,7 @@
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     </script>
     
-    <!-- Magic Effects -->
+    <!-- Magic Audio & Tactile Effects -->
     <script src="../magic-effects.js"></script>
 </body>
 </html>

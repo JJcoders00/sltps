@@ -121,6 +121,24 @@
             color: var(--text-secondary);
             font-size: 1.2rem;
         }
+        
+        @media (max-width: 768px) {
+            .message-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            #filter-container {
+                flex-direction: column !important;
+                padding: 0 1rem !important;
+            }
+            .messages-container {
+                padding: 1rem;
+            }
+            .message-card {
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body class="portal-body" style="background-color: var(--bg-dark); min-height: 100vh;">
@@ -155,8 +173,8 @@
         </div>
         
         <!-- Functional Controls: Filter and Search -->
-        <div class="fade-up delay-1" style="max-width: 900px; margin: 0 auto; padding: 0 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-            <input type="text" id="search-input" placeholder="Search messages..." style="flex: 1; min-width: 200px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 1rem; border-radius: 10px; font-family: var(--font-main);">
+        <div id="filter-container" class="fade-up delay-1" style="max-width: 900px; margin: 0 auto; padding: 0 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+            <input type="text" id="search-input" placeholder="Search messages..." style="flex: 1; min-width: 200px; width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 1rem; border-radius: 10px; font-family: var(--font-main);">
             <select id="type-filter" style="min-width: 150px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 1rem; border-radius: 10px; font-family: var(--font-main);">
                 <option value="All">All Types</option>
                 <option value="Announcement">Announcements</option>
